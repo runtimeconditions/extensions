@@ -1,0 +1,1060 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: https://runtimeconditions.io/extensions/aws-s3/0.2.0/runtimeconditions.extension.yaml
+  version: 0.2.0
+  semanticSha256: b203169d0cf23c10e0f026f7658bbe226476061871df96504973a605c323c5c8
+spec:
+  kinds:
+  - name: aws.s3
+  interfaceTypes:
+  - name: bucket
+    targetKind: aws.s3
+  - name: service
+    targetKind: aws.s3
+  - name: object_lambda
+    targetKind: aws.s3
+  interfaceFields:
+  - name: bucketName
+    targetKind: aws.s3
+    targetType: bucket
+  - name: operations
+    targetKind: aws.s3
+    targetType: bucket
+  - name: operations
+    targetKind: aws.s3
+    targetType: service
+  - name: operations
+    targetKind: aws.s3
+    targetType: object_lambda
+  fieldValues:
+  - field: interface.operations[].name
+    targetKind: aws.s3
+    targetType: bucket
+    values:
+    - AbortMultipartUpload
+    - CompleteMultipartUpload
+    - CopyObject
+    - CreateBucketMetadataConfiguration
+    - CreateBucketMetadataTableConfiguration
+    - CreateMultipartUpload
+    - CreateSession
+    - DeleteBucket
+    - DeleteBucketAnalyticsConfiguration
+    - DeleteBucketCors
+    - DeleteBucketEncryption
+    - DeleteBucketIntelligentTieringConfiguration
+    - DeleteBucketInventoryConfiguration
+    - DeleteBucketLifecycle
+    - DeleteBucketMetadataConfiguration
+    - DeleteBucketMetadataTableConfiguration
+    - DeleteBucketMetricsConfiguration
+    - DeleteBucketOwnershipControls
+    - DeleteBucketPolicy
+    - DeleteBucketReplication
+    - DeleteBucketTagging
+    - DeleteBucketWebsite
+    - DeleteObject
+    - DeleteObjectAnnotation
+    - DeleteObjectTagging
+    - DeleteObjects
+    - DeletePublicAccessBlock
+    - GetBucketAbac
+    - GetBucketAccelerateConfiguration
+    - GetBucketAcl
+    - GetBucketAnalyticsConfiguration
+    - GetBucketCors
+    - GetBucketEncryption
+    - GetBucketIntelligentTieringConfiguration
+    - GetBucketInventoryConfiguration
+    - GetBucketLifecycleConfiguration
+    - GetBucketLocation
+    - GetBucketLogging
+    - GetBucketMetadataConfiguration
+    - GetBucketMetadataTableConfiguration
+    - GetBucketMetricsConfiguration
+    - GetBucketNotificationConfiguration
+    - GetBucketOwnershipControls
+    - GetBucketPolicy
+    - GetBucketPolicyStatus
+    - GetBucketReplication
+    - GetBucketRequestPayment
+    - GetBucketTagging
+    - GetBucketVersioning
+    - GetBucketWebsite
+    - GetObject
+    - GetObjectAcl
+    - GetObjectAnnotation
+    - GetObjectAttributes
+    - GetObjectLegalHold
+    - GetObjectLockConfiguration
+    - GetObjectRetention
+    - GetObjectTagging
+    - GetObjectTorrent
+    - GetPublicAccessBlock
+    - HeadBucket
+    - HeadObject
+    - ListBucketAnalyticsConfigurations
+    - ListBucketIntelligentTieringConfigurations
+    - ListBucketInventoryConfigurations
+    - ListBucketMetricsConfigurations
+    - ListMultipartUploads
+    - ListObjectAnnotations
+    - ListObjectVersions
+    - ListObjects
+    - ListObjectsV2
+    - ListParts
+    - PutBucketAbac
+    - PutBucketAccelerateConfiguration
+    - PutBucketAcl
+    - PutBucketAnalyticsConfiguration
+    - PutBucketCors
+    - PutBucketEncryption
+    - PutBucketIntelligentTieringConfiguration
+    - PutBucketInventoryConfiguration
+    - PutBucketLifecycleConfiguration
+    - PutBucketLogging
+    - PutBucketMetricsConfiguration
+    - PutBucketNotificationConfiguration
+    - PutBucketOwnershipControls
+    - PutBucketPolicy
+    - PutBucketReplication
+    - PutBucketRequestPayment
+    - PutBucketTagging
+    - PutBucketVersioning
+    - PutBucketWebsite
+    - PutObject
+    - PutObjectAcl
+    - PutObjectAnnotation
+    - PutObjectLegalHold
+    - PutObjectLockConfiguration
+    - PutObjectRetention
+    - PutObjectTagging
+    - PutPublicAccessBlock
+    - RenameObject
+    - RestoreObject
+    - SelectObjectContent
+    - UpdateBucketMetadataAnnotationTableConfiguration
+    - UpdateBucketMetadataInventoryTableConfiguration
+    - UpdateBucketMetadataJournalTableConfiguration
+    - UpdateObjectEncryption
+    - UploadPart
+    - UploadPartCopy
+  - field: interface.operations[].role
+    targetKind: aws.s3
+    targetType: bucket
+    values:
+    - destination
+    - source
+  - field: interface.operations[].name
+    targetKind: aws.s3
+    targetType: service
+    values:
+    - CreateBucket
+    - ListBuckets
+    - ListDirectoryBuckets
+  - field: interface.operations[].name
+    targetKind: aws.s3
+    targetType: object_lambda
+    values:
+    - WriteGetObjectResponse
+  schemas:
+  - id: aws-s3-bucket-interface
+    appliesToKind: aws.s3
+    appliesToInterfaceType: bucket
+    description: Validates a Amazon S3 bucket requirement and its canonical API operations.
+    schema:
+      $schema: https://json-schema.org/draft/2020-12/schema
+      type: object
+      required:
+      - kind
+      - interface
+      properties:
+        kind:
+          const: aws.s3
+        interface:
+          type: object
+          required:
+          - type
+          - operations
+          properties:
+            type:
+              const: bucket
+            bucketName:
+              type: string
+              minLength: 1
+            operations:
+              type: array
+              minItems: 1
+              uniqueItems: true
+              items:
+                oneOf:
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: AbortMultipartUpload
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: CompleteMultipartUpload
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  - role
+                  properties:
+                    name:
+                      const: CopyObject
+                    role:
+                      enum:
+                      - destination
+                      - source
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: CreateBucketMetadataConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: CreateBucketMetadataTableConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: CreateMultipartUpload
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: CreateSession
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucket
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketAnalyticsConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketCors
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketEncryption
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketIntelligentTieringConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketInventoryConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketLifecycle
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketMetadataConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketMetadataTableConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketMetricsConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketOwnershipControls
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketPolicy
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketReplication
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketTagging
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteBucketWebsite
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteObject
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteObjectAnnotation
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteObjectTagging
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeleteObjects
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: DeletePublicAccessBlock
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketAbac
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketAccelerateConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketAcl
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketAnalyticsConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketCors
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketEncryption
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketIntelligentTieringConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketInventoryConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketLifecycleConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketLocation
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketLogging
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketMetadataConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketMetadataTableConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketMetricsConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketNotificationConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketOwnershipControls
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketPolicy
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketPolicyStatus
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketReplication
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketRequestPayment
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketTagging
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketVersioning
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetBucketWebsite
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObject
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObjectAcl
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObjectAnnotation
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObjectAttributes
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObjectLegalHold
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObjectLockConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObjectRetention
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObjectTagging
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetObjectTorrent
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: GetPublicAccessBlock
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: HeadBucket
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: HeadObject
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListBucketAnalyticsConfigurations
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListBucketIntelligentTieringConfigurations
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListBucketInventoryConfigurations
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListBucketMetricsConfigurations
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListMultipartUploads
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListObjectAnnotations
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListObjectVersions
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListObjects
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListObjectsV2
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListParts
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketAbac
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketAccelerateConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketAcl
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketAnalyticsConfiguration
+                    role:
+                      enum:
+                      - destination
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketCors
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketEncryption
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketIntelligentTieringConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketInventoryConfiguration
+                    role:
+                      enum:
+                      - destination
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketLifecycleConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketLogging
+                    role:
+                      enum:
+                      - destination
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketMetricsConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketNotificationConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketOwnershipControls
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketPolicy
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketReplication
+                    role:
+                      enum:
+                      - destination
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketRequestPayment
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketTagging
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketVersioning
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutBucketWebsite
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutObject
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutObjectAcl
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutObjectAnnotation
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutObjectLegalHold
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutObjectLockConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutObjectRetention
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutObjectTagging
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: PutPublicAccessBlock
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: RenameObject
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: RestoreObject
+                    role:
+                      enum:
+                      - destination
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: SelectObjectContent
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: UpdateBucketMetadataAnnotationTableConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: UpdateBucketMetadataInventoryTableConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: UpdateBucketMetadataJournalTableConfiguration
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: UpdateObjectEncryption
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: UploadPart
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  - role
+                  properties:
+                    name:
+                      const: UploadPartCopy
+                    role:
+                      enum:
+                      - destination
+                      - source
+                  additionalProperties: false
+          additionalProperties: true
+      additionalProperties: true
+  - id: aws-s3-service-interface
+    appliesToKind: aws.s3
+    appliesToInterfaceType: service
+    description: Validates a Amazon S3 service requirement and its canonical API operations.
+    schema:
+      $schema: https://json-schema.org/draft/2020-12/schema
+      type: object
+      required:
+      - kind
+      - interface
+      properties:
+        kind:
+          const: aws.s3
+        interface:
+          type: object
+          required:
+          - type
+          - operations
+          properties:
+            type:
+              const: service
+            operations:
+              type: array
+              minItems: 1
+              uniqueItems: true
+              items:
+                oneOf:
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: CreateBucket
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListBuckets
+                  additionalProperties: false
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: ListDirectoryBuckets
+                  additionalProperties: false
+          additionalProperties: true
+      additionalProperties: true
+  - id: aws-s3-object-lambda-interface
+    appliesToKind: aws.s3
+    appliesToInterfaceType: object_lambda
+    description: Validates a Amazon S3 object lambda requirement and its canonical API operations.
+    schema:
+      $schema: https://json-schema.org/draft/2020-12/schema
+      type: object
+      required:
+      - kind
+      - interface
+      properties:
+        kind:
+          const: aws.s3
+        interface:
+          type: object
+          required:
+          - type
+          - operations
+          properties:
+            type:
+              const: object_lambda
+            operations:
+              type: array
+              minItems: 1
+              uniqueItems: true
+              items:
+                oneOf:
+                - type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: WriteGetObjectResponse
+                  additionalProperties: false
+          additionalProperties: true
+      additionalProperties: true

@@ -1,0 +1,46 @@
+name: Extension binding implementation lock
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-implementation-standard:
+    name: Verify implementation standard checksum
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Verify protected document checksum
+        shell: bash
+        env:
+          EXPECTED_SHA256: ${{ vars.EXTENSION_BINDING_IMPLEMENTATION_SHA256 }}
+        run: |
+          set -euo pipefail
+
+          protected_file="tooling/extension-bindings/IMPLEMENTATION.md"
+
+          if [[ -z "$EXPECTED_SHA256" ]]; then
+            echo "::error::Repository variable EXTENSION_BINDING_IMPLEMENTATION_SHA256 is not set."
+            exit 1
+          fi
+
+          actual_sha256="$(sha256sum "$protected_file" | awk '{print $1}')"
+
+          if [[ "$actual_sha256" != "$EXPECTED_SHA256" ]]; then
+            echo "::error file=$protected_file::Protected implementation standard checksum mismatch."
+            echo "Expected: $EXPECTED_SHA256"
+            echo "Actual:   $actual_sha256"
+            exit 1
+          fi
+
+          echo "Protected implementation standard checksum verified: $actual_sha256"
