@@ -1,0 +1,4 @@
+category: symbol
+code: RCG2001
+coordinate: example.com/runtimeconditions/conformance/go-fixed-symbol-collision
+message: Go symbol "Service" collides between owned declaration function "kind:service" and generated type "condition-field:service::service" in package "example.com/runtimeconditions/conformance/go-fixed-symbol-collision"

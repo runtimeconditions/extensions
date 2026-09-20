@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 2f9a642c9aad96634de603df8e4a0bc4464a9fb4dce03e490a57bb556420b517
+    semanticSha256: 5eae4b922b860ddb73c66bfc65706c29f7e5c1121fafcde0f48a3a1d81394821
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -50,6 +50,16 @@ vocabulary:
           category: kind
           owner: urn:runtimeconditions:conformance:transitive:leaf
           kind: worker
+    importedDeclarations:
+        - coordinate: kind:worker
+          owner: urn:runtimeconditions:conformance:transitive:leaf
+          kind: worker
+          tokens:
+            - worker
+          provenance:
+            owner: urn:runtimeconditions:conformance:transitive:leaf
+            extensionSha256: 18214ac19f8e6d13d73df8306bffeca0d1637ac3daaa9ef588362b2072777749
+            coordinate: kind:worker
     interfaces:
         - coordinate: interface:worker:process
           owner: urn:runtimeconditions:conformance:transitive:middle

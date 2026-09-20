@@ -1,4 +1,4 @@
-name: Extension binding normalizer
+name: Extension binding tooling
 
 on:
   pull_request:
@@ -6,6 +6,8 @@ on:
       - ".github/workflows/extension-binding-normalizer.yml"
       - "catalog/**"
       - "tooling/extension-bindings/IMPLEMENTATION.md"
+      - "tooling/extension-bindings/README.md"
+      - "tooling/extension-bindings/emitters/go/**"
       - "tooling/extension-bindings/model/**"
       - "tooling/extension-bindings/normalizer/**"
   push:
@@ -14,6 +16,8 @@ on:
       - ".github/workflows/extension-binding-normalizer.yml"
       - "catalog/**"
       - "tooling/extension-bindings/IMPLEMENTATION.md"
+      - "tooling/extension-bindings/README.md"
+      - "tooling/extension-bindings/emitters/go/**"
       - "tooling/extension-bindings/model/**"
       - "tooling/extension-bindings/normalizer/**"
   workflow_dispatch:
@@ -22,8 +26,8 @@ permissions:
   contents: read
 
 jobs:
-  verify:
-    name: Verify on ${{ matrix.os }}
+  verify-normalizer:
+    name: Verify normalizer on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
@@ -51,4 +55,37 @@ jobs:
         run: go test -count=1 ./...
 
       - name: Vet normalizer
+        run: go vet ./...
+
+  verify-go-emitter:
+    name: Verify Go emitter on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    defaults:
+      run:
+        working-directory: tooling/extension-bindings/emitters/go
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: tooling/extension-bindings/emitters/go/go.mod
+          cache-dependency-path: |
+            tooling/extension-bindings/emitters/go/go.sum
+            tooling/extension-bindings/normalizer/go.sum
+
+      - name: Test Go emitter and generated conformance packages
+        run: go test -count=1 ./...
+
+      - name: Vet Go emitter
         run: go vet ./...

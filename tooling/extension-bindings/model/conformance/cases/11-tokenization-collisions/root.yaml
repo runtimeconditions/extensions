@@ -10,16 +10,10 @@ spec:
     - name: HTTPServer2URL
       targetKind: class
   conditionFields:
-    - name: class
-      appliesToKinds: [class]
-      appliesToInterfaceTypes: [HTTPServer2URL]
     - name: 9patch
       appliesToKinds: [class]
       appliesToInterfaceTypes: [HTTPServer2URL]
     - name: café
-      appliesToKinds: [class]
-      appliesToInterfaceTypes: [HTTPServer2URL]
-    - name: api-url
       appliesToKinds: [class]
       appliesToInterfaceTypes: [HTTPServer2URL]
     - name: api_url
@@ -33,9 +27,7 @@ spec:
       schema:
         type: object
         properties:
-          class: {type: string}
           9patch: {type: string}
           café: {type: string}
-          api-url: {type: string}
           api_url: {type: string}
         additionalProperties: false

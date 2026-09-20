@@ -6,10 +6,6 @@ metadata:
 spec:
   kinds:
     - name: collection
-  fieldValues:
-    - field: entries[].value
-      targetKind: collection
-      values: [1, 2]
   schemas:
     - id: collection-shapes
       description: Scalar arrays, object arrays, and schema-valued maps.

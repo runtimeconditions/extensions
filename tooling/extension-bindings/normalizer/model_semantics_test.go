@@ -49,6 +49,9 @@ func TestConformanceModelsExerciseNormalizationRules(t *testing.T) {
 		if len(model.Vocabulary.OwnedDeclarations) != 0 {
 			t.Fatal("additive root package incorrectly owns its dependency declaration")
 		}
+		if len(model.Vocabulary.ImportedDeclarations) != 1 || model.Vocabulary.ImportedDeclarations[0].Kind != "service" || strings.Join(model.Vocabulary.ImportedDeclarations[0].Tokens, ",") != "service" {
+			t.Fatalf("imported declarations = %#v", model.Vocabulary.ImportedDeclarations)
+		}
 		if model.Scopes[0].Projection == nil {
 			t.Fatal("scope has no effective additive projection")
 		}
@@ -93,9 +96,9 @@ func TestConformanceModelsExerciseNormalizationRules(t *testing.T) {
 			findProperty(t, projection, "labels").Shape.Kind != "map" {
 			t.Fatal("collection or map projection is incorrect")
 		}
-		domain := model.Vocabulary.ValueDomains[0]
-		if len(domain.Segments) != 2 || !domain.Segments[0].Array || domain.Segments[0].Name != "entries" || domain.Segments[1].Name != "value" {
-			t.Fatalf("array path segments = %#v", domain.Segments)
+		value := findProperty(t, *findProperty(t, projection, "entries").Shape.Items, "value")
+		if len(value.Shape.Values) != 2 || len(value.Shape.Values[0].Tokens) != 0 {
+			t.Fatalf("non-string enum values = %#v", value.Shape.Values)
 		}
 	})
 
@@ -105,14 +108,21 @@ func TestConformanceModelsExerciseNormalizationRules(t *testing.T) {
 			model.Vocabulary.ValueDomains[0].InterfaceType == model.Vocabulary.ValueDomains[1].InterfaceType {
 			t.Fatalf("scoped value domains = %#v", model.Vocabulary.ValueDomains)
 		}
-		var collisionTokens [][]string
+		var baseURLTokens []string
 		for _, field := range model.Vocabulary.ConditionFields {
-			if field.Path == "base-url" || field.Path == "base_url" {
-				collisionTokens = append(collisionTokens, field.Tokens)
+			if field.Path == "base_url" {
+				baseURLTokens = field.Tokens
 			}
 		}
-		if len(collisionTokens) != 2 || strings.Join(collisionTokens[0], ",") != strings.Join(collisionTokens[1], ",") {
-			t.Fatalf("normalized collision tokens = %v", collisionTokens)
+		if strings.Join(baseURLTokens, ",") != "base,url" {
+			t.Fatalf("base_url tokens = %v", baseURLTokens)
+		}
+		for _, domain := range model.Vocabulary.ValueDomains {
+			for _, value := range domain.Values {
+				if _, ok := value.Value.(string); !ok || len(value.Tokens) == 0 {
+					t.Fatalf("string value-domain member = %#v", value)
+				}
+			}
 		}
 	})
 
@@ -121,7 +131,6 @@ func TestConformanceModelsExerciseNormalizationRules(t *testing.T) {
 		want := map[string]string{
 			"9patch":  "9,patch",
 			"café":    "caf,uC3A9",
-			"api-url": "api,url",
 			"api_url": "api,url",
 		}
 		for _, field := range model.Vocabulary.ConditionFields {

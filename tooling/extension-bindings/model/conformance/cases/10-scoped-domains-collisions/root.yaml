@@ -15,9 +15,6 @@ spec:
     - name: mode
       appliesToKinds: [service]
       appliesToInterfaceTypes: [http, grpc]
-    - name: base-url
-      appliesToKinds: [service]
-      appliesToInterfaceTypes: [http]
     - name: base_url
       appliesToKinds: [service]
       appliesToInterfaceTypes: [http]
@@ -41,8 +38,6 @@ spec:
           mode:
             type: string
             enum: [direct, proxy]
-          base-url:
-            type: string
           base_url:
             type: string
         additionalProperties: false

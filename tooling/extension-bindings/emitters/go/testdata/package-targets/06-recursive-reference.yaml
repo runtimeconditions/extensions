@@ -1,0 +1,10 @@
+apiVersion: runtimeconditions.io/go-package-target/v1alpha1
+kind: RuntimeConditionsGoPackageTarget
+packageKey: conformance-recursive-reference
+rootExtension: urn:runtimeconditions:conformance:recursive-reference
+modulePath: example.com/runtimeconditions/conformance/recursive-reference
+packageName: recursivereference
+version: v1.0.0
+minimumGoVersion: "1.22"
+publicationMode: github-tag
+

@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 411e8168e199eda95d230a3f2301ae87fe132df27840d27be0eb5471826d1abc
+    semanticSha256: f4a1eb86212989e30a7cc3f12dc0b4bc4a55c848f68ff79b8672d6d0da8b2805
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -13,11 +13,11 @@ coreProfileSchema:
 rootExtension:
     id: urn:runtimeconditions:conformance:tokenization-collisions
     version: 1.0.0
-    semanticSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+    semanticSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
 extensions:
     - id: urn:runtimeconditions:conformance:tokenization-collisions
       version: 1.0.0
-      semanticSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+      semanticSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
 vocabulary:
     owners:
         - coordinate: condition-field:class:HTTPServer2URL:9patch
@@ -26,12 +26,6 @@ vocabulary:
           kind: class
           interfaceType: HTTPServer2URL
           path: 9patch
-        - coordinate: condition-field:class:HTTPServer2URL:api-url
-          category: condition-field
-          owner: urn:runtimeconditions:conformance:tokenization-collisions
-          kind: class
-          interfaceType: HTTPServer2URL
-          path: api-url
         - coordinate: condition-field:class:HTTPServer2URL:api_url
           category: condition-field
           owner: urn:runtimeconditions:conformance:tokenization-collisions
@@ -44,12 +38,6 @@ vocabulary:
           kind: class
           interfaceType: HTTPServer2URL
           path: café
-        - coordinate: condition-field:class:HTTPServer2URL:class
-          category: condition-field
-          owner: urn:runtimeconditions:conformance:tokenization-collisions
-          kind: class
-          interfaceType: HTTPServer2URL
-          path: class
         - coordinate: interface:class:HTTPServer2URL
           category: interface
           owner: urn:runtimeconditions:conformance:tokenization-collisions
@@ -67,7 +55,7 @@ vocabulary:
             - class
           provenance:
             owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+            extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
             coordinate: kind:class
     interfaces:
         - coordinate: interface:class:HTTPServer2URL
@@ -81,7 +69,7 @@ vocabulary:
             - url
           provenance:
             owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+            extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
             coordinate: interface:class:HTTPServer2URL
     conditionFields:
         - coordinate: condition-field:class:HTTPServer2URL:9patch
@@ -99,25 +87,8 @@ vocabulary:
             - patch
           provenance:
             owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+            extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
             coordinate: condition-field:class:HTTPServer2URL:9patch
-        - coordinate: condition-field:class:HTTPServer2URL:api-url
-          owner: urn:runtimeconditions:conformance:tokenization-collisions
-          kind: class
-          interfaceType: HTTPServer2URL
-          path: api-url
-          segments:
-            - name: api-url
-              tokens:
-                - api
-                - url
-          tokens:
-            - api
-            - url
-          provenance:
-            owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-            coordinate: condition-field:class:HTTPServer2URL:api-url
         - coordinate: condition-field:class:HTTPServer2URL:api_url
           owner: urn:runtimeconditions:conformance:tokenization-collisions
           kind: class
@@ -133,7 +104,7 @@ vocabulary:
             - url
           provenance:
             owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+            extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
             coordinate: condition-field:class:HTTPServer2URL:api_url
         - coordinate: condition-field:class:HTTPServer2URL:café
           owner: urn:runtimeconditions:conformance:tokenization-collisions
@@ -150,23 +121,8 @@ vocabulary:
             - uC3A9
           provenance:
             owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+            extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
             coordinate: condition-field:class:HTTPServer2URL:café
-        - coordinate: condition-field:class:HTTPServer2URL:class
-          owner: urn:runtimeconditions:conformance:tokenization-collisions
-          kind: class
-          interfaceType: HTTPServer2URL
-          path: class
-          segments:
-            - name: class
-              tokens:
-                - class
-          tokens:
-            - class
-          provenance:
-            owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-            coordinate: condition-field:class:HTTPServer2URL:class
 scopes:
     - coordinate: class:HTTPServer2URL
       kind: class
@@ -185,31 +141,14 @@ scopes:
                 scalar: string
                 provenance:
                     owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                    extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                     coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                     jsonPointer: /properties/9patch
               provenance:
                 owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                 coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                 jsonPointer: /properties/9patch
-            - name: api-url
-              tokens:
-                - api
-                - url
-              shape:
-                kind: scalar
-                scalar: string
-                provenance:
-                    owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-                    coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
-                    jsonPointer: /properties/api-url
-              provenance:
-                owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-                coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
-                jsonPointer: /properties/api-url
             - name: api_url
               tokens:
                 - api
@@ -219,12 +158,12 @@ scopes:
                 scalar: string
                 provenance:
                     owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                    extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                     coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                     jsonPointer: /properties/api_url
               provenance:
                 owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                 coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                 jsonPointer: /properties/api_url
             - name: café
@@ -236,33 +175,17 @@ scopes:
                 scalar: string
                 provenance:
                     owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                    extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                     coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                     jsonPointer: /properties/café
               provenance:
                 owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                 coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                 jsonPointer: /properties/café
-            - name: class
-              tokens:
-                - class
-              shape:
-                kind: scalar
-                scalar: string
-                provenance:
-                    owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-                    coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
-                    jsonPointer: /properties/class
-              provenance:
-                owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-                coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
-                jsonPointer: /properties/class
         provenance:
             owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+            extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
             coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
 schemas:
     - coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
@@ -275,13 +198,9 @@ schemas:
         properties:
             9patch:
                 type: string
-            api-url:
-                type: string
             api_url:
                 type: string
             café:
-                type: string
-            class:
                 type: string
         type: object
       projection:
@@ -296,31 +215,14 @@ schemas:
                 scalar: string
                 provenance:
                     owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                    extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                     coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                     jsonPointer: /properties/9patch
               provenance:
                 owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                 coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                 jsonPointer: /properties/9patch
-            - name: api-url
-              tokens:
-                - api
-                - url
-              shape:
-                kind: scalar
-                scalar: string
-                provenance:
-                    owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-                    coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
-                    jsonPointer: /properties/api-url
-              provenance:
-                owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-                coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
-                jsonPointer: /properties/api-url
             - name: api_url
               tokens:
                 - api
@@ -330,12 +232,12 @@ schemas:
                 scalar: string
                 provenance:
                     owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                    extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                     coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                     jsonPointer: /properties/api_url
               provenance:
                 owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                 coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                 jsonPointer: /properties/api_url
             - name: café
@@ -347,35 +249,19 @@ schemas:
                 scalar: string
                 provenance:
                     owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                    extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                     coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                     jsonPointer: /properties/café
               provenance:
                 owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+                extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
                 coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
                 jsonPointer: /properties/café
-            - name: class
-              tokens:
-                - class
-              shape:
-                kind: scalar
-                scalar: string
-                provenance:
-                    owner: urn:runtimeconditions:conformance:tokenization-collisions
-                    extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-                    coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
-                    jsonPointer: /properties/class
-              provenance:
-                owner: urn:runtimeconditions:conformance:tokenization-collisions
-                extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
-                coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
-                jsonPointer: /properties/class
         provenance:
             owner: urn:runtimeconditions:conformance:tokenization-collisions
-            extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+            extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
             coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization
       provenance:
         owner: urn:runtimeconditions:conformance:tokenization-collisions
-        extensionSha256: f70fe0f2abc991635eb4674e943c588c1ee7a5978d6068ffb332491d51bb8e38
+        extensionSha256: c8b05503f6a054bacb1bd2e8a6f720405a77888034d2623b2fc5b1b86d048a61
         coordinate: urn:runtimeconditions:conformance:tokenization-collisions#schema:tokenization

@@ -1,0 +1,10 @@
+apiVersion: runtimeconditions.io/go-package-target/v1alpha1
+kind: RuntimeConditionsGoPackageTarget
+packageKey: conformance-heterogeneous-union
+rootExtension: urn:runtimeconditions:conformance:heterogeneous-union
+modulePath: example.com/runtimeconditions/conformance/heterogeneous-union
+packageName: heterogeneousunion
+version: v1.0.0
+minimumGoVersion: "1.22"
+publicationMode: github-tag
+

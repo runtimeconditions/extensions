@@ -1,0 +1,10 @@
+apiVersion: runtimeconditions.io/go-package-target/v1alpha1
+kind: RuntimeConditionsGoPackageTarget
+packageKey: conformance-transitive-leaf
+rootExtension: urn:runtimeconditions:conformance:transitive:leaf
+modulePath: example.com/runtimeconditions/conformance/transitive-leaf
+packageName: transitiveleaf
+version: v1.0.0
+minimumGoVersion: "1.22"
+publicationMode: github-tag
+

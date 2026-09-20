@@ -1,0 +1,10 @@
+apiVersion: runtimeconditions.io/go-package-target/v1alpha1
+kind: RuntimeConditionsGoPackageTarget
+packageKey: conformance-tokenization-collisions
+rootExtension: urn:runtimeconditions:conformance:tokenization-collisions
+modulePath: example.com/runtimeconditions/conformance/tokenization-collisions
+packageName: tokenizationcollisions
+version: v1.0.0
+minimumGoVersion: "1.22"
+publicationMode: github-tag
+

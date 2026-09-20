@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: defd467cb9d864ceb4e2f03bf48ec3e740df48486cc9351ae00d1fe948a021c0
+    semanticSha256: 154460c619a3bae5eb2d4a3709d2493d299e4f706908a70e69da10d181fc4ac0
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -43,6 +43,16 @@ vocabulary:
           category: kind
           owner: urn:runtimeconditions:conformance:additive-field:base
           kind: service
+    importedDeclarations:
+        - coordinate: kind:service
+          owner: urn:runtimeconditions:conformance:additive-field:base
+          kind: service
+          tokens:
+            - service
+          provenance:
+            owner: urn:runtimeconditions:conformance:additive-field:base
+            extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+            coordinate: kind:service
     interfaces:
         - coordinate: interface:service:http
           owner: urn:runtimeconditions:conformance:additive-field:base

@@ -1,0 +1,23 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:go-fixed-symbol-collision
+  version: 1.0.0
+spec:
+  kinds:
+    - name: service
+  conditionFields:
+    - name: service
+      appliesToKinds: [service]
+  schemas:
+    - id: service
+      description: Go fixed declaration and field-type collision.
+      appliesToKind: service
+      schema:
+        type: object
+        properties:
+          kind:
+            const: service
+          service:
+            type: string
+        additionalProperties: false

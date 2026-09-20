@@ -117,6 +117,9 @@ func (s *Schemas) ValidateExtension(data map[string]any, definition ExtensionDef
 	if parsedID.Scheme == "http" {
 		return diagnostic("structural", "RCB1106", definition.Metadata.ID, "/metadata/id", "plain HTTP extension identifiers are not supported")
 	}
+	if err := validateBindingExposedNames(definition); err != nil {
+		return err
+	}
 	if err := validateUniqueExtensionEntries(definition); err != nil {
 		return err
 	}
@@ -133,6 +136,165 @@ func (s *Schemas) ValidateExtension(data map[string]any, definition ExtensionDef
 		}
 	}
 	return nil
+}
+
+func validateBindingExposedNames(definition ExtensionDefinition) error {
+	owner := definition.Metadata.ID
+	check := func(value, coordinate, pointer string) error {
+		if strings.Contains(value, "-") {
+			return diagnostic("vocabulary", "RCB1116", coordinate, pointer, fmt.Sprintf("binding-exposed name %q contains forbidden ASCII hyphen", value))
+		}
+		return nil
+	}
+	for index, kind := range definition.Spec.Kinds {
+		if err := check(kind.Name, "kind:"+kind.Name, fmt.Sprintf("/spec/kinds/%d/name", index)); err != nil {
+			return err
+		}
+	}
+	for index, interfaceType := range definition.Spec.InterfaceTypes {
+		coordinate := "interface:" + interfaceType.TargetKind + ":" + interfaceType.Name
+		if err := check(interfaceType.Name, coordinate, fmt.Sprintf("/spec/interfaceTypes/%d/name", index)); err != nil {
+			return err
+		}
+		if err := check(interfaceType.TargetKind, coordinate, fmt.Sprintf("/spec/interfaceTypes/%d/targetKind", index)); err != nil {
+			return err
+		}
+	}
+	for index, field := range definition.Spec.ConditionFields {
+		if err := check(field.Name, owner, fmt.Sprintf("/spec/conditionFields/%d/name", index)); err != nil {
+			return err
+		}
+		for scopeIndex, kind := range field.AppliesToKinds {
+			if err := check(kind, owner, fmt.Sprintf("/spec/conditionFields/%d/appliesToKinds/%d", index, scopeIndex)); err != nil {
+				return err
+			}
+		}
+		for scopeIndex, interfaceType := range field.AppliesToInterfaceTypes {
+			if err := check(interfaceType, owner, fmt.Sprintf("/spec/conditionFields/%d/appliesToInterfaceTypes/%d", index, scopeIndex)); err != nil {
+				return err
+			}
+		}
+	}
+	for index, field := range definition.Spec.InterfaceFields {
+		if err := check(field.Name, owner, fmt.Sprintf("/spec/interfaceFields/%d/name", index)); err != nil {
+			return err
+		}
+		if err := check(field.TargetKind, owner, fmt.Sprintf("/spec/interfaceFields/%d/targetKind", index)); err != nil {
+			return err
+		}
+		if err := check(field.TargetType, owner, fmt.Sprintf("/spec/interfaceFields/%d/targetType", index)); err != nil {
+			return err
+		}
+	}
+	for index, domain := range definition.Spec.FieldValues {
+		segments, err := parsePath(domain.Field)
+		if err == nil {
+			for segmentIndex, segment := range segments {
+				if err := check(segment.Name, owner, fmt.Sprintf("/spec/fieldValues/%d/field#segment=%d", index, segmentIndex)); err != nil {
+					return err
+				}
+			}
+		}
+		if err := check(domain.TargetKind, owner, fmt.Sprintf("/spec/fieldValues/%d/targetKind", index)); err != nil {
+			return err
+		}
+		if err := check(domain.TargetType, owner, fmt.Sprintf("/spec/fieldValues/%d/targetType", index)); err != nil {
+			return err
+		}
+	}
+	for index, schema := range definition.Spec.Schemas {
+		coordinate := owner + "#schema:" + schema.ID
+		pointer := fmt.Sprintf("/spec/schemas/%d/schema", index)
+		if err := validateSchemaBindingNames(schema.Schema, coordinate, pointer); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func validateSchemaBindingNames(schema map[string]any, coordinate, pointer string) error {
+	referencedDefinitions := map[string]struct{}{}
+	collectReferencedDefinitions(schema, referencedDefinitions)
+	var visit func(map[string]any, string) error
+	visit = func(current map[string]any, currentPointer string) error {
+		if properties, ok := current["properties"].(map[string]any); ok {
+			names := make([]string, 0, len(properties))
+			for name := range properties {
+				names = append(names, name)
+			}
+			sort.Strings(names)
+			for _, name := range names {
+				propertyPointer := currentPointer + "/properties/" + escapeJSONPointer(name)
+				if strings.Contains(name, "-") {
+					return diagnostic("vocabulary", "RCB1116", coordinate, propertyPointer, fmt.Sprintf("binding-exposed name %q contains forbidden ASCII hyphen", name))
+				}
+				if child, ok := properties[name].(map[string]any); ok {
+					if err := visit(child, propertyPointer); err != nil {
+						return err
+					}
+				}
+			}
+		}
+		if definitions, ok := current["$defs"].(map[string]any); ok {
+			names := make([]string, 0, len(definitions))
+			for name := range definitions {
+				names = append(names, name)
+			}
+			sort.Strings(names)
+			for _, name := range names {
+				definitionPointer := currentPointer + "/$defs/" + escapeJSONPointer(name)
+				if _, referenced := referencedDefinitions[name]; referenced && strings.Contains(name, "-") {
+					return diagnostic("vocabulary", "RCB1116", coordinate, definitionPointer, fmt.Sprintf("binding-exposed name %q contains forbidden ASCII hyphen", name))
+				}
+				if child, ok := definitions[name].(map[string]any); ok {
+					if err := visit(child, definitionPointer); err != nil {
+						return err
+					}
+				}
+			}
+		}
+		for _, keyword := range []string{"items", "additionalProperties", "unevaluatedProperties", "contains", "not", "if", "then", "else", "propertyNames"} {
+			if child, ok := current[keyword].(map[string]any); ok {
+				if err := visit(child, currentPointer+"/"+escapeJSONPointer(keyword)); err != nil {
+					return err
+				}
+			}
+		}
+		for _, keyword := range []string{"allOf", "anyOf", "oneOf", "prefixItems"} {
+			if children, ok := current[keyword].([]any); ok {
+				for index, childValue := range children {
+					if child, ok := childValue.(map[string]any); ok {
+						if err := visit(child, fmt.Sprintf("%s/%s/%d", currentPointer, escapeJSONPointer(keyword), index)); err != nil {
+							return err
+						}
+					}
+				}
+			}
+		}
+		return nil
+	}
+	return visit(schema, pointer)
+}
+
+func collectReferencedDefinitions(value any, result map[string]struct{}) {
+	switch typed := value.(type) {
+	case map[string]any:
+		if reference, ok := typed["$ref"].(string); ok && strings.HasPrefix(reference, "#/$defs/") {
+			name := strings.TrimPrefix(reference, "#/$defs/")
+			if separator := strings.IndexByte(name, '/'); separator >= 0 {
+				name = name[:separator]
+			}
+			name = strings.ReplaceAll(strings.ReplaceAll(name, "~1", "/"), "~0", "~")
+			result[name] = struct{}{}
+		}
+		for _, child := range typed {
+			collectReferencedDefinitions(child, result)
+		}
+	case []any:
+		for _, child := range typed {
+			collectReferencedDefinitions(child, result)
+		}
+	}
 }
 
 func validateUniqueExtensionEntries(definition ExtensionDefinition) error {

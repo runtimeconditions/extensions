@@ -118,6 +118,10 @@ $defs:
         type: array
         x-runtimeconditions-ordering: set
         items: {$ref: '#/$defs/declaration'}
+      importedDeclarations:
+        type: array
+        x-runtimeconditions-ordering: set
+        items: {$ref: '#/$defs/declaration'}
       interfaces:
         type: array
         x-runtimeconditions-ordering: set
@@ -220,8 +224,26 @@ $defs:
         type: array
         x-runtimeconditions-ordering: set
         minItems: 1
-        items: {}
+        items: {$ref: '#/$defs/normalizedValue'}
       provenance: {$ref: '#/$defs/provenance'}
+  normalizedValue:
+    type: object
+    required: [value]
+    additionalProperties: false
+    properties:
+      value:
+        type: [string, number, integer, boolean, 'null']
+      tokens: {$ref: '#/$defs/tokens'}
+    allOf:
+      - if:
+          properties:
+            value: {type: string}
+          required: [value]
+        then:
+          required: [tokens]
+        else:
+          not:
+            required: [tokens]
   scope:
     type: object
     required: [coordinate, kind]
@@ -299,6 +321,6 @@ $defs:
       values:
         type: array
         x-runtimeconditions-ordering: set
-        items: {}
+        items: {$ref: '#/$defs/normalizedValue'}
       constraints: {type: object}
       provenance: {$ref: '#/$defs/provenance'}

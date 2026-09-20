@@ -1,0 +1,110 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://runtimeconditions.io/schemas/runtimeconditions.binding-manifest.schema.yaml
+title: Runtime Conditions binding manifest
+type: object
+additionalProperties: false
+required:
+  - apiVersion
+  - kind
+  - generated
+  - model
+  - extension
+  - package
+  - symbols
+properties:
+  apiVersion:
+    const: runtimeconditions.io/bindings/v1alpha1
+  kind:
+    const: RuntimeConditionsBindingManifest
+  generated:
+    type: object
+    additionalProperties: false
+    required: [nonEditable, emitter, version]
+    properties:
+      nonEditable:
+        const: true
+      emitter:
+        type: string
+        minLength: 1
+      version:
+        type: string
+        minLength: 1
+  model:
+    type: object
+    additionalProperties: false
+    required: [apiVersion, semanticSha256]
+    properties:
+      apiVersion:
+        const: runtimeconditions.io/binding-model/v1alpha1
+      semanticSha256:
+        $ref: '#/$defs/sha256'
+  extension:
+    type: object
+    additionalProperties: false
+    required: [id, semanticSha256]
+    properties:
+      id:
+        type: string
+        minLength: 1
+      semanticSha256:
+        $ref: '#/$defs/sha256'
+  package:
+    type: object
+    additionalProperties: false
+    required: [language, coordinate, name, minimumGoVersion]
+    properties:
+      language:
+        const: go
+      coordinate:
+        type: string
+        minLength: 1
+      name:
+        type: string
+        pattern: '^[A-Za-z_][A-Za-z0-9_]*$'
+      minimumGoVersion:
+        type: string
+        pattern: '^[0-9]+\.[0-9]+$'
+  symbols:
+    type: array
+    items:
+      $ref: '#/$defs/symbol'
+$defs:
+  sha256:
+    type: string
+    pattern: '^[0-9a-f]{64}$'
+  symbol:
+    type: object
+    additionalProperties: false
+    required: [construct, coordinate, nativeName]
+    properties:
+      construct:
+        enum:
+          - any
+          - collection
+          - collection-element
+          - declaration-call
+          - field
+          - imported-marker-contract
+          - map
+          - map-entry
+          - marker-contract
+          - object-construction
+          - omitted-optional
+          - scalar
+          - union
+          - value-domain
+          - value-member
+      coordinate:
+        type: string
+        minLength: 1
+      sourceName:
+        type: string
+      nativeName:
+        type: string
+        pattern: '^[A-Z][A-Za-z0-9_]*$'
+      parent:
+        type: string
+        pattern: '^[A-Z][A-Za-z0-9_]*$'
+      file:
+        type: string
+        pattern: '^[^/](?:.*[^/])?$'

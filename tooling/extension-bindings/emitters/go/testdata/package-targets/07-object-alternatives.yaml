@@ -1,0 +1,10 @@
+apiVersion: runtimeconditions.io/go-package-target/v1alpha1
+kind: RuntimeConditionsGoPackageTarget
+packageKey: conformance-object-alternatives
+rootExtension: urn:runtimeconditions:conformance:object-alternatives
+modulePath: example.com/runtimeconditions/conformance/object-alternatives
+packageName: objectalternatives
+version: v1.0.0
+minimumGoVersion: "1.22"
+publicationMode: github-tag
+

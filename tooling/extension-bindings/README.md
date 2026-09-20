@@ -2,9 +2,10 @@
 
 This directory contains the implementation governed by `IMPLEMENTATION.md`.
 Phase 1 provides the shared Go resolver, validator, structural normalizer,
-binding-model schema, CLI, and language-neutral conformance suite. Language
-emitters, package assembly, promotion, and registry publication are not part of
-Phase 1.
+binding-model schema, CLI, and language-neutral conformance suite. Phase 2 adds
+the Go emitter, provisional binding manifest, native package metadata,
+conformance source, and deterministic source-archive verification. Package
+assembly, promotion, and registry publication remain later phases.
 
 ## Local verification
 
@@ -20,6 +21,21 @@ catalog, verify all resolver backends, compare the 12 committed conformance
 cases with their exact expected models or diagnostics, and run the required
 100-iteration determinism checks. The repository workflow runs the same suite
 on Linux and macOS.
+
+From `emitters/go/`, run:
+
+```text
+go test -count=1 ./...
+go vet ./...
+```
+
+The Go suite emits every positive conformance model, validates the model and
+binding manifest schemas, parses `go.mod`, runs `gofmt`, compiles and tests the
+generated modules, runs `go vet`, checks conformance coverage, verifies
+deterministic archives, and compares the exported source API with the API
+derived from the normalized model through Go ASTs. It also verifies local
+additive and transitive package composition through the generated exported
+marker contracts.
 
 ## Model generation
 
@@ -56,3 +72,21 @@ entry whose digest differs from its filename before the entry can be resolved.
 The model intentionally excludes source-byte digests, source backends, and
 source locators. Those values remain in the dependency lock and do not affect
 model bytes or the model digest.
+
+## Go package generation
+
+`rc-go-bindings` consumes only a normalized model and one Go package target:
+
+```text
+go run ./cmd/rc-go-bindings \
+  --model <runtimeconditions.binding-model.yaml> \
+  --package-config <go-package-target.yaml> \
+  --output <new-or-empty-directory>
+```
+
+Phase 2 keeps its conformance-only package targets under
+`emitters/go/testdata/package-targets/`. They are temporary test configuration,
+not the production package catalog; Phase 5 introduces the permanent catalog
+and generated package locations. The generated `runtimeconditions.bindings.yaml`
+uses the provisional Phase 2 schema in `model/` and remains an input to the
+structural manifest work in Phase 4.

@@ -137,12 +137,13 @@ type DependencyEdge struct {
 }
 
 type VocabularyModel struct {
-	Owners            []VocabularyOwner  `yaml:"owners,omitempty" json:"owners,omitempty"`
-	OwnedDeclarations []DeclarationModel `yaml:"ownedDeclarations,omitempty" json:"ownedDeclarations,omitempty"`
-	Interfaces        []InterfaceModel   `yaml:"interfaces,omitempty" json:"interfaces,omitempty"`
-	ConditionFields   []FieldModel       `yaml:"conditionFields,omitempty" json:"conditionFields,omitempty"`
-	InterfaceFields   []FieldModel       `yaml:"interfaceFields,omitempty" json:"interfaceFields,omitempty"`
-	ValueDomains      []ValueDomainModel `yaml:"valueDomains,omitempty" json:"valueDomains,omitempty"`
+	Owners               []VocabularyOwner  `yaml:"owners,omitempty" json:"owners,omitempty"`
+	OwnedDeclarations    []DeclarationModel `yaml:"ownedDeclarations,omitempty" json:"ownedDeclarations,omitempty"`
+	ImportedDeclarations []DeclarationModel `yaml:"importedDeclarations,omitempty" json:"importedDeclarations,omitempty"`
+	Interfaces           []InterfaceModel   `yaml:"interfaces,omitempty" json:"interfaces,omitempty"`
+	ConditionFields      []FieldModel       `yaml:"conditionFields,omitempty" json:"conditionFields,omitempty"`
+	InterfaceFields      []FieldModel       `yaml:"interfaceFields,omitempty" json:"interfaceFields,omitempty"`
+	ValueDomains         []ValueDomainModel `yaml:"valueDomains,omitempty" json:"valueDomains,omitempty"`
 }
 
 type VocabularyOwner struct {
@@ -184,14 +185,19 @@ type FieldModel struct {
 }
 
 type ValueDomainModel struct {
-	Coordinate    string        `yaml:"coordinate" json:"coordinate"`
-	Owner         string        `yaml:"owner" json:"owner"`
-	Kind          string        `yaml:"kind" json:"kind"`
-	InterfaceType string        `yaml:"interfaceType,omitempty" json:"interfaceType,omitempty"`
-	Path          string        `yaml:"path" json:"path"`
-	Segments      []PathSegment `yaml:"segments" json:"segments"`
-	Values        []any         `yaml:"values" json:"values"`
-	Provenance    Provenance    `yaml:"provenance" json:"provenance"`
+	Coordinate    string            `yaml:"coordinate" json:"coordinate"`
+	Owner         string            `yaml:"owner" json:"owner"`
+	Kind          string            `yaml:"kind" json:"kind"`
+	InterfaceType string            `yaml:"interfaceType,omitempty" json:"interfaceType,omitempty"`
+	Path          string            `yaml:"path" json:"path"`
+	Segments      []PathSegment     `yaml:"segments" json:"segments"`
+	Values        []NormalizedValue `yaml:"values" json:"values"`
+	Provenance    Provenance        `yaml:"provenance" json:"provenance"`
+}
+
+type NormalizedValue struct {
+	Value  any      `yaml:"value" json:"value"`
+	Tokens []string `yaml:"tokens,omitempty" json:"tokens,omitempty"`
 }
 
 type PathSegment struct {
@@ -229,17 +235,17 @@ type NamedShape struct {
 }
 
 type Shape struct {
-	Kind        string          `yaml:"kind" json:"kind"`
-	Scalar      string          `yaml:"scalar,omitempty" json:"scalar,omitempty"`
-	Ref         string          `yaml:"ref,omitempty" json:"ref,omitempty"`
-	Required    []string        `yaml:"required,omitempty" json:"required,omitempty"`
-	Properties  []PropertyShape `yaml:"properties,omitempty" json:"properties,omitempty"`
-	Items       *Shape          `yaml:"items,omitempty" json:"items,omitempty"`
-	MapValues   *Shape          `yaml:"mapValues,omitempty" json:"mapValues,omitempty"`
-	Variants    []Shape         `yaml:"variants,omitempty" json:"variants,omitempty"`
-	Values      []any           `yaml:"values,omitempty" json:"values,omitempty"`
-	Constraints map[string]any  `yaml:"constraints,omitempty" json:"constraints,omitempty"`
-	Provenance  Provenance      `yaml:"provenance" json:"provenance"`
+	Kind        string            `yaml:"kind" json:"kind"`
+	Scalar      string            `yaml:"scalar,omitempty" json:"scalar,omitempty"`
+	Ref         string            `yaml:"ref,omitempty" json:"ref,omitempty"`
+	Required    []string          `yaml:"required,omitempty" json:"required,omitempty"`
+	Properties  []PropertyShape   `yaml:"properties,omitempty" json:"properties,omitempty"`
+	Items       *Shape            `yaml:"items,omitempty" json:"items,omitempty"`
+	MapValues   *Shape            `yaml:"mapValues,omitempty" json:"mapValues,omitempty"`
+	Variants    []Shape           `yaml:"variants,omitempty" json:"variants,omitempty"`
+	Values      []NormalizedValue `yaml:"values,omitempty" json:"values,omitempty"`
+	Constraints map[string]any    `yaml:"constraints,omitempty" json:"constraints,omitempty"`
+	Provenance  Provenance        `yaml:"provenance" json:"provenance"`
 }
 
 type PropertyShape struct {

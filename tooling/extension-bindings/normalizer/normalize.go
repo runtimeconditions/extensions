@@ -98,6 +98,11 @@ func appendVocabulary(model *BindingModel, document ResolvedDocument, interfaces
 				Coordinate: coordinate, Owner: owner, Kind: kind.Name, Tokens: tokenize(kind.Name),
 				Provenance: provenance(coordinate, ""),
 			})
+		} else {
+			model.Vocabulary.ImportedDeclarations = append(model.Vocabulary.ImportedDeclarations, DeclarationModel{
+				Coordinate: coordinate, Owner: owner, Kind: kind.Name, Tokens: tokenize(kind.Name),
+				Provenance: provenance(coordinate, ""),
+			})
 		}
 	}
 	for _, interfaceType := range document.Definition.Spec.InterfaceTypes {
@@ -154,21 +159,34 @@ func appendVocabulary(model *BindingModel, document ResolvedDocument, interfaces
 	for _, domain := range document.Definition.Spec.FieldValues {
 		coordinate := "field-domain:" + domain.TargetKind + ":" + domain.TargetType + ":" + domain.Field
 		segments, _ := parsePath(domain.Field)
-		values := append([]any(nil), domain.Values...)
-		_ = sortAny(values)
+		values := normalizeValues(domain.Values)
 		model.Vocabulary.ValueDomains = append(model.Vocabulary.ValueDomains, ValueDomainModel{
 			Coordinate: coordinate, Owner: owner, Kind: domain.TargetKind, InterfaceType: domain.TargetType,
 			Path: domain.Field, Segments: segments, Values: values,
 			Provenance: provenance(coordinate, ""),
 		})
 		for _, value := range values {
-			encoded, _ := canonicalJSON(value)
+			encoded, _ := canonicalJSON(value.Value)
 			model.Vocabulary.Owners = append(model.Vocabulary.Owners, VocabularyOwner{
 				Coordinate: coordinate + ":" + string(encoded), Category: "field-value", Owner: owner,
-				Kind: domain.TargetKind, InterfaceType: domain.TargetType, Path: domain.Field, Value: value,
+				Kind: domain.TargetKind, InterfaceType: domain.TargetType, Path: domain.Field, Value: value.Value,
 			})
 		}
 	}
+}
+
+func normalizeValues(values []any) []NormalizedValue {
+	sorted := append([]any(nil), values...)
+	_ = sortAny(sorted)
+	result := make([]NormalizedValue, 0, len(sorted))
+	for _, value := range sorted {
+		member := NormalizedValue{Value: value}
+		if text, ok := value.(string); ok {
+			member.Tokens = tokenize(text)
+		}
+		result = append(result, member)
+	}
+	return result
 }
 
 func normalizeSchemas(document ResolvedDocument) ([]NormalizedSchema, error) {
@@ -471,10 +489,9 @@ func projectDirectShape(schema, root map[string]any, coordinate, extensionDigest
 	case "string", "boolean", "integer", "number", "null":
 		shape := Shape{Kind: "scalar", Scalar: schemaType, Provenance: provenance}
 		if values, ok := schema["enum"].([]any); ok {
-			shape.Values = append([]any(nil), values...)
-			_ = sortAny(shape.Values)
+			shape.Values = normalizeValues(values)
 		} else if value, exists := schema["const"]; exists {
-			shape.Values = []any{value}
+			shape.Values = normalizeValues([]any{value})
 		}
 		return shape, nil
 	default:
@@ -609,9 +626,9 @@ func mergeBaseAndCombinator(base, combined Shape, provenance Provenance) (Shape,
 		result := base
 		switch {
 		case len(base.Values) == 0:
-			result.Values = append([]any(nil), combined.Values...)
+			result.Values = append([]NormalizedValue(nil), combined.Values...)
 		case len(combined.Values) == 0:
-			result.Values = append([]any(nil), base.Values...)
+			result.Values = append([]NormalizedValue(nil), base.Values...)
 		default:
 			result.Values = intersectValues(base.Values, combined.Values)
 			if len(result.Values) == 0 {
@@ -639,20 +656,19 @@ func mergeBaseAndCombinator(base, combined Shape, provenance Provenance) (Shape,
 	return Shape{}, fmt.Errorf("incompatible structural types %q and %q", base.Kind, combined.Kind)
 }
 
-func intersectValues(left, right []any) []any {
+func intersectValues(left, right []NormalizedValue) []NormalizedValue {
 	rightValues := map[string]bool{}
 	for _, value := range right {
-		encoded, _ := canonicalJSON(value)
+		encoded, _ := canonicalJSON(value.Value)
 		rightValues[string(encoded)] = true
 	}
-	var result []any
+	var result []NormalizedValue
 	for _, value := range left {
-		encoded, _ := canonicalJSON(value)
+		encoded, _ := canonicalJSON(value.Value)
 		if rightValues[string(encoded)] {
 			result = append(result, value)
 		}
 	}
-	_ = sortAny(result)
 	return result
 }
 
@@ -819,13 +835,13 @@ func validateFieldValueDomains(model BindingModel) error {
 			for _, schemaCoordinate := range scope.ApplicableSchemas {
 				schema := schemaByCoordinate[schemaCoordinate]
 				for _, value := range domain.Values {
-					pathFound, accepted := fieldValueAcceptedAtPath(schema.Exact, domain.Segments, schema.Exact, "", value, map[string]bool{})
+					pathFound, accepted := fieldValueAcceptedAtPath(schema.Exact, domain.Segments, schema.Exact, "", value.Value, map[string]bool{})
 					if !pathFound {
 						continue
 					}
 					found = true
 					if !accepted {
-						return diagnostic("schema", "RCB1310", domain.Coordinate, "", fmt.Sprintf("value %v is rejected by applicable schema %s", value, schemaCoordinate))
+						return diagnostic("schema", "RCB1310", domain.Coordinate, "", fmt.Sprintf("value %v is rejected by applicable schema %s", value.Value, schemaCoordinate))
 					}
 				}
 			}
@@ -1138,6 +1154,9 @@ func sortModel(model *BindingModel) {
 	})
 	sort.Slice(model.Vocabulary.OwnedDeclarations, func(i, j int) bool {
 		return model.Vocabulary.OwnedDeclarations[i].Coordinate < model.Vocabulary.OwnedDeclarations[j].Coordinate
+	})
+	sort.Slice(model.Vocabulary.ImportedDeclarations, func(i, j int) bool {
+		return model.Vocabulary.ImportedDeclarations[i].Coordinate < model.Vocabulary.ImportedDeclarations[j].Coordinate
 	})
 	sort.Slice(model.Vocabulary.Interfaces, func(i, j int) bool {
 		return model.Vocabulary.Interfaces[i].Coordinate < model.Vocabulary.Interfaces[j].Coordinate
