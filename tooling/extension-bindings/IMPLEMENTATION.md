@@ -39,6 +39,10 @@ The implementation MUST satisfy the following top-level invariants:
    publication MUST use the same locally executable commands.
 8. Registry publication MUST promote previously verified GitHub Release bytes.
    It MUST NOT rebuild packages.
+9. The normalized binding model MUST contain semantic identity only. Exact
+   source-byte identity and resolution transport evidence MUST be confined to
+   the dependency lock and release provenance and MUST NOT affect normalized
+   model bytes or the model digest.
 
 Normative requirements from the Runtime Conditions specification, especially
 extension identity, dependency resolution, vocabulary ownership, conflict
@@ -100,9 +104,17 @@ root extension YAML
     + locked toolchain
         |
         v
-shared Go resolver, validator, and normalizer
+shared Go resolver and validator
         |
-        v
+        +--------------------------+
+        |                          |
+        v                          v
+exact dependency lock       validated semantic closure
+                                   |
+                                   v
+                          shared Go normalizer
+                                   |
+                                   v
 runtimeconditions.binding-model.yaml
         |
         +--------------------------+
@@ -121,6 +133,12 @@ format, compile, profile generation, semantic validation, package inspection
                       v
 checksummed release set -> target GitHub Releases -> external registries
 ```
+
+The dependency lock is resolution and supply-chain evidence. The normalized
+binding model is the semantic checkpoint consumed by emitters. The orchestrator
+MUST verify that the lock and model describe the same identifiers, versions,
+direct dependency edges, and semantic SHA-256 values before emission. Emitters
+MUST NOT receive source-byte SHA-256 values, source backends, or source locators.
 
 The shared resolver, validator, normalizer, and orchestrator MUST be written in
 Go. Every language emitter MUST be written in the language it emits. The Go
@@ -354,9 +372,12 @@ The resolver MUST perform these steps in order:
    ordered by exact extension identifier.
 10. Build the resolved vocabulary ownership index.
 11. Reject every vocabulary conflict defined by the core specification.
-12. Write the exact identifier, semantic version when present, source-byte
-   SHA-256, semantic SHA-256, source backend, and dependency identifiers into the
-   normalized model.
+12. Write the exact identifier, semantic version when present, semantic SHA-256,
+    and dependency identifiers into the semantic closure supplied to the
+    normalizer.
+13. Write the exact identifier, semantic version when present, source-byte
+    SHA-256, semantic SHA-256, source backend, immutable source locator, and
+    dependency identifiers into the dependency lock.
 
 Resolution MUST produce the same topological order regardless of declaration
 order, catalog directory traversal order, host filesystem ordering, cache state,
@@ -374,10 +395,25 @@ release manifest. For every extension in the closure, the lock MUST record:
 - source backend;
 - resolved immutable source locator.
 
-A repeated build MUST reject content whose digest differs from the lock. A
-redirected HTTPS response or mutable OCI tag is acceptable only when the final
+A repeated build MUST reject content whose digest differs from the lock. Every
+HTTPS redirect MUST fail. A mutable OCI tag is acceptable only when the final
 content matches the lock. OCI resolution MUST record the immutable manifest
 digest.
+
+The dependency lock and normalized model MUST remain separate data structures
+and separate canonicalization domains. The normalized model MUST record, for
+each extension, only the exact identifier, semantic version when present,
+semantic SHA-256, and exact direct dependency identifiers. It MUST NOT contain a
+source-byte SHA-256, source backend, source locator, dependency-lock digest, or
+other resolution-transport field.
+
+Before normalization output is accepted, the normalizer boundary MUST verify a
+one-to-one match between lock entries and semantic closure records by exact
+identifier. The semantic version, semantic SHA-256, and sorted direct dependency
+identifiers MUST match exactly. A missing entry, extra entry, or mismatch MUST
+stop the build. The orchestrator MUST invoke this verification before emission.
+Source-byte and transport fields are verified against fetched content and remain
+release provenance; they are not inputs to model canonicalization.
 
 ### 6.4 Resolution acceptance checks
 
@@ -395,14 +431,20 @@ The resolver is complete only when all checks below pass:
    definitions are textually identical.
 7. One local override, one catalog resolution, one `file:` resolution, one
    locked `https:` resolution, and one locked `oci:` resolution produce the same
-   normalized extension record for byte-identical content.
+   semantic closure record and normalized model bytes for byte-identical
+   content; their lock entries retain their actual backend and immutable
+   locator.
 8. Network-disabled execution performs zero outbound requests.
 9. Every `RuntimeConditionsExtensionDefinition` under configured repository
    catalog roots resolves and validates without relying on path-derived identity.
-10. Mapping-key reorder, YAML scalar-style changes, and reordering a schema-marked
-    `set` sequence change the source-byte digest but leave the semantic digest
+10. Mapping-key reorder, YAML scalar-style changes, and reordering a
+    schema-marked `set` sequence change the source-byte digest in the dependency
+    lock but leave the semantic digest, normalized model bytes, and model digest
     unchanged.
-11. Reordering a schema-marked `source` sequence changes both digests.
+11. Reordering a schema-marked `source` sequence changes the source-byte digest,
+    semantic digest, normalized model bytes, and model digest.
+12. A missing, extra, or semantically mismatched dependency-lock entry fails
+    before emission.
 
 ## 7. Language package dependency resolution
 
@@ -499,10 +541,12 @@ checkpoint that fails this schema MUST never reach an emitter.
 
 The model MUST contain:
 
-- root extension identity and digests;
+- root extension identity, semantic version when present, and semantic digest;
 - normalizer identity and digest;
-- core profile schema identity and digest;
-- complete topologically ordered extension closure;
+- core profile schema identity, version, and semantic digest;
+- complete topologically ordered extension closure containing each extension's
+  exact identifier, semantic version when present, semantic SHA-256, and exact
+  direct dependency identifiers;
 - dependency edges;
 - vocabulary owners;
 - owned kind declarations;
@@ -514,14 +558,16 @@ The model MUST contain:
 - exact JSON Schema documents represented as YAML data;
 - language-neutral structural projections;
 - validation constraints not expressible by structural projections;
-- source provenance for every normalized declaration, field, value domain,
+- semantic provenance for every normalized declaration, field, value domain,
   structural node, and constraint;
 - deterministic diagnostics for unsupported constructs;
 - canonical semantic SHA-256 for the complete model excluding the digest field
   itself.
 
-The model MUST contain no language symbol names, package-manager coordinates,
-source filenames for generated packages, or language-specific types.
+The model MUST contain no source-byte SHA-256 values, source backends, source
+locators, dependency-lock digests, language symbol names, package-manager
+coordinates, source filenames for generated packages, or language-specific
+types.
 
 ### 8.3 Restricted YAML profile
 
@@ -544,7 +590,9 @@ Generated model YAML MUST obey all of these rules:
 The model digest MUST be computed by converting this YAML data model to
 JSON-compatible values, serializing them with RFC 8785, and applying SHA-256 to
 the resulting UTF-8 bytes. The canonical JSON bytes MUST not be persisted as an
-artifact.
+artifact. Because resolution evidence is excluded from the model, changing only
+YAML presentation, a schema-marked `set` sequence order, source backend, source
+locator, or source-byte digest MUST NOT change model bytes or the model digest.
 
 ### 8.4 Provenance
 
@@ -603,9 +651,11 @@ These rules apply to every extension without identifier-specific handling:
 17. Every referenced `$defs` entry becomes a named shape derived mechanically
     from its definition key. Unreferenced `$defs` entries remain validation data
     and do not create public API.
-18. Local `$ref` values resolve only within the containing schema document.
-    Recursive references remain named recursive references and MUST NOT be
-    infinitely expanded.
+18. A `$ref` MUST be either `#` or a fragment beginning with `#/` that contains
+    a syntactically valid JSON Pointer. It resolves only within the containing
+    schema document. `$anchor`, `$dynamicAnchor`, `$recursiveAnchor`, and anchor
+    references are forbidden. Recursive JSON Pointer references remain named
+    recursive references and MUST NOT be infinitely expanded.
 19. Binding-model API `v1alpha1` does not support references outside the
     containing schema document; encountering one stops normalization.
 20. Validation-only keywords, including cardinality, uniqueness, range, length,
@@ -644,16 +694,28 @@ Every emitter MUST generate:
 1. Language-native source.
 2. Native package-manager metadata.
 3. `runtimeconditions.bindings.yaml`.
-4. `runtimeconditions.extension.yaml` for the root extension.
-5. `runtimeconditions.binding-model.yaml`.
-6. `runtimeconditions.binding-release.yaml`.
-7. A language public-API descriptor named
+4. A language public-API descriptor named
    `runtimeconditions.public-api.yaml`.
-8. Conformance source exercising every declaration, object type, field, enum
+5. Conformance source exercising every declaration, object type, field, enum
    value, collection shape, map shape, and union shape at least once.
-9. Expected profile YAML for each conformance declaration.
-10. A file manifest containing the relative path and SHA-256 of every generated
-    file except the manifest itself.
+6. Expected profile YAML for each conformance declaration.
+
+After an emitter succeeds, the orchestrator MUST assemble the final generated
+package tree by adding:
+
+1. `runtimeconditions.extension.yaml` for the root extension from the validated
+   resolver input;
+2. the exact `runtimeconditions.binding-model.yaml` consumed by the emitter;
+3. `runtimeconditions.binding-release.yaml`, including the dependency lock and
+   complete source-resolution provenance; and
+4. a file manifest containing the relative path and SHA-256 of every generated
+   file except the manifest itself.
+
+The orchestrator MUST NOT modify emitter-produced source, package metadata,
+binding metadata, public-API metadata, conformance source, or expected profiles
+during assembly. Source-byte digests, source backends, and source locators MUST
+appear only in `runtimeconditions.binding-release.yaml`; they MUST NOT appear in
+emitter-produced files or generated source headers.
 
 Generated source and metadata MUST contain a standard non-editable header. The
 header MUST name the model digest and emitter version, but MUST NOT contain a
@@ -862,6 +924,10 @@ Determinism is accepted only when:
    successfully or fails with a documented unsupported keyword; an extension
    identifier or vocabulary value special case MUST NOT cause a failure.
 
+For this section, normalized bytes means the complete serialized
+`runtimeconditions.binding-model.yaml`. Dependency-lock and release-provenance
+bytes are deliberately outside that comparison.
+
 ## 13. Generated package verification
 
 A generated target is valid only when all of these gates pass:
@@ -965,9 +1031,10 @@ Resolution commands MUST accept repeatable `--extension-root` and
 
 The command behaviors are fixed:
 
-- `resolve` writes the resolved closure and dependency lock under `--work-dir`.
-- `normalize` performs resolution and writes the normalized model under
-  `--work-dir`.
+- `resolve` writes the validated semantic closure and separate dependency lock
+  under `--work-dir`.
+- `normalize` performs resolution, verifies the semantic closure against the
+  dependency lock, and writes the normalized model under `--work-dir`.
 - `generate` performs normalization and emission under `--work-dir`.
 - `verify` accepts `--input <generated-tree>`, verifies that tree without
   modifying it, and writes reports under `--work-dir`.
@@ -1157,8 +1224,8 @@ closure for offline verification.
 4. Package code MUST never be imported or executed to discover bindings.
 5. Extension, package, and binding manifests MUST be treated as untrusted static
    data.
-6. Each resolver download MUST require TLS certificate validation, allow at most
-   five redirects, allow at most 64 MiB after decompression, use a 10-second
+6. Each resolver download MUST require TLS certificate validation, reject every
+   redirect, allow at most 64 MiB after decompression, use a 10-second
    connection timeout, and use a 60-second total timeout.
 7. Every downloaded or cached artifact MUST be verified against its lock digest.
 8. Logs, diagnostics, models, and profiles MUST contain no credentials, secret
@@ -1185,6 +1252,9 @@ Exit requires:
 - exact diagnostics for every negative case;
 - normalization of every configured repository extension without
   identifier-specific code;
+- confirmation that no normalized model or model digest contains or depends on
+  source-byte SHA-256 values, source backends, source locators, or dependency-lock
+  digests;
 - zero extension YAML modifications.
 
 ### Phase 2: Go emitter
