@@ -1,0 +1,21 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:unsupported-structural-keyword
+  version: 1.0.0
+spec:
+  kinds:
+    - name: tuple
+  schemas:
+    - id: tuple-values
+      description: Unsupported tuple structure.
+      appliesToKind: tuple
+      schema:
+        type: object
+        properties:
+          values:
+            type: array
+            prefixItems:
+              - type: string
+              - type: integer
+        additionalProperties: false

@@ -1,0 +1,428 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: d6eade1533fe2c014a1348985ad96d625278c7695875999f572c0b6048b92e41
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: urn:runtimeconditions:test:core-profile-schema
+    version: 0.0.0-test
+    semanticSha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+rootExtension:
+    id: urn:runtimeconditions:conformance:scoped-domains-collisions
+    version: 1.0.0
+    semanticSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+extensions:
+    - id: urn:runtimeconditions:conformance:scoped-domains-collisions
+      version: 1.0.0
+      semanticSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+vocabulary:
+    owners:
+        - coordinate: condition-field:service:grpc:mode
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: grpc
+          path: mode
+        - coordinate: condition-field:service:http:base-url
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: base-url
+        - coordinate: condition-field:service:http:base_url
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: base_url
+        - coordinate: condition-field:service:http:mode
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: mode
+        - coordinate: field-domain:service:grpc:mode:"streaming"
+          category: field-value
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: grpc
+          path: mode
+          value: streaming
+        - coordinate: field-domain:service:http:mode:"direct"
+          category: field-value
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: mode
+          value: direct
+        - coordinate: field-domain:service:http:mode:"proxy"
+          category: field-value
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: mode
+          value: proxy
+        - coordinate: interface:service:grpc
+          category: interface
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: grpc
+        - coordinate: interface:service:http
+          category: interface
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+        - coordinate: kind:service
+          category: kind
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+    ownedDeclarations:
+        - coordinate: kind:service
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          tokens:
+            - service
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: kind:service
+    interfaces:
+        - coordinate: interface:service:grpc
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          type: grpc
+          tokens:
+            - grpc
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: interface:service:grpc
+        - coordinate: interface:service:http
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          type: http
+          tokens:
+            - http
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: interface:service:http
+    conditionFields:
+        - coordinate: condition-field:service:grpc:mode
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: grpc
+          path: mode
+          segments:
+            - name: mode
+              tokens:
+                - mode
+          tokens:
+            - mode
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: condition-field:service:grpc:mode
+        - coordinate: condition-field:service:http:base-url
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: base-url
+          segments:
+            - name: base-url
+              tokens:
+                - base
+                - url
+          tokens:
+            - base
+            - url
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: condition-field:service:http:base-url
+        - coordinate: condition-field:service:http:base_url
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: base_url
+          segments:
+            - name: base_url
+              tokens:
+                - base
+                - url
+          tokens:
+            - base
+            - url
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: condition-field:service:http:base_url
+        - coordinate: condition-field:service:http:mode
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: mode
+          segments:
+            - name: mode
+              tokens:
+                - mode
+          tokens:
+            - mode
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: condition-field:service:http:mode
+    valueDomains:
+        - coordinate: field-domain:service:grpc:mode
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: grpc
+          path: mode
+          segments:
+            - name: mode
+              tokens:
+                - mode
+          values:
+            - streaming
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: field-domain:service:grpc:mode
+        - coordinate: field-domain:service:http:mode
+          owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+          kind: service
+          interfaceType: http
+          path: mode
+          segments:
+            - name: mode
+              tokens:
+                - mode
+          values:
+            - direct
+            - proxy
+          provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: field-domain:service:http:mode
+scopes:
+    - coordinate: service:grpc
+      kind: service
+      interfaceType: grpc
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+      projection:
+        kind: object
+        properties:
+            - name: mode
+              tokens:
+                - mode
+              shape:
+                kind: scalar
+                scalar: string
+                values:
+                    - streaming
+                provenance:
+                    owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                    extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                    coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+                    jsonPointer: /properties/mode
+              provenance:
+                owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+                jsonPointer: /properties/mode
+        provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+    - coordinate: service:http
+      kind: service
+      interfaceType: http
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+      projection:
+        kind: object
+        properties:
+            - name: base-url
+              tokens:
+                - base
+                - url
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                    extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                    coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                    jsonPointer: /properties/base-url
+              provenance:
+                owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                jsonPointer: /properties/base-url
+            - name: base_url
+              tokens:
+                - base
+                - url
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                    extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                    coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                    jsonPointer: /properties/base_url
+              provenance:
+                owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                jsonPointer: /properties/base_url
+            - name: mode
+              tokens:
+                - mode
+              shape:
+                kind: scalar
+                scalar: string
+                values:
+                    - direct
+                    - proxy
+                provenance:
+                    owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                    extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                    coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                    jsonPointer: /properties/mode
+              provenance:
+                owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                jsonPointer: /properties/mode
+        provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+schemas:
+    - coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+      owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+      id: service-grpc
+      kind: service
+      interfaceType: grpc
+      exact:
+        additionalProperties: false
+        properties:
+            mode:
+                const: streaming
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: mode
+              tokens:
+                - mode
+              shape:
+                kind: scalar
+                scalar: string
+                values:
+                    - streaming
+                provenance:
+                    owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                    extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                    coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+                    jsonPointer: /properties/mode
+              provenance:
+                owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+                jsonPointer: /properties/mode
+        provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+      provenance:
+        owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+        extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+        coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc
+    - coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+      owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+      id: service-http
+      kind: service
+      interfaceType: http
+      exact:
+        additionalProperties: false
+        properties:
+            base-url:
+                type: string
+            base_url:
+                type: string
+            mode:
+                enum:
+                    - direct
+                    - proxy
+                type: string
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: base-url
+              tokens:
+                - base
+                - url
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                    extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                    coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                    jsonPointer: /properties/base-url
+              provenance:
+                owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                jsonPointer: /properties/base-url
+            - name: base_url
+              tokens:
+                - base
+                - url
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                    extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                    coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                    jsonPointer: /properties/base_url
+              provenance:
+                owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                jsonPointer: /properties/base_url
+            - name: mode
+              tokens:
+                - mode
+              shape:
+                kind: scalar
+                scalar: string
+                values:
+                    - direct
+                    - proxy
+                provenance:
+                    owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                    extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                    coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                    jsonPointer: /properties/mode
+              provenance:
+                owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+                extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+                coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+                jsonPointer: /properties/mode
+        provenance:
+            owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+            extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+            coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
+      provenance:
+        owner: urn:runtimeconditions:conformance:scoped-domains-collisions
+        extensionSha256: 6a40adf292f73d8fa24caf8d79799b985a7f60aefabc3f176fa4d53da78d6640
+        coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http

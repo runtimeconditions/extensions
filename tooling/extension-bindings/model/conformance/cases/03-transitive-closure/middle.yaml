@@ -1,0 +1,11 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:transitive:middle
+  version: 1.0.0
+spec:
+  dependencies:
+    - urn:runtimeconditions:conformance:transitive:leaf
+  interfaceTypes:
+    - name: process
+      targetKind: worker

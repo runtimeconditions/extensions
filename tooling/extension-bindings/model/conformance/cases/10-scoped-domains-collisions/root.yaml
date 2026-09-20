@@ -1,0 +1,58 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:scoped-domains-collisions
+  version: 1.0.0
+spec:
+  kinds:
+    - name: service
+  interfaceTypes:
+    - name: http
+      targetKind: service
+    - name: grpc
+      targetKind: service
+  conditionFields:
+    - name: mode
+      appliesToKinds: [service]
+      appliesToInterfaceTypes: [http, grpc]
+    - name: base-url
+      appliesToKinds: [service]
+      appliesToInterfaceTypes: [http]
+    - name: base_url
+      appliesToKinds: [service]
+      appliesToInterfaceTypes: [http]
+  fieldValues:
+    - field: mode
+      targetKind: service
+      targetType: http
+      values: [direct, proxy]
+    - field: mode
+      targetKind: service
+      targetType: grpc
+      values: [streaming]
+  schemas:
+    - id: service-http
+      description: HTTP-scoped values and colliding normalized names.
+      appliesToKind: service
+      appliesToInterfaceType: http
+      schema:
+        type: object
+        properties:
+          mode:
+            type: string
+            enum: [direct, proxy]
+          base-url:
+            type: string
+          base_url:
+            type: string
+        additionalProperties: false
+    - id: service-grpc
+      description: GRPC-scoped values.
+      appliesToKind: service
+      appliesToInterfaceType: grpc
+      schema:
+        type: object
+        properties:
+          mode:
+            const: streaming
+        additionalProperties: false

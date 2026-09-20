@@ -1,0 +1,28 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:additive-field
+  version: 1.0.0
+spec:
+  dependencies:
+    - urn:runtimeconditions:conformance:additive-field:base
+  conditionFields:
+    - name: credential
+      appliesToKinds: [service]
+      appliesToInterfaceTypes: [http]
+  schemas:
+    - id: additive-credential
+      description: Additive credential structure.
+      appliesToKind: service
+      appliesToInterfaceType: http
+      schema:
+        type: object
+        properties:
+          credential:
+            type: object
+            required: [token]
+            properties:
+              token:
+                type: string
+            additionalProperties: false
+        additionalProperties: true

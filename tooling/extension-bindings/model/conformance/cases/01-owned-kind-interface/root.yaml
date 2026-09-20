@@ -1,0 +1,42 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:owned-kind-interface
+  version: 1.0.0
+spec:
+  kinds:
+    - name: service
+  interfaceTypes:
+    - name: http
+      targetKind: service
+  conditionFields:
+    - name: region
+      appliesToKinds: [service]
+      appliesToInterfaceTypes: [http]
+  interfaceFields:
+    - name: endpoint
+      targetKind: service
+      targetType: http
+  schemas:
+    - id: service-http
+      description: Service HTTP condition structure.
+      appliesToKind: service
+      appliesToInterfaceType: http
+      schema:
+        type: object
+        required: [kind, interface, region]
+        properties:
+          kind:
+            const: service
+          region:
+            type: string
+          interface:
+            type: object
+            required: [type, endpoint]
+            properties:
+              type:
+                const: http
+              endpoint:
+                type: string
+            additionalProperties: false
+        additionalProperties: false

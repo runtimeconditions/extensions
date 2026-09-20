@@ -1,0 +1,176 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: 69771093c889baf4308c4afa3245034ad0973128e2e3e271037a15094521835c
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: urn:runtimeconditions:test:core-profile-schema
+    version: 0.0.0-test
+    semanticSha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+rootExtension:
+    id: urn:runtimeconditions:conformance:heterogeneous-union
+    version: 1.0.0
+    semanticSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+extensions:
+    - id: urn:runtimeconditions:conformance:heterogeneous-union
+      version: 1.0.0
+      semanticSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+vocabulary:
+    owners:
+        - coordinate: kind:selector
+          category: kind
+          owner: urn:runtimeconditions:conformance:heterogeneous-union
+          kind: selector
+    ownedDeclarations:
+        - coordinate: kind:selector
+          owner: urn:runtimeconditions:conformance:heterogeneous-union
+          kind: selector
+          tokens:
+            - selector
+          provenance:
+            owner: urn:runtimeconditions:conformance:heterogeneous-union
+            extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+            coordinate: kind:selector
+scopes:
+    - coordinate: 'selector:'
+      kind: selector
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+      projection:
+        kind: object
+        properties:
+            - name: target
+              tokens:
+                - target
+              shape:
+                kind: union
+                variants:
+                    - kind: object
+                      required:
+                        - id
+                      properties:
+                        - name: id
+                          tokens:
+                            - id
+                          required: true
+                          shape:
+                            kind: scalar
+                            scalar: string
+                            provenance:
+                                owner: urn:runtimeconditions:conformance:heterogeneous-union
+                                extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                                coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                                jsonPointer: /properties/target/oneOf/0/properties/id
+                          provenance:
+                            owner: urn:runtimeconditions:conformance:heterogeneous-union
+                            extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                            coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                            jsonPointer: /properties/target/oneOf/0/properties/id
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:heterogeneous-union
+                        extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                        coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                        jsonPointer: /properties/target/oneOf/0
+                    - kind: scalar
+                      scalar: string
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:heterogeneous-union
+                        extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                        coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                        jsonPointer: /properties/target/oneOf/1
+                provenance:
+                    owner: urn:runtimeconditions:conformance:heterogeneous-union
+                    extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                    coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                    jsonPointer: /properties/target
+              provenance:
+                owner: urn:runtimeconditions:conformance:heterogeneous-union
+                extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                jsonPointer: /properties/target
+        provenance:
+            owner: urn:runtimeconditions:conformance:heterogeneous-union
+            extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+            coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+schemas:
+    - coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+      owner: urn:runtimeconditions:conformance:heterogeneous-union
+      id: heterogeneous-target
+      kind: selector
+      exact:
+        additionalProperties: false
+        properties:
+            target:
+                oneOf:
+                    - additionalProperties: false
+                      properties:
+                        id:
+                            type: string
+                      required:
+                        - id
+                      type: object
+                    - type: string
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: target
+              tokens:
+                - target
+              shape:
+                kind: union
+                variants:
+                    - kind: object
+                      required:
+                        - id
+                      properties:
+                        - name: id
+                          tokens:
+                            - id
+                          required: true
+                          shape:
+                            kind: scalar
+                            scalar: string
+                            provenance:
+                                owner: urn:runtimeconditions:conformance:heterogeneous-union
+                                extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                                coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                                jsonPointer: /properties/target/oneOf/0/properties/id
+                          provenance:
+                            owner: urn:runtimeconditions:conformance:heterogeneous-union
+                            extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                            coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                            jsonPointer: /properties/target/oneOf/0/properties/id
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:heterogeneous-union
+                        extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                        coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                        jsonPointer: /properties/target/oneOf/0
+                    - kind: scalar
+                      scalar: string
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:heterogeneous-union
+                        extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                        coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                        jsonPointer: /properties/target/oneOf/1
+                provenance:
+                    owner: urn:runtimeconditions:conformance:heterogeneous-union
+                    extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                    coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                    jsonPointer: /properties/target
+              provenance:
+                owner: urn:runtimeconditions:conformance:heterogeneous-union
+                extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+                coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+                jsonPointer: /properties/target
+        provenance:
+            owner: urn:runtimeconditions:conformance:heterogeneous-union
+            extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+            coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target
+      provenance:
+        owner: urn:runtimeconditions:conformance:heterogeneous-union
+        extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
+        coordinate: urn:runtimeconditions:conformance:heterogeneous-union#schema:heterogeneous-target

@@ -1,0 +1,25 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:heterogeneous-union
+  version: 1.0.0
+spec:
+  kinds:
+    - name: selector
+  schemas:
+    - id: heterogeneous-target
+      description: Heterogeneous target union.
+      appliesToKind: selector
+      schema:
+        type: object
+        properties:
+          target:
+            oneOf:
+              - type: string
+              - type: object
+                required: [id]
+                properties:
+                  id:
+                    type: string
+                additionalProperties: false
+        additionalProperties: false

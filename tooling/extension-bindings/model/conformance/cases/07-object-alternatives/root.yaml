@@ -1,0 +1,34 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:object-alternatives
+  version: 1.0.0
+spec:
+  kinds:
+    - name: deployment
+  interfaceTypes:
+    - name: process
+      targetKind: deployment
+  schemas:
+    - id: object-alternatives
+      description: Object alternatives with branch-specific requirements.
+      appliesToKind: deployment
+      appliesToInterfaceType: process
+      schema:
+        type: object
+        properties:
+          configuration:
+            oneOf:
+              - type: object
+                required: [command]
+                properties:
+                  command:
+                    type: string
+                additionalProperties: false
+              - type: object
+                required: [image]
+                properties:
+                  image:
+                    type: string
+                additionalProperties: false
+        additionalProperties: false

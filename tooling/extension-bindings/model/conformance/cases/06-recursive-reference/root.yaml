@@ -1,0 +1,36 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:recursive-reference
+  version: 1.0.0
+spec:
+  kinds:
+    - name: tree
+  interfaceTypes:
+    - name: node
+      targetKind: tree
+  schemas:
+    - id: recursive-tree
+      description: Recursive tree structure.
+      appliesToKind: tree
+      appliesToInterfaceType: node
+      schema:
+        type: object
+        properties:
+          root:
+            $ref: '#/$defs/node'
+        $defs:
+          unused:
+            type: string
+          node:
+            type: object
+            required: [name]
+            properties:
+              name:
+                type: string
+              children:
+                type: array
+                items:
+                  $ref: '#/$defs/node'
+            additionalProperties: false
+        additionalProperties: false

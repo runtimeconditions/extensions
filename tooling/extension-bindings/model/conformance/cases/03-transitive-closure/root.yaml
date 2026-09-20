@@ -1,0 +1,23 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: urn:runtimeconditions:conformance:transitive:root
+  version: 1.0.0
+spec:
+  dependencies:
+    - urn:runtimeconditions:conformance:transitive:middle
+  conditionFields:
+    - name: command
+      appliesToKinds: [worker]
+      appliesToInterfaceTypes: [process]
+  schemas:
+    - id: worker-process
+      description: Worker process structure.
+      appliesToKind: worker
+      appliesToInterfaceType: process
+      schema:
+        type: object
+        properties:
+          command:
+            type: string
+        additionalProperties: true

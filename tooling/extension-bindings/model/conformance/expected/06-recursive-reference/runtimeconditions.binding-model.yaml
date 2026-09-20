@@ -1,0 +1,279 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: b70de51cbb99ba7436bc6649c4921af1f3ab549b884f9ebc29e2de28d549c635
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: urn:runtimeconditions:test:core-profile-schema
+    version: 0.0.0-test
+    semanticSha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+rootExtension:
+    id: urn:runtimeconditions:conformance:recursive-reference
+    version: 1.0.0
+    semanticSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+extensions:
+    - id: urn:runtimeconditions:conformance:recursive-reference
+      version: 1.0.0
+      semanticSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+vocabulary:
+    owners:
+        - coordinate: interface:tree:node
+          category: interface
+          owner: urn:runtimeconditions:conformance:recursive-reference
+          kind: tree
+          interfaceType: node
+        - coordinate: kind:tree
+          category: kind
+          owner: urn:runtimeconditions:conformance:recursive-reference
+          kind: tree
+    ownedDeclarations:
+        - coordinate: kind:tree
+          owner: urn:runtimeconditions:conformance:recursive-reference
+          kind: tree
+          tokens:
+            - tree
+          provenance:
+            owner: urn:runtimeconditions:conformance:recursive-reference
+            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+            coordinate: kind:tree
+    interfaces:
+        - coordinate: interface:tree:node
+          owner: urn:runtimeconditions:conformance:recursive-reference
+          kind: tree
+          type: node
+          tokens:
+            - node
+          provenance:
+            owner: urn:runtimeconditions:conformance:recursive-reference
+            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+            coordinate: interface:tree:node
+scopes:
+    - coordinate: tree:node
+      kind: tree
+      interfaceType: node
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+      projection:
+        kind: object
+        properties:
+            - name: root
+              tokens:
+                - root
+              shape:
+                kind: object
+                required:
+                    - name
+                properties:
+                    - name: children
+                      tokens:
+                        - children
+                      shape:
+                        kind: array
+                        items:
+                            kind: ref
+                            ref: '#/$defs/node'
+                            provenance:
+                                owner: urn:runtimeconditions:conformance:recursive-reference
+                                extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                                coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                                jsonPointer: /$defs/node/properties/children/items
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:recursive-reference
+                            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                            coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                            jsonPointer: /$defs/node/properties/children
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:recursive-reference
+                        extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                        coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                        jsonPointer: /$defs/node/properties/children
+                    - name: name
+                      tokens:
+                        - name
+                      required: true
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:recursive-reference
+                            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                            coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                            jsonPointer: /$defs/node/properties/name
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:recursive-reference
+                        extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                        coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                        jsonPointer: /$defs/node/properties/name
+                provenance:
+                    owner: urn:runtimeconditions:conformance:recursive-reference
+                    extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                    coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                    jsonPointer: /$defs/node
+              provenance:
+                owner: urn:runtimeconditions:conformance:recursive-reference
+                extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                jsonPointer: /properties/root
+        provenance:
+            owner: urn:runtimeconditions:conformance:recursive-reference
+            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+            coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+schemas:
+    - coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+      owner: urn:runtimeconditions:conformance:recursive-reference
+      id: recursive-tree
+      kind: tree
+      interfaceType: node
+      exact:
+        $defs:
+            node:
+                additionalProperties: false
+                properties:
+                    children:
+                        items:
+                            $ref: '#/$defs/node'
+                        type: array
+                    name:
+                        type: string
+                required:
+                    - name
+                type: object
+            unused:
+                type: string
+        additionalProperties: false
+        properties:
+            root:
+                $ref: '#/$defs/node'
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: root
+              tokens:
+                - root
+              shape:
+                kind: object
+                required:
+                    - name
+                properties:
+                    - name: children
+                      tokens:
+                        - children
+                      shape:
+                        kind: array
+                        items:
+                            kind: ref
+                            ref: '#/$defs/node'
+                            provenance:
+                                owner: urn:runtimeconditions:conformance:recursive-reference
+                                extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                                coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                                jsonPointer: /$defs/node/properties/children/items
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:recursive-reference
+                            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                            coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                            jsonPointer: /$defs/node/properties/children
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:recursive-reference
+                        extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                        coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                        jsonPointer: /$defs/node/properties/children
+                    - name: name
+                      tokens:
+                        - name
+                      required: true
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:recursive-reference
+                            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                            coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                            jsonPointer: /$defs/node/properties/name
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:recursive-reference
+                        extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                        coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                        jsonPointer: /$defs/node/properties/name
+                provenance:
+                    owner: urn:runtimeconditions:conformance:recursive-reference
+                    extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                    coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                    jsonPointer: /$defs/node
+              provenance:
+                owner: urn:runtimeconditions:conformance:recursive-reference
+                extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                jsonPointer: /properties/root
+        provenance:
+            owner: urn:runtimeconditions:conformance:recursive-reference
+            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+            coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+      definitions:
+        - name: node
+          tokens:
+            - node
+          jsonPointer: /$defs/node
+          shape:
+            kind: object
+            required:
+                - name
+            properties:
+                - name: children
+                  tokens:
+                    - children
+                  shape:
+                    kind: array
+                    items:
+                        kind: ref
+                        ref: '#/$defs/node'
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:recursive-reference
+                            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                            coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                            jsonPointer: /$defs/node/properties/children/items
+                    provenance:
+                        owner: urn:runtimeconditions:conformance:recursive-reference
+                        extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                        coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                        jsonPointer: /$defs/node/properties/children
+                  provenance:
+                    owner: urn:runtimeconditions:conformance:recursive-reference
+                    extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                    coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                    jsonPointer: /$defs/node/properties/children
+                - name: name
+                  tokens:
+                    - name
+                  required: true
+                  shape:
+                    kind: scalar
+                    scalar: string
+                    provenance:
+                        owner: urn:runtimeconditions:conformance:recursive-reference
+                        extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                        coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                        jsonPointer: /$defs/node/properties/name
+                  provenance:
+                    owner: urn:runtimeconditions:conformance:recursive-reference
+                    extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                    coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                    jsonPointer: /$defs/node/properties/name
+            provenance:
+                owner: urn:runtimeconditions:conformance:recursive-reference
+                extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+                coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+                jsonPointer: /$defs/node
+          provenance:
+            owner: urn:runtimeconditions:conformance:recursive-reference
+            extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+            coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
+            jsonPointer: /$defs/node
+      provenance:
+        owner: urn:runtimeconditions:conformance:recursive-reference
+        extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
+        coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree

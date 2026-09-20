@@ -1,0 +1,149 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: 2f9a642c9aad96634de603df8e4a0bc4464a9fb4dce03e490a57bb556420b517
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: urn:runtimeconditions:test:core-profile-schema
+    version: 0.0.0-test
+    semanticSha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+rootExtension:
+    id: urn:runtimeconditions:conformance:transitive:root
+    version: 1.0.0
+    semanticSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+extensions:
+    - id: urn:runtimeconditions:conformance:transitive:leaf
+      version: 1.0.0
+      semanticSha256: 18214ac19f8e6d13d73df8306bffeca0d1637ac3daaa9ef588362b2072777749
+    - id: urn:runtimeconditions:conformance:transitive:middle
+      version: 1.0.0
+      semanticSha256: 487b16f987ed5ebee954f3166edcfc5e19606c24750180cb558e68a531e83a04
+      dependencies:
+        - urn:runtimeconditions:conformance:transitive:leaf
+    - id: urn:runtimeconditions:conformance:transitive:root
+      version: 1.0.0
+      semanticSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+      dependencies:
+        - urn:runtimeconditions:conformance:transitive:middle
+dependencyEdges:
+    - from: urn:runtimeconditions:conformance:transitive:middle
+      to: urn:runtimeconditions:conformance:transitive:leaf
+    - from: urn:runtimeconditions:conformance:transitive:root
+      to: urn:runtimeconditions:conformance:transitive:middle
+vocabulary:
+    owners:
+        - coordinate: condition-field:worker:process:command
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:transitive:root
+          kind: worker
+          interfaceType: process
+          path: command
+        - coordinate: interface:worker:process
+          category: interface
+          owner: urn:runtimeconditions:conformance:transitive:middle
+          kind: worker
+          interfaceType: process
+        - coordinate: kind:worker
+          category: kind
+          owner: urn:runtimeconditions:conformance:transitive:leaf
+          kind: worker
+    interfaces:
+        - coordinate: interface:worker:process
+          owner: urn:runtimeconditions:conformance:transitive:middle
+          kind: worker
+          type: process
+          tokens:
+            - process
+          provenance:
+            owner: urn:runtimeconditions:conformance:transitive:middle
+            extensionSha256: 487b16f987ed5ebee954f3166edcfc5e19606c24750180cb558e68a531e83a04
+            coordinate: interface:worker:process
+    conditionFields:
+        - coordinate: condition-field:worker:process:command
+          owner: urn:runtimeconditions:conformance:transitive:root
+          kind: worker
+          interfaceType: process
+          path: command
+          segments:
+            - name: command
+              tokens:
+                - command
+          tokens:
+            - command
+          provenance:
+            owner: urn:runtimeconditions:conformance:transitive:root
+            extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+            coordinate: condition-field:worker:process:command
+scopes:
+    - coordinate: 'worker:'
+      kind: worker
+    - coordinate: worker:process
+      kind: worker
+      interfaceType: process
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:transitive:root#schema:worker-process
+      projection:
+        kind: object
+        properties:
+            - name: command
+              tokens:
+                - command
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:transitive:root
+                    extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+                    coordinate: urn:runtimeconditions:conformance:transitive:root#schema:worker-process
+                    jsonPointer: /properties/command
+              provenance:
+                owner: urn:runtimeconditions:conformance:transitive:root
+                extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+                coordinate: urn:runtimeconditions:conformance:transitive:root#schema:worker-process
+                jsonPointer: /properties/command
+        provenance:
+            owner: urn:runtimeconditions:conformance:transitive:root
+            extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+            coordinate: urn:runtimeconditions:conformance:transitive:root#schema:worker-process
+schemas:
+    - coordinate: urn:runtimeconditions:conformance:transitive:root#schema:worker-process
+      owner: urn:runtimeconditions:conformance:transitive:root
+      id: worker-process
+      kind: worker
+      interfaceType: process
+      exact:
+        additionalProperties: true
+        properties:
+            command:
+                type: string
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: command
+              tokens:
+                - command
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:transitive:root
+                    extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+                    coordinate: urn:runtimeconditions:conformance:transitive:root#schema:worker-process
+                    jsonPointer: /properties/command
+              provenance:
+                owner: urn:runtimeconditions:conformance:transitive:root
+                extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+                coordinate: urn:runtimeconditions:conformance:transitive:root#schema:worker-process
+                jsonPointer: /properties/command
+        provenance:
+            owner: urn:runtimeconditions:conformance:transitive:root
+            extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+            coordinate: urn:runtimeconditions:conformance:transitive:root#schema:worker-process
+      provenance:
+        owner: urn:runtimeconditions:conformance:transitive:root
+        extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
+        coordinate: urn:runtimeconditions:conformance:transitive:root#schema:worker-process

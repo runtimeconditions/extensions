@@ -1,0 +1,243 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: defd467cb9d864ceb4e2f03bf48ec3e740df48486cc9351ae00d1fe948a021c0
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: urn:runtimeconditions:test:core-profile-schema
+    version: 0.0.0-test
+    semanticSha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+rootExtension:
+    id: urn:runtimeconditions:conformance:additive-field
+    version: 1.0.0
+    semanticSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+extensions:
+    - id: urn:runtimeconditions:conformance:additive-field:base
+      version: 1.0.0
+      semanticSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+    - id: urn:runtimeconditions:conformance:additive-field
+      version: 1.0.0
+      semanticSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+      dependencies:
+        - urn:runtimeconditions:conformance:additive-field:base
+dependencyEdges:
+    - from: urn:runtimeconditions:conformance:additive-field
+      to: urn:runtimeconditions:conformance:additive-field:base
+vocabulary:
+    owners:
+        - coordinate: condition-field:service:http:credential
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:additive-field
+          kind: service
+          interfaceType: http
+          path: credential
+        - coordinate: interface:service:http
+          category: interface
+          owner: urn:runtimeconditions:conformance:additive-field:base
+          kind: service
+          interfaceType: http
+        - coordinate: kind:service
+          category: kind
+          owner: urn:runtimeconditions:conformance:additive-field:base
+          kind: service
+    interfaces:
+        - coordinate: interface:service:http
+          owner: urn:runtimeconditions:conformance:additive-field:base
+          kind: service
+          type: http
+          tokens:
+            - http
+          provenance:
+            owner: urn:runtimeconditions:conformance:additive-field:base
+            extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+            coordinate: interface:service:http
+    conditionFields:
+        - coordinate: condition-field:service:http:credential
+          owner: urn:runtimeconditions:conformance:additive-field
+          kind: service
+          interfaceType: http
+          path: credential
+          segments:
+            - name: credential
+              tokens:
+                - credential
+          tokens:
+            - credential
+          provenance:
+            owner: urn:runtimeconditions:conformance:additive-field
+            extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+            coordinate: condition-field:service:http:credential
+scopes:
+    - coordinate: service:http
+      kind: service
+      interfaceType: http
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+        - urn:runtimeconditions:conformance:additive-field:base#schema:base-service-http
+      projection:
+        kind: object
+        properties:
+            - name: credential
+              tokens:
+                - credential
+              shape:
+                kind: object
+                required:
+                    - token
+                properties:
+                    - name: token
+                      tokens:
+                        - token
+                      required: true
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:additive-field
+                            extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+                            coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+                            jsonPointer: /properties/credential/properties/token
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:additive-field
+                        extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+                        coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+                        jsonPointer: /properties/credential/properties/token
+                provenance:
+                    owner: urn:runtimeconditions:conformance:additive-field
+                    extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+                    coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+                    jsonPointer: /properties/credential
+              provenance:
+                owner: urn:runtimeconditions:conformance:additive-field
+                extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+                coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+                jsonPointer: /properties/credential
+            - name: interface
+              tokens:
+                - interface
+              shape:
+                kind: object
+                provenance:
+                    owner: urn:runtimeconditions:conformance:additive-field:base
+                    extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+                    coordinate: urn:runtimeconditions:conformance:additive-field:base#schema:base-service-http
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: urn:runtimeconditions:conformance:additive-field:base
+                extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+                coordinate: urn:runtimeconditions:conformance:additive-field:base#schema:base-service-http
+                jsonPointer: /properties/interface
+        provenance:
+            owner: urn:runtimeconditions:conformance:additive-field
+            extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+            coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+schemas:
+    - coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+      owner: urn:runtimeconditions:conformance:additive-field
+      id: additive-credential
+      kind: service
+      interfaceType: http
+      exact:
+        additionalProperties: true
+        properties:
+            credential:
+                additionalProperties: false
+                properties:
+                    token:
+                        type: string
+                required:
+                    - token
+                type: object
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: credential
+              tokens:
+                - credential
+              shape:
+                kind: object
+                required:
+                    - token
+                properties:
+                    - name: token
+                      tokens:
+                        - token
+                      required: true
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:additive-field
+                            extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+                            coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+                            jsonPointer: /properties/credential/properties/token
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:additive-field
+                        extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+                        coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+                        jsonPointer: /properties/credential/properties/token
+                provenance:
+                    owner: urn:runtimeconditions:conformance:additive-field
+                    extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+                    coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+                    jsonPointer: /properties/credential
+              provenance:
+                owner: urn:runtimeconditions:conformance:additive-field
+                extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+                coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+                jsonPointer: /properties/credential
+        provenance:
+            owner: urn:runtimeconditions:conformance:additive-field
+            extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+            coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+      provenance:
+        owner: urn:runtimeconditions:conformance:additive-field
+        extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
+        coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
+    - coordinate: urn:runtimeconditions:conformance:additive-field:base#schema:base-service-http
+      owner: urn:runtimeconditions:conformance:additive-field:base
+      id: base-service-http
+      kind: service
+      interfaceType: http
+      exact:
+        additionalProperties: true
+        properties:
+            interface:
+                additionalProperties: false
+                properties:
+                    type:
+                        const: http
+                type: object
+            kind:
+                const: service
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: interface
+              tokens:
+                - interface
+              shape:
+                kind: object
+                provenance:
+                    owner: urn:runtimeconditions:conformance:additive-field:base
+                    extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+                    coordinate: urn:runtimeconditions:conformance:additive-field:base#schema:base-service-http
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: urn:runtimeconditions:conformance:additive-field:base
+                extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+                coordinate: urn:runtimeconditions:conformance:additive-field:base#schema:base-service-http
+                jsonPointer: /properties/interface
+        provenance:
+            owner: urn:runtimeconditions:conformance:additive-field:base
+            extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+            coordinate: urn:runtimeconditions:conformance:additive-field:base#schema:base-service-http
+      provenance:
+        owner: urn:runtimeconditions:conformance:additive-field:base
+        extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
+        coordinate: urn:runtimeconditions:conformance:additive-field:base#schema:base-service-http

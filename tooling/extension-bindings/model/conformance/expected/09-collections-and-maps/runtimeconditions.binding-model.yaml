@@ -1,0 +1,342 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: 5c4be5a201058e9603973ff4e4a28d29162e166874a42dd1db6dc77dd7bba5ad
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: urn:runtimeconditions:test:core-profile-schema
+    version: 0.0.0-test
+    semanticSha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+rootExtension:
+    id: urn:runtimeconditions:conformance:collections-and-maps
+    version: 1.0.0
+    semanticSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+extensions:
+    - id: urn:runtimeconditions:conformance:collections-and-maps
+      version: 1.0.0
+      semanticSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+vocabulary:
+    owners:
+        - coordinate: field-domain:collection::entries[].value:1
+          category: field-value
+          owner: urn:runtimeconditions:conformance:collections-and-maps
+          kind: collection
+          path: entries[].value
+          value: 1
+        - coordinate: field-domain:collection::entries[].value:2
+          category: field-value
+          owner: urn:runtimeconditions:conformance:collections-and-maps
+          kind: collection
+          path: entries[].value
+          value: 2
+        - coordinate: kind:collection
+          category: kind
+          owner: urn:runtimeconditions:conformance:collections-and-maps
+          kind: collection
+    ownedDeclarations:
+        - coordinate: kind:collection
+          owner: urn:runtimeconditions:conformance:collections-and-maps
+          kind: collection
+          tokens:
+            - collection
+          provenance:
+            owner: urn:runtimeconditions:conformance:collections-and-maps
+            extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+            coordinate: kind:collection
+    valueDomains:
+        - coordinate: field-domain:collection::entries[].value
+          owner: urn:runtimeconditions:conformance:collections-and-maps
+          kind: collection
+          path: entries[].value
+          segments:
+            - name: entries
+              array: true
+              tokens:
+                - entries
+            - name: value
+              tokens:
+                - value
+          values:
+            - 1
+            - 2
+          provenance:
+            owner: urn:runtimeconditions:conformance:collections-and-maps
+            extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+            coordinate: field-domain:collection::entries[].value
+scopes:
+    - coordinate: 'collection:'
+      kind: collection
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+      projection:
+        kind: object
+        properties:
+            - name: entries
+              tokens:
+                - entries
+              shape:
+                kind: array
+                items:
+                    kind: object
+                    required:
+                        - key
+                        - value
+                    properties:
+                        - name: key
+                          tokens:
+                            - key
+                          required: true
+                          shape:
+                            kind: scalar
+                            scalar: string
+                            provenance:
+                                owner: urn:runtimeconditions:conformance:collections-and-maps
+                                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                                jsonPointer: /properties/entries/items/properties/key
+                          provenance:
+                            owner: urn:runtimeconditions:conformance:collections-and-maps
+                            extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                            coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                            jsonPointer: /properties/entries/items/properties/key
+                        - name: value
+                          tokens:
+                            - value
+                          required: true
+                          shape:
+                            kind: scalar
+                            scalar: integer
+                            values:
+                                - 1
+                                - 2
+                            provenance:
+                                owner: urn:runtimeconditions:conformance:collections-and-maps
+                                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                                jsonPointer: /properties/entries/items/properties/value
+                          provenance:
+                            owner: urn:runtimeconditions:conformance:collections-and-maps
+                            extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                            coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                            jsonPointer: /properties/entries/items/properties/value
+                    provenance:
+                        owner: urn:runtimeconditions:conformance:collections-and-maps
+                        extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                        coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                        jsonPointer: /properties/entries/items
+                provenance:
+                    owner: urn:runtimeconditions:conformance:collections-and-maps
+                    extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                    coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                    jsonPointer: /properties/entries
+              provenance:
+                owner: urn:runtimeconditions:conformance:collections-and-maps
+                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                jsonPointer: /properties/entries
+            - name: labels
+              tokens:
+                - labels
+              shape:
+                kind: map
+                mapValues:
+                    kind: scalar
+                    scalar: string
+                    provenance:
+                        owner: urn:runtimeconditions:conformance:collections-and-maps
+                        extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                        coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                        jsonPointer: /properties/labels/additionalProperties
+                provenance:
+                    owner: urn:runtimeconditions:conformance:collections-and-maps
+                    extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                    coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                    jsonPointer: /properties/labels
+              provenance:
+                owner: urn:runtimeconditions:conformance:collections-and-maps
+                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                jsonPointer: /properties/labels
+            - name: tags
+              tokens:
+                - tags
+              shape:
+                kind: array
+                items:
+                    kind: scalar
+                    scalar: string
+                    provenance:
+                        owner: urn:runtimeconditions:conformance:collections-and-maps
+                        extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                        coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                        jsonPointer: /properties/tags/items
+                provenance:
+                    owner: urn:runtimeconditions:conformance:collections-and-maps
+                    extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                    coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                    jsonPointer: /properties/tags
+              provenance:
+                owner: urn:runtimeconditions:conformance:collections-and-maps
+                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                jsonPointer: /properties/tags
+        provenance:
+            owner: urn:runtimeconditions:conformance:collections-and-maps
+            extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+            coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+schemas:
+    - coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+      owner: urn:runtimeconditions:conformance:collections-and-maps
+      id: collection-shapes
+      kind: collection
+      exact:
+        additionalProperties: false
+        properties:
+            entries:
+                items:
+                    additionalProperties: false
+                    properties:
+                        key:
+                            type: string
+                        value:
+                            enum:
+                                - 1
+                                - 2
+                            type: integer
+                    required:
+                        - key
+                        - value
+                    type: object
+                type: array
+            labels:
+                additionalProperties:
+                    type: string
+                type: object
+            tags:
+                items:
+                    type: string
+                type: array
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: entries
+              tokens:
+                - entries
+              shape:
+                kind: array
+                items:
+                    kind: object
+                    required:
+                        - key
+                        - value
+                    properties:
+                        - name: key
+                          tokens:
+                            - key
+                          required: true
+                          shape:
+                            kind: scalar
+                            scalar: string
+                            provenance:
+                                owner: urn:runtimeconditions:conformance:collections-and-maps
+                                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                                jsonPointer: /properties/entries/items/properties/key
+                          provenance:
+                            owner: urn:runtimeconditions:conformance:collections-and-maps
+                            extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                            coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                            jsonPointer: /properties/entries/items/properties/key
+                        - name: value
+                          tokens:
+                            - value
+                          required: true
+                          shape:
+                            kind: scalar
+                            scalar: integer
+                            values:
+                                - 1
+                                - 2
+                            provenance:
+                                owner: urn:runtimeconditions:conformance:collections-and-maps
+                                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                                jsonPointer: /properties/entries/items/properties/value
+                          provenance:
+                            owner: urn:runtimeconditions:conformance:collections-and-maps
+                            extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                            coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                            jsonPointer: /properties/entries/items/properties/value
+                    provenance:
+                        owner: urn:runtimeconditions:conformance:collections-and-maps
+                        extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                        coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                        jsonPointer: /properties/entries/items
+                provenance:
+                    owner: urn:runtimeconditions:conformance:collections-and-maps
+                    extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                    coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                    jsonPointer: /properties/entries
+              provenance:
+                owner: urn:runtimeconditions:conformance:collections-and-maps
+                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                jsonPointer: /properties/entries
+            - name: labels
+              tokens:
+                - labels
+              shape:
+                kind: map
+                mapValues:
+                    kind: scalar
+                    scalar: string
+                    provenance:
+                        owner: urn:runtimeconditions:conformance:collections-and-maps
+                        extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                        coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                        jsonPointer: /properties/labels/additionalProperties
+                provenance:
+                    owner: urn:runtimeconditions:conformance:collections-and-maps
+                    extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                    coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                    jsonPointer: /properties/labels
+              provenance:
+                owner: urn:runtimeconditions:conformance:collections-and-maps
+                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                jsonPointer: /properties/labels
+            - name: tags
+              tokens:
+                - tags
+              shape:
+                kind: array
+                items:
+                    kind: scalar
+                    scalar: string
+                    provenance:
+                        owner: urn:runtimeconditions:conformance:collections-and-maps
+                        extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                        coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                        jsonPointer: /properties/tags/items
+                provenance:
+                    owner: urn:runtimeconditions:conformance:collections-and-maps
+                    extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                    coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                    jsonPointer: /properties/tags
+              provenance:
+                owner: urn:runtimeconditions:conformance:collections-and-maps
+                extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+                coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+                jsonPointer: /properties/tags
+        provenance:
+            owner: urn:runtimeconditions:conformance:collections-and-maps
+            extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+            coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
+      provenance:
+        owner: urn:runtimeconditions:conformance:collections-and-maps
+        extensionSha256: 8eb8f2ab7f20c790b1ce30a161b36748efac8bb82eb8ef0ed9b6126a2c909bdf
+        coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes

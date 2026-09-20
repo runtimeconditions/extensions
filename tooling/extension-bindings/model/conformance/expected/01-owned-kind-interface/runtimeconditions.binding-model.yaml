@@ -1,0 +1,264 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: 79bdff3c3e55ff85074f9b7905cd28245ddd2e47e5fa03f4a8fbddcbba4186be
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: urn:runtimeconditions:test:core-profile-schema
+    version: 0.0.0-test
+    semanticSha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+rootExtension:
+    id: urn:runtimeconditions:conformance:owned-kind-interface
+    version: 1.0.0
+    semanticSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+extensions:
+    - id: urn:runtimeconditions:conformance:owned-kind-interface
+      version: 1.0.0
+      semanticSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+vocabulary:
+    owners:
+        - coordinate: condition-field:service:http:region
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          kind: service
+          interfaceType: http
+          path: region
+        - coordinate: interface-field:service:http:endpoint
+          category: interface-field
+          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          kind: service
+          interfaceType: http
+          path: interface.endpoint
+        - coordinate: interface:service:http
+          category: interface
+          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          kind: service
+          interfaceType: http
+        - coordinate: kind:service
+          category: kind
+          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          kind: service
+    ownedDeclarations:
+        - coordinate: kind:service
+          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          kind: service
+          tokens:
+            - service
+          provenance:
+            owner: urn:runtimeconditions:conformance:owned-kind-interface
+            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            coordinate: kind:service
+    interfaces:
+        - coordinate: interface:service:http
+          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          kind: service
+          type: http
+          tokens:
+            - http
+          provenance:
+            owner: urn:runtimeconditions:conformance:owned-kind-interface
+            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            coordinate: interface:service:http
+    conditionFields:
+        - coordinate: condition-field:service:http:region
+          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          kind: service
+          interfaceType: http
+          path: region
+          segments:
+            - name: region
+              tokens:
+                - region
+          tokens:
+            - region
+          provenance:
+            owner: urn:runtimeconditions:conformance:owned-kind-interface
+            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            coordinate: condition-field:service:http:region
+    interfaceFields:
+        - coordinate: interface-field:service:http:endpoint
+          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          kind: service
+          interfaceType: http
+          path: interface.endpoint
+          segments:
+            - name: interface
+              tokens:
+                - interface
+            - name: endpoint
+              tokens:
+                - endpoint
+          tokens:
+            - endpoint
+          provenance:
+            owner: urn:runtimeconditions:conformance:owned-kind-interface
+            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            coordinate: interface-field:service:http:endpoint
+scopes:
+    - coordinate: service:http
+      kind: service
+      interfaceType: http
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+      projection:
+        kind: object
+        required:
+            - interface
+            - region
+        properties:
+            - name: interface
+              tokens:
+                - interface
+              required: true
+              shape:
+                kind: object
+                required:
+                    - endpoint
+                properties:
+                    - name: endpoint
+                      tokens:
+                        - endpoint
+                      required: true
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:owned-kind-interface
+                            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                            coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                            jsonPointer: /properties/interface/properties/endpoint
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:owned-kind-interface
+                        extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                        coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                        jsonPointer: /properties/interface/properties/endpoint
+                provenance:
+                    owner: urn:runtimeconditions:conformance:owned-kind-interface
+                    extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: urn:runtimeconditions:conformance:owned-kind-interface
+                extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                jsonPointer: /properties/interface
+            - name: region
+              tokens:
+                - region
+              required: true
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:owned-kind-interface
+                    extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                    jsonPointer: /properties/region
+              provenance:
+                owner: urn:runtimeconditions:conformance:owned-kind-interface
+                extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                jsonPointer: /properties/region
+        provenance:
+            owner: urn:runtimeconditions:conformance:owned-kind-interface
+            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+schemas:
+    - coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+      owner: urn:runtimeconditions:conformance:owned-kind-interface
+      id: service-http
+      kind: service
+      interfaceType: http
+      exact:
+        additionalProperties: false
+        properties:
+            interface:
+                additionalProperties: false
+                properties:
+                    endpoint:
+                        type: string
+                    type:
+                        const: http
+                required:
+                    - endpoint
+                    - type
+                type: object
+            kind:
+                const: service
+            region:
+                type: string
+        required:
+            - interface
+            - kind
+            - region
+        type: object
+      projection:
+        kind: object
+        required:
+            - interface
+            - region
+        properties:
+            - name: interface
+              tokens:
+                - interface
+              required: true
+              shape:
+                kind: object
+                required:
+                    - endpoint
+                properties:
+                    - name: endpoint
+                      tokens:
+                        - endpoint
+                      required: true
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: urn:runtimeconditions:conformance:owned-kind-interface
+                            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                            coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                            jsonPointer: /properties/interface/properties/endpoint
+                      provenance:
+                        owner: urn:runtimeconditions:conformance:owned-kind-interface
+                        extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                        coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                        jsonPointer: /properties/interface/properties/endpoint
+                provenance:
+                    owner: urn:runtimeconditions:conformance:owned-kind-interface
+                    extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: urn:runtimeconditions:conformance:owned-kind-interface
+                extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                jsonPointer: /properties/interface
+            - name: region
+              tokens:
+                - region
+              required: true
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:owned-kind-interface
+                    extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                    jsonPointer: /properties/region
+              provenance:
+                owner: urn:runtimeconditions:conformance:owned-kind-interface
+                extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+                coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                jsonPointer: /properties/region
+        provenance:
+            owner: urn:runtimeconditions:conformance:owned-kind-interface
+            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+      provenance:
+        owner: urn:runtimeconditions:conformance:owned-kind-interface
+        extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+        coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
