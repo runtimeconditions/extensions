@@ -170,7 +170,6 @@ tooling/extension-bindings/
     runtimeconditions.binding-release.schema.yaml
     runtimeconditions.package-catalog.schema.yaml
     runtimeconditions.toolchain-lock.schema.yaml
-    runtimeconditions.public-api.schema.yaml
     runtimeconditions.file-manifest.schema.yaml
     runtimeconditions.build-plan.schema.yaml
     runtimeconditions.verification-summary.schema.yaml
@@ -507,7 +506,7 @@ The package dependency implementation is complete only when:
 
 1. A dependent package builds against a repository-local dependency package.
 2. The same dependent package builds against the packaged dependency artifact.
-3. The generated public API is byte-identical in both builds.
+3. The exported API derived from generated source is byte-identical in both builds.
 4. A missing language binding dependency fails before source emission.
 5. A dependency with the correct coordinate but wrong extension identifier
    fails.
@@ -549,12 +548,14 @@ The model MUST contain:
   direct dependency identifiers;
 - dependency edges;
 - vocabulary owners;
-- owned kind declarations;
+- root-extension-owned kind declarations under `ownedDeclarations`;
+- dependency-owned kind declaration contracts under `importedDeclarations`;
 - kind-scoped interface types;
 - condition fields expanded to exact scopes;
 - interface fields expanded to exact scopes;
 - parsed field-path segments with array traversal explicit;
-- scoped portable value domains;
+- scoped portable string value domains containing each member's exact value and
+  canonical tokens;
 - exact JSON Schema documents represented as YAML data;
 - language-neutral structural projections;
 - validation constraints not expressible by structural projections;
@@ -563,6 +564,11 @@ The model MUST contain:
 - deterministic diagnostics for unsupported constructs;
 - canonical semantic SHA-256 for the complete model excluding the digest field
   itself.
+
+`ownedDeclarations` and `importedDeclarations` MUST have the same entry shape:
+semantic coordinate, owner identifier, exact kind name, canonical tokens, and
+provenance. Together they MUST form a complete, non-overlapping partition of
+the kind declarations in the extension closure.
 
 The model MUST contain no source-byte SHA-256 values, source backends, source
 locators, dependency-lock digests, language symbol names, package-manager
@@ -617,7 +623,7 @@ implementation even when structural projection cannot express a keyword.
 These rules apply to every extension without identifier-specific handling:
 
 1. An owned kind becomes a declaration coordinate.
-2. A dependency-owned kind remains an imported declaration contract and MUST
+2. A dependency-owned kind becomes an `importedDeclarations` contract and MUST
    NOT become a declaration owned by the root package.
 3. An interface type becomes an object shape in its exact kind and interface
    scope. Fixed `kind` and `interface.type` values are metadata and are not
@@ -628,17 +634,23 @@ These rules apply to every extension without identifier-specific handling:
    exactly in the model.
 7. A scalar schema becomes the corresponding language-neutral string, boolean,
    integer, number, or null shape. It MUST NOT become a schema-named wrapper
-   shape unless `enum`, `const`, `fieldValues`, or a union requires a named
-   domain.
+   shape unless a string `enum`, string `const`, string `fieldValues`, or a union
+   requires a named domain.
 8. An array schema becomes a collection shape. Array traversal is represented by
    an explicit path-segment flag, never by singularizing a property name.
 9. An object-valued array item becomes an item object associated with the full
    property path.
 10. `additionalProperties` with a schema becomes a map-value shape.
-11. Scalar `enum` and scoped `fieldValues` become value domains.
-12. A scalar `const` becomes a one-value domain. Const values occupying the same
-    scoped path in alternative branches are unioned into that path's value
-    domain.
+11. String scalar `enum` and string scoped `fieldValues` become value domains.
+    Every member retains its exact string value and the canonical tokens derived
+    from that value. Non-string `enum` and scoped `fieldValues` remain semantic
+    validation constraints on their structural scalar type and do not create
+    named binding members.
+12. A string scalar `const` becomes a one-value domain. String const values
+    occupying the same scoped path in alternative branches are unioned into that
+    path's value domain. A non-string `const` remains a semantic validation
+    constraint on its structural scalar type and does not create a named binding
+    member.
 13. A property is structurally required across `oneOf` or `anyOf` only when it is
     required in every branch. Branch-specific requiredness remains an exact
     validation constraint.
@@ -650,7 +662,7 @@ These rules apply to every extension without identifier-specific handling:
     unioned; incompatible structural types stop normalization.
 17. Every referenced `$defs` entry becomes a named shape derived mechanically
     from its definition key. Unreferenced `$defs` entries remain validation data
-    and do not create public API.
+    and do not create exported binding types.
 18. A `$ref` MUST be either `#` or a fragment beginning with `#/` that contains
     a syntactically valid JSON Pointer. It resolves only within the containing
     schema document. `$anchor`, `$dynamicAnchor`, `$recursiveAnchor`, and anchor
@@ -673,6 +685,14 @@ These rules apply to every extension without identifier-specific handling:
     schemas. Failure of either check stops normalization.
 24. A normalized symbol or shape MUST NOT depend on descriptions, repository
     paths, filenames, example documents, or operation-specific conventions.
+25. Binding-exposed names MUST NOT contain the ASCII hyphen character (`-`).
+    This restriction applies to extension-defined kind names, interface type
+    names, condition-field and interface-field path segments, JSON Schema
+    property names, and referenced `$defs` keys. A violation MUST stop
+    normalization with a deterministic diagnostic containing the semantic
+    coordinate and JSON Pointer when applicable. Extension identifiers, schema
+    identifiers, descriptions, and scalar values are not binding-exposed names
+    and are not subject to this restriction.
 
 ## 10. Language emitter contract
 
@@ -694,11 +714,8 @@ Every emitter MUST generate:
 1. Language-native source.
 2. Native package-manager metadata.
 3. `runtimeconditions.bindings.yaml`.
-4. A language public-API descriptor named
-   `runtimeconditions.public-api.yaml`.
-5. Conformance source exercising every declaration, object type, field, enum
+4. Conformance source exercising every declaration, object type, field, enum
    value, collection shape, map shape, and union shape at least once.
-6. Expected profile YAML for each conformance declaration.
 
 After an emitter succeeds, the orchestrator MUST assemble the final generated
 package tree by adding:
@@ -712,10 +729,10 @@ package tree by adding:
    file except the manifest itself.
 
 The orchestrator MUST NOT modify emitter-produced source, package metadata,
-binding metadata, public-API metadata, conformance source, or expected profiles
-during assembly. Source-byte digests, source backends, and source locators MUST
-appear only in `runtimeconditions.binding-release.yaml`; they MUST NOT appear in
-emitter-produced files or generated source headers.
+binding metadata, conformance source, or expected profiles during assembly.
+Source-byte digests, source backends, and source locators MUST appear only in
+`runtimeconditions.binding-release.yaml`; they MUST NOT appear in emitter-produced
+files or generated source headers.
 
 Generated source and metadata MUST contain a standard non-editable header. The
 header MUST name the model digest and emitter version, but MUST NOT contain a
@@ -737,7 +754,10 @@ timestamp or host-specific path.
 8. A collision that remains after the complete canonical path and scope are used
    stops emission.
 9. Reserved words are escaped by one documented language rule.
-10. Value-domain members are emitted as language-native enums or typed constants.
+10. Value-domain members are emitted within their owning value domain as
+    language-native enum members or typed constants. A language with native enum
+    member namespaces uses that namespace. A language without one qualifies each
+    member symbol with its value-domain type.
 11. Alternative branches MUST NOT become operation-specific constructors,
     factories, or differently shaped APIs.
 12. Invalid cross-field combinations are rejected during profile-generation-time
@@ -751,8 +771,9 @@ timestamp or host-specific path.
 Symbol derivation MUST use the following tokenizer before applying a language's
 case convention:
 
-1. Process the exact UTF-8 vocabulary or property-path segment; do not translate,
-   singularize, pluralize, stem, or interpret it.
+1. Process the exact UTF-8 vocabulary value, property-path segment, or string
+   value-domain member; do not translate, singularize, pluralize, stem, or
+   interpret it.
 2. Split ASCII runs at non-alphanumeric bytes, lower-or-digit to upper-case
    transitions, letter-to-digit transitions, digit-to-letter transitions, and
    before the last capital in a capital run followed by a lower-case letter.
@@ -783,31 +804,45 @@ native symbol.
 1. Every owned kind becomes one exported declaration function named from the
    kind, with signature `func <Kind>(fields ...<Kind>Field) Declaration`.
 2. `<Kind>Field` is an exported marker interface owned by the package that owns
-   the kind. Every applicable interface object and additive field object
-   implements that interface.
-3. Objects become structs. Object construction uses struct literals; the emitter
+   the kind. Every applicable interface object and generated root Condition
+   field type implements that interface.
+3. A root Condition field with a scalar or value-domain shape becomes an
+   exported named scalar type derived from its canonical field path. Its
+   generated type implements every applicable `<Kind>Field` marker interface.
+4. Objects become structs. Object construction uses struct literals; the emitter
    MUST NOT generate constructors.
-4. Arrays become named slice types when referenced by a public field.
-5. Maps become named map types when referenced by a public field.
-6. Optional scalar and enum fields use pointers. Required scalar and enum fields
+5. Arrays become named slice types when referenced by a public field.
+6. Maps become named map types when referenced by a public field.
+7. Optional scalar and enum fields use pointers. Required scalar and enum fields
    use values.
-7. Optional arrays, maps, and objects use pointers only when omission and an
+8. Optional arrays, maps, and objects use pointers only when omission and an
    empty native value have different schema meaning; this decision is derived
    mechanically from requiredness.
-8. Marker-interface methods required for cross-package additive extensions are
+9. Marker-interface methods required for cross-package additive extensions are
    exported and derived from the owning declaration coordinate.
-9. The declaration result is a zero-sized `Declaration` value.
-10. Package-scope usage is `var _ = package.Declaration(...)`.
-11. Exported types, fields, functions, and constants use Pascal case. Each token
+10. The declaration result is a zero-sized `Declaration` value.
+11. Package-scope usage is `var _ = package.Declaration(...)`.
+12. Exported types, fields, functions, and constants use Pascal case. Each token
    in the fixed initialism set is upper case; every other alphabetic token is
    lower case with its first byte upper case. A leading numeric token is prefixed
    with `X`.
-12. Package identifiers use lower-case concatenated tokens. A Go keyword gains
+13. Package identifiers use lower-case concatenated tokens. A Go keyword gains
     the suffix `binding`.
-13. Enum and typed-constant member names start with the Pascal-cased value. The
-    collision algorithm prepends their value-domain type before path and scope
-    tokens.
-14. Source MUST pass `gofmt`, `go vet`, and `go test` using the declared minimum
+14. Every enum or typed-constant member name is its allocated value-domain type
+    followed by the Pascal-cased member-value tokens. Two members of one value
+    domain that produce the same Go name stop emission; a suffix, ordinal, or
+    alternate spelling MUST NOT be introduced.
+15. `Declaration`, every owned-kind declaration function, and every owned-kind
+    marker interface are fixed package-level symbols. The emitter MUST allocate
+    the complete package-level symbol set before writing any file. If another
+    symbol collides with a fixed symbol, emission MUST stop before applying path
+    or scope prefixes. The deterministic diagnostic MUST contain both semantic
+    coordinates, the conflicting Go symbol, and the package coordinate. A
+    prefix, suffix, ordinal, or other renaming MUST NOT be used to avoid the
+    collision.
+16. Package-level collisions that do not involve a fixed symbol use the complete
+    collision algorithm in Section 10.2.
+17. Source MUST pass `gofmt`, `go vet`, and `go test` using the declared minimum
     Go version.
 
 ### 10.4 Python rules
@@ -823,7 +858,8 @@ native symbol.
 4. Arrays become `Sequence[T]` aliases and conformance declarations use tuples.
 5. Maps become `dict[K, V]` aliases.
 6. Optional fields use `T | None` and default to `None`.
-7. Value domains become `StrEnum` when all values are strings.
+7. String value domains become `StrEnum`; members remain scoped by their enum
+   class.
 8. Declaration functions return an inert `Declaration` object.
 9. Classes and type aliases use Pascal case with the same initialism handling as
    Go. Functions, parameters, fields, and modules use lower-case tokens joined
@@ -930,7 +966,13 @@ bytes are deliberately outside that comparison.
 
 ## 13. Generated package verification
 
-A generated target is valid only when all of these gates pass:
+Generated-target verification applies cumulatively by implementation phase:
+
+- Phase 2 and Phase 3 require gates 1 through 8, 12, 14, and 16.
+- Phase 4 additionally requires gates 9 through 11.
+- Phase 5 and every later phase require all 16 gates.
+
+The verification gates are:
 
 1. The normalized model validates against its model schema.
 2. The binding manifest validates against its manifest schema.
@@ -951,10 +993,12 @@ A generated target is valid only when all of these gates pass:
 13. The package archive contains every required Runtime Conditions resource.
 14. The package archive contains no undeclared file.
 15. The generated file-manifest digests match every file.
-16. The public-API descriptor is derivable from generated source and matches the
-    committed descriptor byte-for-byte.
+16. The exported API surface derived from generated source by the native AST
+    parser matches the API surface mechanically derived from the normalized
+    binding model.
 
-Any failed gate stops packaging and promotion.
+Any failed gate applicable to the current phase stops that phase. From Phase 5
+onward, any failed gate stops packaging and promotion.
 
 ## 14. Semantic versioning
 
@@ -972,7 +1016,7 @@ For packages at or above 1.0.0:
 - minor: any backward-compatible public declaration, field, type, or value-domain
   addition, or any validation relaxation;
 - patch: implementation, packaging, manifest, or metadata correction that does
-  not change accepted declarations or public API;
+  not change accepted declarations or exported API;
 - no release: byte-only regeneration with no package-content change.
 
 For packages below 1.0.0:
@@ -982,10 +1026,11 @@ For packages below 1.0.0:
 - compatible correction increments patch;
 - no semantic or package-content change produces no release.
 
-The compatibility classifier MUST compare:
+The compatibility classifier MUST derive and compare exported API surfaces from
+the generated source using the language's native AST parser, and MUST compare:
 
 1. Old and new normalized extension closures.
-2. Old and new language public-API descriptors.
+2. Old and new AST-derived language API surfaces.
 3. Old and new `runtimeconditions.bindings.yaml` behavior manifests.
 4. Old and new direct package dependencies.
 5. Old and new minimum language versions.
@@ -1181,7 +1226,6 @@ The repository MUST commit:
 - generated package source;
 - generated binding manifests;
 - generated normalized checkpoints;
-- generated public-API descriptors;
 - generated conformance source and expected profiles;
 - generated release metadata that is independent of archive digests.
 
@@ -1204,7 +1248,7 @@ Each target-specific GitHub Release MUST contain:
    directly from version-control tags.
 5. `SHA256SUMS` covering every release asset except `SHA256SUMS` itself.
 6. Toolchain provenance.
-7. Public-API and compatibility reports.
+7. AST-derived API and compatibility reports.
 8. Conformance expected profiles.
 
 Generated packages MUST place Runtime Conditions resources at the exact Section
@@ -1259,27 +1303,33 @@ Exit requires:
 
 ### Phase 2: Go emitter
 
-Deliver the Go emitter, package metadata generation, public-API descriptor,
-conformance package, and package archive verification.
+Deliver the Go emitter, package metadata generation, conformance package, and
+package archive verification.
 
-Exit requires all 16 checks in Section 13 for every positive conformance model,
-plus exact expected failures for every negative model relevant to Go.
+Exit requires Section 13 gates 1 through 8, 12, 14, and 16 for every positive
+conformance model, plus exact expected failures for every negative model relevant
+to Go. The Go negative suite MUST include a root Condition field whose generated
+package-level type collides with its owned-kind declaration function.
 
 ### Phase 3: Python emitter
 
-Deliver the Python emitter, package metadata generation, public-API descriptor,
-conformance package, wheel and source-distribution verification.
+Deliver the Python emitter, package metadata generation, conformance package,
+wheel and source-distribution verification.
 
-Exit requires all 16 checks in Section 13 for every positive conformance model,
-plus exact expected failures for every negative model relevant to Python.
+Exit requires Section 13 gates 1 through 8, 12, 14, and 16 for every positive
+conformance model, plus exact expected failures for every negative model relevant
+to Python.
 
 ### Phase 4: structural binding manifests and profiler support
 
-Deliver the structural binding-manifest schema and Go and Python profiler support
-for every construct in Section 11.
+Deliver the structural binding-manifest schema, Go and Python profiler support
+for every construct in Section 11, and expected profile YAML for every positive
+conformance declaration.
 
 Exit requires:
 
+- Section 13 gates 1 through 12, 14, and 16 for every positive conformance
+  model;
 - exact profile generation for 100% of positive conformance declarations;
 - expected semantic failure for 100% of negative declarations;
 - zero application or package-code execution;
@@ -1294,6 +1344,7 @@ trees.
 
 Exit requires:
 
+- all 16 gates in Section 13 for every generated target;
 - a clean full build from an empty work directory;
 - a second full build with a zero-byte Git diff;
 - correct topological language-package build ordering;
