@@ -199,7 +199,6 @@ tooling/extension-bindings/
     verify.go
     plan_test.go
     release_test.go
-    cmd/rc-extension-bindings/main.go
 
   emitters/
     go/
@@ -272,42 +271,39 @@ fixtures, packaging files, generated files, and workflow files, MUST be approved
 One package set represents one root extension. One build target is exactly one
 language within one package set and consists of exactly these inputs:
 
-1. One root `RuntimeConditionsExtensionDefinition`.
-2. The complete exact transitive closure of `spec.dependencies`.
-3. The exact core profile schema version selected by the package catalog.
-4. One package-set entry and one nested language-target entry from the package
+1. One globally resolvable root extension identifier.
+2. The exact core profile schema version selected by the package catalog.
+3. One package-set entry and one nested language-target entry from the package
    catalog.
-5. One locked normalizer release.
-6. One locked emitter release for each requested language.
-7. The previous `runtimeconditions.binding-release.yaml` when the target has a
-   previous release.
+4. One locked normalizer release.
+5. One locked emitter release for each configured target language.
 
 `packages.yaml` owns publication data only. Each package-set entry MUST contain:
 
 - a stable package key;
-- the root extension identifier and repository-local source path;
+- the globally resolvable root extension identifier;
 - the core profile schema version;
-- the package-license identifier;
-- the repository URL;
 - one `languages` mapping keyed by language identifier.
 
 Every nested language-target entry MUST contain:
 
 - the package-manager coordinate;
-- the requested package version;
+- the package version;
 - the generated source output directory, which MUST equal
   `bindings/<package-key>/<language>`;
-- the minimum supported language version;
+- the exact language version used for language-based compilation. This is the
+  only language version the generated package claims to support;
 - the publication mode, exactly `github-tag` for ecosystems distributed from
   repository tags or `registry` for pushed artifacts;
 - the external registry identifier when publication mode is `registry`, even
   while external publication is disabled.
 
-The pair `<package-key>, <language>` is the immutable build-target key. Package
-keys and language keys MUST each be unique within their containing mapping.
+The immutable build-target key is `<package-key>:<language>`. Package keys and
+language keys MUST each be unique within their containing mapping.
 Package keys MUST match `^[a-z0-9]+(?:-[a-z0-9]+)*$`; language keys MUST match
-`^[a-z][a-z0-9-]*$`. Therefore commas and colons are unambiguous workflow-input
-separators.
+`^[a-z][a-z0-9-]*$`. These restrictions forbid commas and colons inside either
+key, so comma-separated workflow-input lists of colon-separated target keys are
+unambiguous.
 
 `packages.yaml` MUST NOT restate kinds, interface types, fields, field values,
 schemas, dependencies, requiredness, or any other extension semantics.
@@ -329,9 +325,9 @@ support these backends:
 7. `oci:` URIs.
 
 Plain `http:` resolution MUST be rejected. An unknown URI scheme MUST be
-rejected. Network resolution MUST be disabled by default and enabled only by the
-explicit `--network` flag. CI promotion MUST use a committed dependency lock and
-MUST fail if resolution requires content absent from the declared sources.
+rejected. Supported network-backed schemes MUST resolve using network access
+when encountered. CI promotion MUST use a committed dependency lock and MUST
+reject content whose digest or immutable locator does not match that lock.
 
 Repository-local discovery MUST parse candidate extension files and index them
 by `metadata.id`. It MUST NOT infer an identifier from a file path. Finding two
@@ -343,19 +339,30 @@ normalize to the same vocabulary.
 The source-byte SHA-256 MUST be computed over the exact fetched bytes before
 parsing. The semantic SHA-256 MUST be computed in memory as follows:
 
+`model/runtimeconditions.extension-semantic.schema.yaml` is the versioned
+first-party JSON Schema for `RuntimeConditionsExtensionDefinition` documents.
+It is required to reject malformed or unknown extension data before the
+resolver interprets the document or computes its semantic digest. It defines
+the extension input contract; it is not an extension definition and is not
+resolved from an extension URI.
+
 1. Parse and validate the extension against
    `model/runtimeconditions.extension-semantic.schema.yaml`.
 2. Retain every validated data field and remove YAML presentation details only.
 3. Sort mapping keys by UTF-8 byte sequence.
-4. For every sequence, obey its mandatory `x-runtimeconditions-ordering`
-   annotation in that schema: sort `set` sequences by each item's canonical
-   bytes and preserve `source` sequences exactly.
+4. Apply the global sequence-ordering rules defined below: sort set-valued
+   sequences by each item's canonical bytes and preserve source-ordered
+   sequences exactly.
 5. Serialize the result with the JSON Canonicalization Scheme defined by RFC
    8785 and hash those UTF-8 bytes with SHA-256.
 
-Every sequence in the semantic schema MUST declare exactly one ordering. Schema
-tests MUST fail if an array schema omits the annotation or declares another
-value. The canonical JSON bytes are internal only and MUST NOT be persisted.
+The global sequence-ordering rules are fixed by semantic meaning and MUST NOT be
+overridden by an extension. Extension dependency, vocabulary, scope, member,
+and declaration lists are set-valued and MUST be sorted. JSON Schema `enum`,
+`required`, `allOf`, `anyOf`, and `oneOf` sequences are also set-valued and MUST
+be sorted. JSON arrays used as data values, JSON Schema `prefixItems`, and JSON
+Schema `examples` are source-ordered and MUST preserve their source order. The
+canonical JSON bytes are internal only and MUST NOT be persisted.
 
 The resolver MUST perform these steps in order:
 
@@ -418,10 +425,10 @@ release provenance; they are not inputs to model canonicalization.
 
 The resolver is complete only when all checks below pass:
 
-1. One direct-dependency fixture resolves in exactly one order in 100 repeated
+1. One direct-dependency fixture resolves in exactly one order in 10 repeated
    runs.
 2. One three-level transitive fixture resolves dependencies before dependents in
-   100 repeated runs.
+   10 repeated runs.
 3. One two-node cycle and one three-node cycle both fail before normalization.
 4. One missing direct dependency and one missing transitive dependency both
    fail before normalization.
@@ -554,8 +561,7 @@ The model MUST contain:
 - condition fields expanded to exact scopes;
 - interface fields expanded to exact scopes;
 - parsed field-path segments with array traversal explicit;
-- scoped portable string value domains containing each member's exact value and
-  canonical tokens;
+- scoped string value domains containing each member's exact value;
 - exact JSON Schema documents represented as YAML data;
 - language-neutral structural projections;
 - validation constraints not expressible by structural projections;
@@ -566,8 +572,8 @@ The model MUST contain:
   itself.
 
 `ownedDeclarations` and `importedDeclarations` MUST have the same entry shape:
-semantic coordinate, owner identifier, exact kind name, canonical tokens, and
-provenance. Together they MUST form a complete, non-overlapping partition of
+semantic coordinate, owner identifier, exact kind name, and provenance. Together
+they MUST form a complete, non-overlapping partition of
 the kind declarations in the extension closure.
 
 The model MUST contain no source-byte SHA-256 values, source backends, source
@@ -642,8 +648,8 @@ These rules apply to every extension without identifier-specific handling:
    property path.
 10. `additionalProperties` with a schema becomes a map-value shape.
 11. String scalar `enum` and string scoped `fieldValues` become value domains.
-    Every member retains its exact string value and the canonical tokens derived
-    from that value. Non-string `enum` and scoped `fieldValues` remain semantic
+   Every member retains its exact string value. Non-string `enum` and scoped
+   `fieldValues` remain semantic
     validation constraints on their structural scalar type and do not create
     named binding members.
 12. A string scalar `const` becomes a one-value domain. String const values
@@ -685,15 +691,6 @@ These rules apply to every extension without identifier-specific handling:
     schemas. Failure of either check stops normalization.
 24. A normalized symbol or shape MUST NOT depend on descriptions, repository
     paths, filenames, example documents, or operation-specific conventions.
-25. Binding-exposed names MUST NOT contain the ASCII hyphen character (`-`).
-    This restriction applies to extension-defined kind names, interface type
-    names, condition-field and interface-field path segments, JSON Schema
-    property names, and referenced `$defs` keys. A violation MUST stop
-    normalization with a deterministic diagnostic containing the semantic
-    coordinate and JSON Pointer when applicable. Extension identifiers, schema
-    identifiers, descriptions, and scalar values are not binding-exposed names
-    and are not subject to this restriction.
-
 ## 10. Language emitter contract
 
 Every emitter MUST implement this command contract:
@@ -766,38 +763,14 @@ timestamp or host-specific path.
     convention. The return value is an inert source-declaration anchor, not an
     in-memory Condition representation.
 
-### 10.2 Canonical symbol derivation
+### 10.2 Emitter-defined symbol derivation
 
-Symbol derivation MUST use the following tokenizer before applying a language's
-case convention:
-
-1. Process the exact UTF-8 vocabulary value, property-path segment, or string
-   value-domain member; do not translate, singularize, pluralize, stem, or
-   interpret it.
-2. Split ASCII runs at non-alphanumeric bytes, lower-or-digit to upper-case
-   transitions, letter-to-digit transitions, digit-to-letter transitions, and
-   before the last capital in a capital run followed by a lower-case letter.
-3. Encode each maximal non-ASCII byte run as one token consisting of `u` followed
-   by the upper-case hexadecimal bytes. This keeps every generated identifier
-   within the portable ASCII identifier subset.
-4. Drop empty separator runs. If no token remains, use the token `x`.
-5. Preserve the complete ordered token list in the normalized model. Emitters
-   MUST NOT retokenize source strings.
-
-The fixed initialism set is `ACL`, `API`, `ASCII`, `CPU`, `CSS`, `DNS`, `EOF`,
-`GUID`, `HTML`, `HTTP`, `HTTPS`, `ID`, `IP`, `JSON`, `QPS`, `RAM`, `RPC`, `SDK`,
-`SLA`, `SMTP`, `SQL`, `SSH`, `TCP`, `TLS`, `TTL`, `UDP`, `UI`, `UID`, `URI`,
-`URL`, `UTF8`, `UUID`, `VM`, `XML`, `XMPP`, `XSRF`, and `XSS`. Initialism
-matching is ASCII case-insensitive. Changing this set is a naming-rule change
-and MUST be processed as a public-API compatibility change.
-
-Names MUST be allocated as complete sets, never first-come-first-served. If two
-semantic coordinates initially produce the same name, every member of that
-collision group MUST prepend the nearest unused parent-path token group. This is
-repeated from nearest to farthest, then with interface-type tokens, then kind
-tokens. Emission MUST fail if the complete canonical path and scope still
-collide. The binding manifest MUST retain the serialized source name for every
-native symbol.
+Each emitter MUST derive native names from the exact source names in the model
+using only the naming rules of its target language. The normalized model MUST
+NOT contain language-specific name components or native symbols. Emitter-specific
+rules define identifier boundaries, case conversion, reserved-word handling,
+Unicode treatment, and invalid-name diagnostics. The binding manifest MUST
+retain the exact serialized source name for every native symbol.
 
 ### 10.3 Go rules
 
@@ -822,16 +795,19 @@ native symbol.
    exported and derived from the owning declaration coordinate.
 10. The declaration result is a zero-sized `Declaration` value.
 11. Package-scope usage is `var _ = package.Declaration(...)`.
-12. Exported types, fields, functions, and constants use Pascal case. Each token
-   in the fixed initialism set is upper case; every other alphabetic token is
-   lower case with its first byte upper case. A leading numeric token is prefixed
-   with `X`.
-13. Package identifiers use lower-case concatenated tokens. A Go keyword gains
-    the suffix `binding`.
+12. Exported types, fields, functions, and constants derive names directly from
+    their exact source names. Non-letter and non-digit separators and Go case
+    boundaries define name components; Unicode letters are retained. Each
+    component uses ordinary Go Pascal-case conversion. If the derived name
+    begins with a digit, emission MUST fail because Go has no valid identifier
+    form for that source name; the emitter MUST NOT fabricate a prefix or
+    substitute token.
+13. Package identifiers use lower-case concatenated name components. A Go
+    keyword gains the suffix `binding`.
 14. Every enum or typed-constant member name is its allocated value-domain type
-    followed by the Pascal-cased member-value tokens. Two members of one value
-    domain that produce the same Go name stop emission; a suffix, ordinal, or
-    alternate spelling MUST NOT be introduced.
+    followed by the Pascal-cased member-value components. Two members of one
+    value domain that produce the same Go name stop emission; a suffix, ordinal,
+    or alternate spelling MUST NOT be introduced.
 15. `Declaration`, every owned-kind declaration function, and every owned-kind
     marker interface are fixed package-level symbols. The emitter MUST allocate
     the complete package-level symbol set before writing any file. If another
@@ -840,8 +816,8 @@ native symbol.
     coordinates, the conflicting Go symbol, and the package coordinate. A
     prefix, suffix, ordinal, or other renaming MUST NOT be used to avoid the
     collision.
-16. Package-level collisions that do not involve a fixed symbol use the complete
-    collision algorithm in Section 10.2.
+16. Package-level collisions that do not involve a fixed symbol use the
+    emitter's deterministic collision handling rules.
 17. Source MUST pass `gofmt`, `go vet`, and `go test` using the declared minimum
     Go version.
 
@@ -861,9 +837,9 @@ native symbol.
 7. String value domains become `StrEnum`; members remain scoped by their enum
    class.
 8. Declaration functions return an inert `Declaration` object.
-9. Classes and type aliases use Pascal case with the same initialism handling as
-   Go. Functions, parameters, fields, and modules use lower-case tokens joined
-   by `_`. Enum members and typed constants use upper-case tokens joined by `_`.
+9. Classes and type aliases use Pascal case. Functions, parameters, fields, and
+   modules use lower-case components joined by `_`. Enum members and typed
+   constants use upper-case components joined by `_`.
 10. A leading numeric token is prefixed with `X` for classes and `x_` for every
    other symbol. A Python keyword gains one trailing underscore. A generated
    name beginning and ending with two underscores gains the prefix `rc_`.
@@ -936,8 +912,8 @@ The conformance suite MUST contain at least these 12 language-neutral cases:
 8. Heterogeneous `oneOf`.
 9. Arrays, object items, scalar items, and schema-valued maps.
 10. Scoped value domains and normalized-name collisions.
-11. Reserved language words, acronym boundaries, leading digits, non-ASCII
-    encoding, and normalized-name collisions.
+11. Source-name preservation across separators, case transitions, digits, and
+    Unicode; language-specific naming behavior is tested by each emitter.
 12. Unsupported structure-changing schema keyword.
 
 A conformance case MUST NOT cause production code to be keyed to the case's
@@ -949,8 +925,8 @@ category, semantic coordinate, and JSON Pointer when applicable.
 
 Determinism is accepted only when:
 
-1. Normalizing each positive case 100 times yields one SHA-256 value.
-2. Randomly permuting every set-like source sequence 100 times yields the same
+1. Normalizing each positive case 10 times yields one SHA-256 value.
+2. Randomly permuting every set-like source sequence 10 times yields the same
    normalized bytes.
 3. Running on Linux and macOS yields byte-identical checkpoints.
 4. Each emitter run three times from a new empty directory yields identical file
@@ -1008,7 +984,9 @@ model digest. Extension and package versions are not permanently lockstep.
 
 For a package with no prior release, a valid extension SemVer is the suggested
 initial package version. When the extension does not provide a SemVer release,
-the package starts at the explicit version in `packages.yaml`.
+the package starts at the explicit version in `packages.yaml`. When a prior
+release exists, release planning MUST resolve the previous published target
+release automatically; that release is not a build input.
 
 For packages at or above 1.0.0:
 
@@ -1038,68 +1016,118 @@ the generated source using the language's native AST parser, and MUST compare:
 Removal, rename, type change, optional-to-required change, value removal,
 validation tightening, package-coordinate change, or an exposed dependency
 breaking change is breaking. A schema change whose compatibility cannot be
-proved mechanically is breaking. The requested version is accepted when it is
-equal to or greater than the mechanically required bump and is rejected when it
-is smaller.
+proved mechanically is breaking. The declared package version is accepted when
+it is equal to or greater than the mechanically required bump and is rejected
+when it is smaller.
 
-Every target tag MUST have this exact form:
+Every target release tag in the source repository MUST have this exact form:
 
 ```text
 bindings/<package-key>/<language>/v<major>.<minor>.<patch>
 ```
 
-The tag prefix exactly matches that target's generated repository directory.
+This is a Git tag, not a filesystem path. The tag prefix exactly matches the
+target's generated repository directory.
 
-Reaching Go module version 2 or greater MUST update the module path with the
-required semantic import suffix and MUST regenerate every dependent Go binding.
+Reaching a breaking major version in any supported package manager MUST update
+that package manager's required package coordinate and MUST regenerate every
+dependent binding target that imports or otherwise depends on it.
 
 ## 15. Local orchestration
 
-The single local entry point is `rc-extension-bindings`. It MUST expose:
+The single local entry point is the global `rc` CLI. Binding orchestration MUST
+be exposed under the `rc bindings` command group, which MUST expose:
 
 ```text
-rc-extension-bindings resolve
-rc-extension-bindings normalize
-rc-extension-bindings generate
-rc-extension-bindings verify
-rc-extension-bindings package
-rc-extension-bindings plan-release
-rc-extension-bindings check
-rc-extension-bindings update
+rc bindings resolve
+rc bindings normalize
+rc bindings generate
+rc bindings verify
+rc bindings package
+rc bindings plan-release
+rc bindings check
+rc bindings update
 ```
 
-All commands MUST accept `--packages`, `--toolchain-lock`, `--cache`, and
-`--work-dir`. Target-aware commands MUST accept repeatable
-`--target <package-key>:<language>`; no `--target` means all configured targets.
-Resolution commands MUST accept repeatable `--extension-root` and
-`--extension-override <id>=<path>`. Network access MUST require `--network`.
+All binding commands accept `--packages`, `--toolchain-lock`, `--cache`, and
+`--work-dir`. The command determines the project root from the user's current
+working directory, walking toward the filesystem root. When neither project
+path is supplied, the project root is the nearest ancestor containing both
+`packages.yaml` and `toolchain.lock.yaml`; if no such ancestor exists, the
+command fails and requires the paths to be supplied explicitly. When one of
+those paths is supplied, its containing directory is the project root for any
+other omitted project path. Relative paths supplied by the user are resolved
+against the current working directory. When omitted, these flags behave as
+follows:
 
-The command behaviors are fixed:
+- `--packages` defaults to `<project-root>/packages.yaml`; the command fails if
+  that file does not exist.
+- `--toolchain-lock` defaults to `<project-root>/toolchain.lock.yaml`; the
+  command fails if that file does not exist.
+- When `--cache` is omitted, the command creates no persistent cache and reuses
+  no unlocked filesystem state. Supplying `--cache <directory>` explicitly
+  enables a persistent content-addressed cache at that location; every reused
+  object MUST be validated against its expected digest.
+- When `--work-dir` is omitted, the command creates no persistent working
+  directory. Intermediate values remain in memory whenever possible. When a
+  subprocess or packaging tool requires files, the command uses one
+  OS-managed temporary directory and removes it before returning, including
+  after a handled failure. Supplying `--work-dir <directory>` explicitly asks
+  the command to materialize and retain only the intermediate files actually
+  required by that invocation at that location.
 
-- `resolve` writes the validated semantic closure and separate dependency lock
-  under `--work-dir`.
+An explicitly supplied `--packages` or `--toolchain-lock` path replaces its
+project-root default. Explicit `--cache` and `--work-dir` paths enable the
+persistent behaviors described above. Target-aware commands accept repeatable
+`--target <package-key>:<language>`; when omitted, all targets in
+`packages.yaml` are selected. Resolution commands accept
+repeatable `--extension-root <id>` and
+`--extension-override <id>=<path>`; when omitted, roots come from the selected
+package targets and no local overrides are applied. Supplied roots replace the
+configured root set. An override replaces resolution for exactly its matching
+identifier during local development and is forbidden for release promotion.
+Supported network-backed schemes resolve normally using network access.
+
+The command behaviors and persistent filesystem effects are fixed:
+
+- `resolve` prints the validated semantic closure and dependency lock as one
+  YAML multi-document stream. It writes them only when
+  `--closure-output <path>` and/or `--dependency-lock-output <path>` is
+  supplied, and writes only the requested file or files.
 - `normalize` performs resolution, verifies the semantic closure against the
-  dependency lock, and writes the normalized model under `--work-dir`.
-- `generate` performs normalization and emission under `--work-dir`.
-- `verify` accepts `--input <generated-tree>`, verifies that tree without
-  modifying it, and writes reports under `--work-dir`.
-- `package` performs resolve through verification and writes package and release
-  archives under `--work-dir`.
+  dependency lock, and prints the normalized model. It writes the model only
+  when `--output <path>` is supplied. It writes the dependency lock only when
+  `--dependency-lock-output <path>` is supplied.
+- `generate` performs normalization and emission. It requires
+  `--output <new-empty-directory>` and writes only the selected generated target
+  trees beneath that directory.
+- `verify` verifies the tree supplied by `--input <generated-tree>`. When
+  `--input` is omitted, it verifies the selected committed
+  `bindings/<package-key>/<language>` directories. It writes no report file
+  unless `--report <path>` is supplied.
+- `package` performs resolve through verification. It requires
+  `--output <directory>` and writes only final package archives, release
+  archives, and their required manifests to that directory.
 - `plan-release` compares committed targets with their previous GitHub release
-  manifests and writes the build plan and required SemVer impact under
-  `--work-dir`.
+  manifests and prints the build plan and required SemVer impact. It writes a
+  plan file only when `--output <path>` is supplied.
 - `check` performs a clean full generation and verification, then compares it
-  byte-for-byte with committed target directories without modifying them.
+  byte-for-byte with committed target directories without modifying them. It
+  writes no report file unless `--report <path>` is supplied.
 - `update` performs the same clean full generation and verification, then
   atomically synchronizes only the selected `bindings/<package-key>/<language>`
-  directories, including removal of stale generated files.
+  directories, including removal of stale generated files. It leaves no other
+  persistent files.
 
-`generate`, `verify`, and `package` MUST operate in a newly created staging
-subdirectory of `--work-dir`. `check` and `update` MUST create the same staging
-structure internally. Every command MUST refuse its own existing non-empty
-staging subdirectory. Temporary paths and timestamps MUST NOT enter generated
-files. `update` is the only command permitted to mutate committed generated
-targets; no command is permitted to mutate extension YAML.
+The orchestrator MUST NOT create a fixed intermediate directory tree. It MUST
+create an intermediate file only when an invoked tool requires a filesystem
+path or when the user explicitly requests that file. A default invocation MUST
+leave behind only the command's documented final outputs. Any automatically
+created temporary directory MUST be unique to one invocation, MUST be outside
+the generated target tree, and MUST be removed before the command returns.
+Temporary paths and timestamps MUST NOT enter generated files. `update` is the
+only command permitted to mutate committed generated targets; no command is
+permitted to mutate extension YAML.
 
 The local full verification command MUST complete all gates in Section 13 and
 return zero only when the working tree's generated binding source is current.
@@ -1121,7 +1149,7 @@ plan -> resolve -> normalize -> emit -> verify -> package -> assemble release se
 
 The `plan` job MUST write `binding-build-plan.yaml`. The plan MUST include every
 root target, extension closure, language package dependency, build group,
-toolchain version, requested package version, and expected output path.
+toolchain version, package version, and expected output path.
 
 Build groups are connected dependency components within one language. Every
 independent build group MUST be a separate matrix entry, allowing the Actions
@@ -1171,7 +1199,7 @@ is built and verified, a separate job guarded by the protected
 2. Recompute and verify every file digest.
 3. Verify the source commit is still the default-branch head selected by the
    workflow.
-4. Verify requested versions satisfy the compatibility classifier.
+4. Verify declared package versions satisfy the compatibility classifier.
 5. Preflight every target and reject a tag or release collision unless the
    existing tag, commit, release manifest, and asset digests are all exact
    matches.

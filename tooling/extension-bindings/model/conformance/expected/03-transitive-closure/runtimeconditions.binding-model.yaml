@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 5eae4b922b860ddb73c66bfc65706c29f7e5c1121fafcde0f48a3a1d81394821
+    semanticSha256: 844ca76a007dcb0de8af8e36c5f5d679cce7494d660bf2a99ff01ec08495fb3e
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -54,8 +54,6 @@ vocabulary:
         - coordinate: kind:worker
           owner: urn:runtimeconditions:conformance:transitive:leaf
           kind: worker
-          tokens:
-            - worker
           provenance:
             owner: urn:runtimeconditions:conformance:transitive:leaf
             extensionSha256: 18214ac19f8e6d13d73df8306bffeca0d1637ac3daaa9ef588362b2072777749
@@ -65,8 +63,6 @@ vocabulary:
           owner: urn:runtimeconditions:conformance:transitive:middle
           kind: worker
           type: process
-          tokens:
-            - process
           provenance:
             owner: urn:runtimeconditions:conformance:transitive:middle
             extensionSha256: 487b16f987ed5ebee954f3166edcfc5e19606c24750180cb558e68a531e83a04
@@ -79,10 +75,6 @@ vocabulary:
           path: command
           segments:
             - name: command
-              tokens:
-                - command
-          tokens:
-            - command
           provenance:
             owner: urn:runtimeconditions:conformance:transitive:root
             extensionSha256: 3bbf20c958b8bfa972143241662fd69881414261a8f70dd54e9b4272389b7f6b
@@ -99,8 +91,6 @@ scopes:
         kind: object
         properties:
             - name: command
-              tokens:
-                - command
               shape:
                 kind: scalar
                 scalar: string
@@ -134,8 +124,6 @@ schemas:
         kind: object
         properties:
             - name: command
-              tokens:
-                - command
               shape:
                 kind: scalar
                 scalar: string

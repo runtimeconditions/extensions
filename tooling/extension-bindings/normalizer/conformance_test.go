@@ -24,7 +24,7 @@ var conformanceCases = []string{
 	"08-heterogeneous-union",
 	"09-collections-and-maps",
 	"10-scoped-domains-collisions",
-	"11-tokenization-collisions",
+	"11-source-name-preservation",
 	"12-unsupported-structural-keyword",
 }
 

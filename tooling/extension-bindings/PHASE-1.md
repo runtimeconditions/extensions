@@ -20,7 +20,7 @@ Implementation standard:
 - Complete JSON Schema Draft 2020-12 validation for extension schemas and
   scoped field values.
 - Deterministic vocabulary ownership, scope expansion, structural projection,
-  value-domain, tokenization, provenance, and diagnostic generation.
+  value-domain, source-name preservation, provenance, and diagnostic generation.
 - A command-line program for resolving an extension closure and writing a
   normalized model and separate dependency lock.
 - A language-neutral conformance suite with committed expected models and

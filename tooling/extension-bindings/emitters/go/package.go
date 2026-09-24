@@ -198,12 +198,6 @@ func validateRequiredModelValues(value reflect.Value, pointer string) error {
 	}
 	switch value.Kind() {
 	case reflect.Struct:
-		if value.Type() == reflect.TypeOf(normalizer.NormalizedValue{}) {
-			normalizedValue := value.Interface().(normalizer.NormalizedValue)
-			if _, isString := normalizedValue.Value.(string); isString && len(normalizedValue.Tokens) == 0 {
-				return missingModelField(pointer + "/tokens")
-			}
-		}
 		valueType := value.Type()
 		for index := 0; index < value.NumField(); index++ {
 			fieldType := valueType.Field(index)

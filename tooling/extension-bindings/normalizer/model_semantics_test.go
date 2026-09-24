@@ -49,7 +49,7 @@ func TestConformanceModelsExerciseNormalizationRules(t *testing.T) {
 		if len(model.Vocabulary.OwnedDeclarations) != 0 {
 			t.Fatal("additive root package incorrectly owns its dependency declaration")
 		}
-		if len(model.Vocabulary.ImportedDeclarations) != 1 || model.Vocabulary.ImportedDeclarations[0].Kind != "service" || strings.Join(model.Vocabulary.ImportedDeclarations[0].Tokens, ",") != "service" {
+		if len(model.Vocabulary.ImportedDeclarations) != 1 || model.Vocabulary.ImportedDeclarations[0].Kind != "service" {
 			t.Fatalf("imported declarations = %#v", model.Vocabulary.ImportedDeclarations)
 		}
 		if model.Scopes[0].Projection == nil {
@@ -97,7 +97,7 @@ func TestConformanceModelsExerciseNormalizationRules(t *testing.T) {
 			t.Fatal("collection or map projection is incorrect")
 		}
 		value := findProperty(t, *findProperty(t, projection, "entries").Shape.Items, "value")
-		if len(value.Shape.Values) != 2 || len(value.Shape.Values[0].Tokens) != 0 {
+		if len(value.Shape.Values) != 2 {
 			t.Fatalf("non-string enum values = %#v", value.Shape.Values)
 		}
 	})
@@ -108,42 +108,12 @@ func TestConformanceModelsExerciseNormalizationRules(t *testing.T) {
 			model.Vocabulary.ValueDomains[0].InterfaceType == model.Vocabulary.ValueDomains[1].InterfaceType {
 			t.Fatalf("scoped value domains = %#v", model.Vocabulary.ValueDomains)
 		}
-		var baseURLTokens []string
 		for _, field := range model.Vocabulary.ConditionFields {
 			if field.Path == "base_url" {
-				baseURLTokens = field.Tokens
+				return
 			}
 		}
-		if strings.Join(baseURLTokens, ",") != "base,url" {
-			t.Fatalf("base_url tokens = %v", baseURLTokens)
-		}
-		for _, domain := range model.Vocabulary.ValueDomains {
-			for _, value := range domain.Values {
-				if _, ok := value.Value.(string); !ok || len(value.Tokens) == 0 {
-					t.Fatalf("string value-domain member = %#v", value)
-				}
-			}
-		}
-	})
-
-	t.Run("portable tokenizer records exact mechanical tokens", func(t *testing.T) {
-		model := positiveConformanceModel(t, "11-tokenization-collisions")
-		want := map[string]string{
-			"9patch":  "9,patch",
-			"café":    "caf,uC3A9",
-			"api_url": "api,url",
-		}
-		for _, field := range model.Vocabulary.ConditionFields {
-			if expected, exists := want[field.Path]; exists {
-				if actual := strings.Join(field.Tokens, ","); actual != expected {
-					t.Errorf("tokens for %q = %s, want %s", field.Path, actual, expected)
-				}
-				delete(want, field.Path)
-			}
-		}
-		if len(want) != 0 {
-			t.Fatalf("missing tokenized fields: %v", want)
-		}
+		t.Fatal("base_url condition field was not retained")
 	})
 }
 

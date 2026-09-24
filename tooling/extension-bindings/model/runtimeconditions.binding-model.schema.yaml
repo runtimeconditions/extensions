@@ -49,13 +49,6 @@ $defs:
   sha256:
     type: string
     pattern: '^[0-9a-f]{64}$'
-  tokens:
-    type: array
-    x-runtimeconditions-ordering: source
-    minItems: 1
-    items:
-      type: string
-      minLength: 1
   toolIdentity:
     type: object
     required: [name, version, sha256]
@@ -161,36 +154,33 @@ $defs:
       jsonPointer: {type: string}
   declaration:
     type: object
-    required: [coordinate, owner, kind, tokens, provenance]
+    required: [coordinate, owner, kind, provenance]
     additionalProperties: false
     properties:
       coordinate: {type: string, minLength: 1}
       owner: {type: string, minLength: 1}
       kind: {type: string, minLength: 1}
-      tokens: {$ref: '#/$defs/tokens'}
       provenance: {$ref: '#/$defs/provenance'}
   interface:
     type: object
-    required: [coordinate, owner, kind, type, tokens, provenance]
+    required: [coordinate, owner, kind, type, provenance]
     additionalProperties: false
     properties:
       coordinate: {type: string, minLength: 1}
       owner: {type: string, minLength: 1}
       kind: {type: string, minLength: 1}
       type: {type: string, minLength: 1}
-      tokens: {$ref: '#/$defs/tokens'}
       provenance: {$ref: '#/$defs/provenance'}
   pathSegment:
     type: object
-    required: [name, tokens]
+    required: [name]
     additionalProperties: false
     properties:
       name: {type: string, minLength: 1}
       array: {type: boolean}
-      tokens: {$ref: '#/$defs/tokens'}
   field:
     type: object
-    required: [coordinate, owner, kind, path, segments, tokens, provenance]
+    required: [coordinate, owner, kind, path, segments, provenance]
     additionalProperties: false
     properties:
       coordinate: {type: string, minLength: 1}
@@ -203,7 +193,6 @@ $defs:
         x-runtimeconditions-ordering: source
         minItems: 1
         items: {$ref: '#/$defs/pathSegment'}
-      tokens: {$ref: '#/$defs/tokens'}
       provenance: {$ref: '#/$defs/provenance'}
   valueDomain:
     type: object
@@ -233,17 +222,6 @@ $defs:
     properties:
       value:
         type: [string, number, integer, boolean, 'null']
-      tokens: {$ref: '#/$defs/tokens'}
-    allOf:
-      - if:
-          properties:
-            value: {type: string}
-          required: [value]
-        then:
-          required: [tokens]
-        else:
-          not:
-            required: [tokens]
   scope:
     type: object
     required: [coordinate, kind]
@@ -276,21 +254,19 @@ $defs:
       provenance: {$ref: '#/$defs/provenance'}
   namedShape:
     type: object
-    required: [name, tokens, jsonPointer, shape, provenance]
+    required: [name, jsonPointer, shape, provenance]
     additionalProperties: false
     properties:
       name: {type: string, minLength: 1}
-      tokens: {$ref: '#/$defs/tokens'}
       jsonPointer: {type: string, minLength: 1}
       shape: {$ref: '#/$defs/shape'}
       provenance: {$ref: '#/$defs/provenance'}
   propertyShape:
     type: object
-    required: [name, tokens, shape, provenance]
+    required: [name, shape, provenance]
     additionalProperties: false
     properties:
       name: {type: string, minLength: 1}
-      tokens: {$ref: '#/$defs/tokens'}
       required: {type: boolean}
       shape: {$ref: '#/$defs/shape'}
       provenance: {$ref: '#/$defs/provenance'}

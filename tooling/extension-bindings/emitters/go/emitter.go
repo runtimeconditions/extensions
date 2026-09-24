@@ -118,18 +118,19 @@ func buildPackageIR(model normalizer.BindingModel, target PackageTarget) (*packa
 	})
 	for _, declaration := range model.Vocabulary.OwnedDeclarations {
 		ir.declarationsByKind[declaration.Kind] = declaration
+		declarationTokens := goTokens(declaration.Kind)
 		function := ir.addRequest(&symbolRequest{
 			key: "fixed:function:" + declaration.Coordinate, coordinate: declaration.Coordinate,
-			category: "owned declaration function", base: declaration.Tokens, fixed: true,
+			category: "owned declaration function", base: declarationTokens, fixed: true,
 		})
-		fieldTokens := append(append([]string(nil), declaration.Tokens...), "field")
+		fieldTokens := append(append([]string(nil), declarationTokens...), "field")
 		fieldInterface := ir.addRequest(&symbolRequest{
 			key: "fixed:field-interface:" + declaration.Coordinate, coordinate: declaration.Coordinate,
 			category: "owned declaration marker interface", base: fieldTokens, fixed: true,
 		})
 		ir.declarations = append(ir.declarations, &declarationIR{
 			model: declaration, function: function, fieldInterface: fieldInterface,
-			markerMethod: markerMethod(declaration.Tokens),
+			markerMethod: markerMethod(declarationTokens),
 		})
 	}
 	for _, declaration := range model.Vocabulary.ImportedDeclarations {
@@ -162,19 +163,21 @@ func buildPackageIR(model normalizer.BindingModel, target PackageTarget) (*packa
 		}
 		context := shapeContext{
 			scope: scope,
-			path:  []pathPart{{name: interfaceModel.Type, tokens: interfaceModel.Tokens}},
+			path:  []pathPart{{name: interfaceModel.Type, tokens: goTokens(interfaceModel.Type)}},
 			semanticPath: []pathPart{{
 				name: "interface", tokens: []string{"interface"},
 			}},
 		}
+		interfaceTokens := goTokens(interfaceModel.Type)
+		declarationTokens := goTokens(declaration.Kind)
 		typeValue, err := ir.ensureNamedShape(
 			"interface:"+interfaceModel.Coordinate, interfaceModel.Coordinate, interfaceModel.Type,
-			interfaceModel.Tokens, [][]string{declaration.Tokens}, context, shape,
+			interfaceTokens, [][]string{declarationTokens}, context, shape,
 		)
 		if err != nil {
 			return nil, err
 		}
-		ir.addMethod(typeValue, markerMethod(declaration.Tokens))
+		ir.addMethod(typeValue, markerMethod(declarationTokens))
 	}
 
 	for _, field := range model.Vocabulary.ConditionFields {
@@ -196,18 +199,19 @@ func buildPackageIR(model normalizer.BindingModel, target PackageTarget) (*packa
 		path := pathParts(field.Segments)
 		prefixes := pathPrefixes(path)
 		if interfaceModel, found := findInterface(model, field.Kind, field.InterfaceType); found {
-			prefixes = append(prefixes, interfaceModel.Tokens)
+			prefixes = append(prefixes, goTokens(interfaceModel.Type))
 		}
-		prefixes = append(prefixes, declaration.Tokens)
+		declarationTokens := goTokens(declaration.Kind)
+		prefixes = append(prefixes, declarationTokens)
 		context := shapeContext{scope: scope, path: path, semanticPath: clonePath(path)}
 		typeValue, err := ir.ensureNamedShape(
 			"condition-field:"+field.Coordinate, field.Coordinate, field.Path,
-			field.Tokens, prefixes, context, shape,
+			goTokens(field.Path), prefixes, context, shape,
 		)
 		if err != nil {
 			return nil, err
 		}
-		ir.addMethod(typeValue, markerMethod(declaration.Tokens))
+		ir.addMethod(typeValue, markerMethod(declarationTokens))
 	}
 	if err := ir.discoverStructuralTypes(); err != nil {
 		return nil, err
@@ -258,14 +262,21 @@ func (ir *packageIR) ensureNamedShape(key, coordinate, sourceName string, base [
 		typeValue.kind = "struct"
 		fieldNames := map[string]string{}
 		for _, property := range shape.Properties {
-			fieldName := pascal(property.Tokens)
+			propertyTokens := goTokens(property.Name)
+			fieldName := pascal(propertyTokens)
+			if err := validateGoIdentifier(fieldName, &symbolRequest{
+				coordinate: property.Provenance.Coordinate + property.Provenance.JSONPointer,
+				category:   "field",
+			}); err != nil {
+				return nil, err
+			}
 			if previous, exists := fieldNames[fieldName]; exists {
 				return nil, diagnostic("symbol", "RCG2006", coordinate, fmt.Sprintf("Go field %q collides between properties %q and %q", fieldName, previous, property.Name))
 			}
 			fieldNames[fieldName] = property.Name
 			propertyContext := context
-			propertyContext.path = appendPath(context.path, pathPart{name: property.Name, tokens: property.Tokens})
-			propertyContext.semanticPath = appendPath(context.semanticPath, pathPart{name: property.Name, tokens: property.Tokens})
+			propertyContext.path = appendPath(context.path, pathPart{name: property.Name, tokens: propertyTokens})
+			propertyContext.semanticPath = appendPath(context.semanticPath, pathPart{name: property.Name, tokens: propertyTokens})
 			reference, err := ir.referenceForShape(propertyContext, property.Shape, property.Required)
 			if err != nil {
 				return nil, err
@@ -396,9 +407,10 @@ func (ir *packageIR) ensureDefinition(context shapeContext, shape normalizer.Sha
 		prefixes := scopePrefixes(ir.model, context.scope)
 		key := "definition:" + schema.Coordinate + ":" + definition.JSONPointer
 		definitionContext := context
-		definitionContext.path = []pathPart{{name: definition.Name, tokens: definition.Tokens}}
+		definitionTokens := goTokens(definition.Name)
+		definitionContext.path = []pathPart{{name: definition.Name, tokens: definitionTokens}}
 		definitionContext.semanticPath = clonePath(definitionContext.path)
-		return ir.ensureNamedShape(key, definition.Provenance.Coordinate+definition.JSONPointer, definition.Name, definition.Tokens, prefixes, definitionContext, definition.Shape)
+		return ir.ensureNamedShape(key, definition.Provenance.Coordinate+definition.JSONPointer, definition.Name, definitionTokens, prefixes, definitionContext, definition.Shape)
 	}
 	return nil, diagnostic("model", "RCG2009", shape.Provenance.Coordinate, fmt.Sprintf("reference %q has no normalized definition", shape.Ref))
 }
@@ -491,7 +503,7 @@ func (ir *packageIR) discoverStructuralTypes() error {
 			if property.Name == "interface" || property.Provenance.Owner != ir.model.RootExtension.ID {
 				continue
 			}
-			path := []pathPart{{name: property.Name, tokens: property.Tokens}}
+			path := []pathPart{{name: property.Name, tokens: goTokens(property.Name)}}
 			if ownedFields[scopePathKey(scope.Kind, scope.InterfaceType, pathString(path))] {
 				continue
 			}
@@ -521,6 +533,9 @@ func (ir *packageIR) allocatePackageSymbols() error {
 	for _, request := range ir.requests {
 		request.level = 0
 		request.name = pascal(request.base)
+		if err := validateGoIdentifier(request.name, request); err != nil {
+			return err
+		}
 	}
 	var candidates []constantCandidate
 	for _, key := range sortedTypeKeys(ir.types) {
@@ -531,7 +546,13 @@ func (ir *packageIR) allocatePackageSymbols() error {
 			if !ok {
 				continue
 			}
-			suffix := pascal(member.Tokens)
+			suffix := pascal(goTokens(value))
+			if err := validateGoIdentifier(suffix, &symbolRequest{
+				coordinate: typeValue.coordinate + ":" + strconv.Quote(value),
+				category:   "value-domain member",
+			}); err != nil {
+				return err
+			}
 			if previous, exists := seen[suffix]; exists {
 				name := typeValue.request.name + suffix
 				return diagnostic("symbol", "RCG2010", typeValue.coordinate, fmt.Sprintf("Go value member %q collides between exact values %q and %q", name, previous, value))
@@ -587,6 +608,9 @@ func (ir *packageIR) allocatePackageSymbols() error {
 		for request := range advance {
 			request.level++
 			request.name = allocatedName(request)
+			if err := validateGoIdentifier(request.name, request); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -714,8 +738,9 @@ func (ir *packageIR) renderConformance() ([]byte, error) {
 		fmt.Fprintf(&buffer, "\nvar _ %s.Declaration = %s.%s(%s)\n", alias, alias, declaration.function.name, strings.Join(arguments, ", "))
 	}
 	for _, declaration := range ir.model.Vocabulary.ImportedDeclarations {
-		method := markerMethod(declaration.Tokens)
-		localName := "imported" + pascal(declaration.Tokens) + "Field"
+		declarationTokens := goTokens(declaration.Kind)
+		method := markerMethod(declarationTokens)
+		localName := "imported" + pascal(declarationTokens) + "Field"
 		fmt.Fprintf(&buffer, "\ntype %s interface { %s() }\n", localName, method)
 		for _, key := range keys {
 			if ir.types[key].methods[method] {
@@ -834,9 +859,10 @@ func (ir *packageIR) buildManifestSymbols() {
 		)
 	}
 	for _, declaration := range ir.model.Vocabulary.ImportedDeclarations {
+		declarationTokens := goTokens(declaration.Kind)
 		ir.manifestSymbols = append(ir.manifestSymbols, ManifestSymbol{
 			Construct: "imported-marker-contract", Coordinate: declaration.Coordinate,
-			SourceName: declaration.Kind, NativeName: pascal(append(append([]string(nil), declaration.Tokens...), "field")),
+			SourceName: declaration.Kind, NativeName: pascal(append(append([]string(nil), declarationTokens...), "field")),
 		})
 	}
 	for _, key := range sortedTypeKeys(ir.types) {
@@ -924,7 +950,7 @@ func shapeAtSegments(shape normalizer.Shape, segments []normalizer.PathSegment) 
 func pathParts(segments []normalizer.PathSegment) []pathPart {
 	result := make([]pathPart, 0, len(segments))
 	for _, segment := range segments {
-		result = append(result, pathPart{name: segment.Name, tokens: segment.Tokens, array: segment.Array})
+		result = append(result, pathPart{name: segment.Name, tokens: goTokens(segment.Name), array: segment.Array})
 	}
 	return result
 }
@@ -940,12 +966,12 @@ func pathPrefixes(path []pathPart) [][]string {
 func scopePrefixes(model normalizer.BindingModel, scope normalizer.ScopeModel) [][]string {
 	var result [][]string
 	if value, ok := findInterface(model, scope.Kind, scope.InterfaceType); ok {
-		result = append(result, value.Tokens)
+		result = append(result, goTokens(value.Type))
 	}
 	declarations := append(append([]normalizer.DeclarationModel(nil), model.Vocabulary.OwnedDeclarations...), model.Vocabulary.ImportedDeclarations...)
 	for _, declaration := range declarations {
 		if declaration.Kind == scope.Kind {
-			result = append(result, declaration.Tokens)
+			result = append(result, goTokens(declaration.Kind))
 			break
 		}
 	}

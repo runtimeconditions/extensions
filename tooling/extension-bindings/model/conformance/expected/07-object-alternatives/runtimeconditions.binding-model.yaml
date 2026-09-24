@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: aaf788c46115f7dffe012b1d1d2772e5ed7035a97f59298ad066f5e14598ba33
+    semanticSha256: d79736fb95a00dd9e6ab7f8b7aa6613ad131f5216a6bab11149bd34e228e8f41
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -33,8 +33,6 @@ vocabulary:
         - coordinate: kind:deployment
           owner: urn:runtimeconditions:conformance:object-alternatives
           kind: deployment
-          tokens:
-            - deployment
           provenance:
             owner: urn:runtimeconditions:conformance:object-alternatives
             extensionSha256: 5aad4f4d113cba9955c8f227902a79471a846ddaffd971b9db8f506b64dae7c1
@@ -44,8 +42,6 @@ vocabulary:
           owner: urn:runtimeconditions:conformance:object-alternatives
           kind: deployment
           type: process
-          tokens:
-            - process
           provenance:
             owner: urn:runtimeconditions:conformance:object-alternatives
             extensionSha256: 5aad4f4d113cba9955c8f227902a79471a846ddaffd971b9db8f506b64dae7c1
@@ -60,14 +56,10 @@ scopes:
         kind: object
         properties:
             - name: configuration
-              tokens:
-                - configuration
               shape:
                 kind: object
                 properties:
                     - name: command
-                      tokens:
-                        - command
                       shape:
                         kind: scalar
                         scalar: string
@@ -82,8 +74,6 @@ scopes:
                         coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
                         jsonPointer: /properties/configuration/oneOf/0/properties/command
                     - name: image
-                      tokens:
-                        - image
                       shape:
                         kind: scalar
                         scalar: string
@@ -141,14 +131,10 @@ schemas:
         kind: object
         properties:
             - name: configuration
-              tokens:
-                - configuration
               shape:
                 kind: object
                 properties:
                     - name: command
-                      tokens:
-                        - command
                       shape:
                         kind: scalar
                         scalar: string
@@ -163,8 +149,6 @@ schemas:
                         coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
                         jsonPointer: /properties/configuration/oneOf/0/properties/command
                     - name: image
-                      tokens:
-                        - image
                       shape:
                         kind: scalar
                         scalar: string

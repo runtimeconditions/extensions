@@ -101,10 +101,10 @@ $defs:
         type: string
       nativeName:
         type: string
-        pattern: '^[A-Z][A-Za-z0-9_]*$'
+        pattern: '^\p{L}[\p{L}\p{N}_]*$'
       parent:
         type: string
-        pattern: '^[A-Z][A-Za-z0-9_]*$'
+        pattern: '^\p{L}[\p{L}\p{N}_]*$'
       file:
         type: string
         pattern: '^[^/](?:.*[^/])?$'

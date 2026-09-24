@@ -92,22 +92,6 @@ func TestNormalizeEveryCatalogExtension(t *testing.T) {
 	}
 }
 
-func TestTokenizerIsMechanical(t *testing.T) {
-	tests := map[string][]string{
-		"baseUrl":        {"base", "url"},
-		"HTTPServer2URL": {"http", "server", "2", "url"},
-		"key_value":      {"key", "value"},
-		"9patch":         {"9", "patch"},
-		"café":           {"caf", "uC3A9"},
-	}
-	for input, expected := range tests {
-		actual := tokenize(input)
-		if strings.Join(actual, ",") != strings.Join(expected, ",") {
-			t.Errorf("tokenize(%q) = %v, want %v", input, actual, expected)
-		}
-	}
-}
-
 func TestFieldValuesUseCompleteJSONSchemaValidation(t *testing.T) {
 	id := "urn:runtimeconditions:test:field-values-full-schema"
 	document := fixtureExtension(id, nil, `  kinds:

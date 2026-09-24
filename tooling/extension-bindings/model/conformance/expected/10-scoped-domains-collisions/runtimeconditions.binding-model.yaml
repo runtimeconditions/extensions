@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 3e142e3e8fd72198c8e947c5c31d74f6e0a1c48c62182d9e4eda3c10ca9ba4b2
+    semanticSha256: b1f1b8b39e40b176c1803cd5edb8d11abb8c5ddc057b29afadbbaba50d8d964a
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -77,8 +77,6 @@ vocabulary:
         - coordinate: kind:service
           owner: urn:runtimeconditions:conformance:scoped-domains-collisions
           kind: service
-          tokens:
-            - service
           provenance:
             owner: urn:runtimeconditions:conformance:scoped-domains-collisions
             extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -88,8 +86,6 @@ vocabulary:
           owner: urn:runtimeconditions:conformance:scoped-domains-collisions
           kind: service
           type: grpc
-          tokens:
-            - grpc
           provenance:
             owner: urn:runtimeconditions:conformance:scoped-domains-collisions
             extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -98,8 +94,6 @@ vocabulary:
           owner: urn:runtimeconditions:conformance:scoped-domains-collisions
           kind: service
           type: http
-          tokens:
-            - http
           provenance:
             owner: urn:runtimeconditions:conformance:scoped-domains-collisions
             extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -112,10 +106,6 @@ vocabulary:
           path: mode
           segments:
             - name: mode
-              tokens:
-                - mode
-          tokens:
-            - mode
           provenance:
             owner: urn:runtimeconditions:conformance:scoped-domains-collisions
             extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -127,12 +117,6 @@ vocabulary:
           path: base_url
           segments:
             - name: base_url
-              tokens:
-                - base
-                - url
-          tokens:
-            - base
-            - url
           provenance:
             owner: urn:runtimeconditions:conformance:scoped-domains-collisions
             extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -144,10 +128,6 @@ vocabulary:
           path: mode
           segments:
             - name: mode
-              tokens:
-                - mode
-          tokens:
-            - mode
           provenance:
             owner: urn:runtimeconditions:conformance:scoped-domains-collisions
             extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -160,12 +140,8 @@ vocabulary:
           path: mode
           segments:
             - name: mode
-              tokens:
-                - mode
           values:
             - value: streaming
-              tokens:
-                - streaming
           provenance:
             owner: urn:runtimeconditions:conformance:scoped-domains-collisions
             extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -177,15 +153,9 @@ vocabulary:
           path: mode
           segments:
             - name: mode
-              tokens:
-                - mode
           values:
             - value: direct
-              tokens:
-                - direct
             - value: proxy
-              tokens:
-                - proxy
           provenance:
             owner: urn:runtimeconditions:conformance:scoped-domains-collisions
             extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -200,15 +170,11 @@ scopes:
         kind: object
         properties:
             - name: mode
-              tokens:
-                - mode
               shape:
                 kind: scalar
                 scalar: string
                 values:
                     - value: streaming
-                      tokens:
-                        - streaming
                 provenance:
                     owner: urn:runtimeconditions:conformance:scoped-domains-collisions
                     extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -232,9 +198,6 @@ scopes:
         kind: object
         properties:
             - name: base_url
-              tokens:
-                - base
-                - url
               shape:
                 kind: scalar
                 scalar: string
@@ -249,18 +212,12 @@ scopes:
                 coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
                 jsonPointer: /properties/base_url
             - name: mode
-              tokens:
-                - mode
               shape:
                 kind: scalar
                 scalar: string
                 values:
                     - value: direct
-                      tokens:
-                        - direct
                     - value: proxy
-                      tokens:
-                        - proxy
                 provenance:
                     owner: urn:runtimeconditions:conformance:scoped-domains-collisions
                     extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -291,15 +248,11 @@ schemas:
         kind: object
         properties:
             - name: mode
-              tokens:
-                - mode
               shape:
                 kind: scalar
                 scalar: string
                 values:
                     - value: streaming
-                      tokens:
-                        - streaming
                 provenance:
                     owner: urn:runtimeconditions:conformance:scoped-domains-collisions
                     extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4
@@ -338,9 +291,6 @@ schemas:
         kind: object
         properties:
             - name: base_url
-              tokens:
-                - base
-                - url
               shape:
                 kind: scalar
                 scalar: string
@@ -355,18 +305,12 @@ schemas:
                 coordinate: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-http
                 jsonPointer: /properties/base_url
             - name: mode
-              tokens:
-                - mode
               shape:
                 kind: scalar
                 scalar: string
                 values:
                     - value: direct
-                      tokens:
-                        - direct
                     - value: proxy
-                      tokens:
-                        - proxy
                 provenance:
                     owner: urn:runtimeconditions:conformance:scoped-domains-collisions
                     extensionSha256: b0bc2c117740090766476e8a6a2f8db045935e22a7b7607705909a6f9c2961e4

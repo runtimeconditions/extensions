@@ -1,33 +1,33 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:tokenization-collisions
+  id: urn:runtimeconditions:conformance:source-name-preservation
   version: 1.0.0
 spec:
   kinds:
     - name: class
   interfaceTypes:
-    - name: HTTPServer2URL
+    - name: http_server2_url
       targetKind: class
   conditionFields:
-    - name: 9patch
+    - name: patch9
       appliesToKinds: [class]
-      appliesToInterfaceTypes: [HTTPServer2URL]
+      appliesToInterfaceTypes: [http_server2_url]
     - name: café
       appliesToKinds: [class]
-      appliesToInterfaceTypes: [HTTPServer2URL]
+      appliesToInterfaceTypes: [http_server2_url]
     - name: api_url
       appliesToKinds: [class]
-      appliesToInterfaceTypes: [HTTPServer2URL]
+      appliesToInterfaceTypes: [http_server2_url]
   schemas:
-    - id: tokenization
-      description: Portable tokenizer inputs and normalized-name collisions.
+    - id: source-names
+      description: Exact source names retained for emitter-specific naming.
       appliesToKind: class
-      appliesToInterfaceType: HTTPServer2URL
+      appliesToInterfaceType: http_server2_url
       schema:
         type: object
         properties:
-          9patch: {type: string}
+          patch9: {type: string}
           café: {type: string}
           api_url: {type: string}
         additionalProperties: false

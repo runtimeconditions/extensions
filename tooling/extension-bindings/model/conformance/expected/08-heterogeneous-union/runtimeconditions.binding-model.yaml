@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 69771093c889baf4308c4afa3245034ad0973128e2e3e271037a15094521835c
+    semanticSha256: 8fb7d583d6979035d8eb0b2ab446b43278ae6ac1c12efd400a4265bafbeed673
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -28,8 +28,6 @@ vocabulary:
         - coordinate: kind:selector
           owner: urn:runtimeconditions:conformance:heterogeneous-union
           kind: selector
-          tokens:
-            - selector
           provenance:
             owner: urn:runtimeconditions:conformance:heterogeneous-union
             extensionSha256: c3030ab535ffb95a62278898ee9f8888b0cf6a022bf7acc4b83eb3068b177dd1
@@ -43,8 +41,6 @@ scopes:
         kind: object
         properties:
             - name: target
-              tokens:
-                - target
               shape:
                 kind: union
                 variants:
@@ -53,8 +49,6 @@ scopes:
                         - id
                       properties:
                         - name: id
-                          tokens:
-                            - id
                           required: true
                           shape:
                             kind: scalar
@@ -118,8 +112,6 @@ schemas:
         kind: object
         properties:
             - name: target
-              tokens:
-                - target
               shape:
                 kind: union
                 variants:
@@ -128,8 +120,6 @@ schemas:
                         - id
                       properties:
                         - name: id
-                          tokens:
-                            - id
                           required: true
                           shape:
                             kind: scalar

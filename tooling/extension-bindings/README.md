@@ -56,13 +56,13 @@ go run ./cmd/rc-binding-model \
   --dependency-lock-output <new-lock-path>
 ```
 
-Output paths must not already exist. Network resolution is disabled unless
-`--network` is supplied. HTTPS and OCI resolution require a dependency lock with
-an exact source digest and source locator. HTTPS redirects are rejected. An OCI
-input locator may use a mutable tag; after its locked extension content is
-verified, the resolved dependency lock records the manifest's immutable
-`sha256` locator. A previously written lock is supplied with
-`--dependency-lock`.
+Output paths must not already exist. Supported HTTPS and OCI identifiers resolve
+using network access when encountered. HTTPS and OCI resolution require a
+dependency lock with an exact source digest and source locator. HTTPS redirects
+are rejected. An OCI input locator may use a mutable tag; after its locked
+extension content is verified, the resolved dependency lock records the
+manifest's immutable `sha256` locator. A previously written lock is supplied
+with `--dependency-lock`.
 
 The extension cache is content-addressed. Each extension entry must be named
 `<lowercase-sha256>`, `<lowercase-sha256>.yaml`, or

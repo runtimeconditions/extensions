@@ -160,7 +160,6 @@ type DeclarationModel struct {
 	Coordinate string     `yaml:"coordinate" json:"coordinate"`
 	Owner      string     `yaml:"owner" json:"owner"`
 	Kind       string     `yaml:"kind" json:"kind"`
-	Tokens     []string   `yaml:"tokens" json:"tokens"`
 	Provenance Provenance `yaml:"provenance" json:"provenance"`
 }
 
@@ -169,7 +168,6 @@ type InterfaceModel struct {
 	Owner      string     `yaml:"owner" json:"owner"`
 	Kind       string     `yaml:"kind" json:"kind"`
 	Type       string     `yaml:"type" json:"type"`
-	Tokens     []string   `yaml:"tokens" json:"tokens"`
 	Provenance Provenance `yaml:"provenance" json:"provenance"`
 }
 
@@ -180,7 +178,6 @@ type FieldModel struct {
 	InterfaceType string        `yaml:"interfaceType,omitempty" json:"interfaceType,omitempty"`
 	Path          string        `yaml:"path" json:"path"`
 	Segments      []PathSegment `yaml:"segments" json:"segments"`
-	Tokens        []string      `yaml:"tokens" json:"tokens"`
 	Provenance    Provenance    `yaml:"provenance" json:"provenance"`
 }
 
@@ -196,14 +193,12 @@ type ValueDomainModel struct {
 }
 
 type NormalizedValue struct {
-	Value  any      `yaml:"value" json:"value"`
-	Tokens []string `yaml:"tokens,omitempty" json:"tokens,omitempty"`
+	Value any `yaml:"value" json:"value"`
 }
 
 type PathSegment struct {
-	Name   string   `yaml:"name" json:"name"`
-	Array  bool     `yaml:"array,omitempty" json:"array,omitempty"`
-	Tokens []string `yaml:"tokens" json:"tokens"`
+	Name  string `yaml:"name" json:"name"`
+	Array bool   `yaml:"array,omitempty" json:"array,omitempty"`
 }
 
 type ScopeModel struct {
@@ -228,7 +223,6 @@ type NormalizedSchema struct {
 
 type NamedShape struct {
 	Name        string     `yaml:"name" json:"name"`
-	Tokens      []string   `yaml:"tokens" json:"tokens"`
 	JSONPointer string     `yaml:"jsonPointer" json:"jsonPointer"`
 	Shape       Shape      `yaml:"shape" json:"shape"`
 	Provenance  Provenance `yaml:"provenance" json:"provenance"`
@@ -250,7 +244,6 @@ type Shape struct {
 
 type PropertyShape struct {
 	Name       string     `yaml:"name" json:"name"`
-	Tokens     []string   `yaml:"tokens" json:"tokens"`
 	Required   bool       `yaml:"required,omitempty" json:"required,omitempty"`
 	Shape      Shape      `yaml:"shape" json:"shape"`
 	Provenance Provenance `yaml:"provenance" json:"provenance"`

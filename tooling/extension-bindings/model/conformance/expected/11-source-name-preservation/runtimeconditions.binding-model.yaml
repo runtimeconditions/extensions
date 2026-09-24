@@ -1,0 +1,224 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: 18f16a49dbfb8dabb3b426c90679fd2c30534b34215a485e3237c7193f9f311d
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: urn:runtimeconditions:test:core-profile-schema
+    version: 0.0.0-test
+    semanticSha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+rootExtension:
+    id: urn:runtimeconditions:conformance:source-name-preservation
+    version: 1.0.0
+    semanticSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+extensions:
+    - id: urn:runtimeconditions:conformance:source-name-preservation
+      version: 1.0.0
+      semanticSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+vocabulary:
+    owners:
+        - coordinate: condition-field:class:http_server2_url:api_url
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          interfaceType: http_server2_url
+          path: api_url
+        - coordinate: condition-field:class:http_server2_url:café
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          interfaceType: http_server2_url
+          path: café
+        - coordinate: condition-field:class:http_server2_url:patch9
+          category: condition-field
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          interfaceType: http_server2_url
+          path: patch9
+        - coordinate: interface:class:http_server2_url
+          category: interface
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          interfaceType: http_server2_url
+        - coordinate: kind:class
+          category: kind
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+    ownedDeclarations:
+        - coordinate: kind:class
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          provenance:
+            owner: urn:runtimeconditions:conformance:source-name-preservation
+            extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+            coordinate: kind:class
+    interfaces:
+        - coordinate: interface:class:http_server2_url
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          type: http_server2_url
+          provenance:
+            owner: urn:runtimeconditions:conformance:source-name-preservation
+            extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+            coordinate: interface:class:http_server2_url
+    conditionFields:
+        - coordinate: condition-field:class:http_server2_url:api_url
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          interfaceType: http_server2_url
+          path: api_url
+          segments:
+            - name: api_url
+          provenance:
+            owner: urn:runtimeconditions:conformance:source-name-preservation
+            extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+            coordinate: condition-field:class:http_server2_url:api_url
+        - coordinate: condition-field:class:http_server2_url:café
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          interfaceType: http_server2_url
+          path: café
+          segments:
+            - name: café
+          provenance:
+            owner: urn:runtimeconditions:conformance:source-name-preservation
+            extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+            coordinate: condition-field:class:http_server2_url:café
+        - coordinate: condition-field:class:http_server2_url:patch9
+          owner: urn:runtimeconditions:conformance:source-name-preservation
+          kind: class
+          interfaceType: http_server2_url
+          path: patch9
+          segments:
+            - name: patch9
+          provenance:
+            owner: urn:runtimeconditions:conformance:source-name-preservation
+            extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+            coordinate: condition-field:class:http_server2_url:patch9
+scopes:
+    - coordinate: class:http_server2_url
+      kind: class
+      interfaceType: http_server2_url
+      applicableSchemas:
+        - urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+      projection:
+        kind: object
+        properties:
+            - name: api_url
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:source-name-preservation
+                    extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                    coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                    jsonPointer: /properties/api_url
+              provenance:
+                owner: urn:runtimeconditions:conformance:source-name-preservation
+                extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                jsonPointer: /properties/api_url
+            - name: café
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:source-name-preservation
+                    extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                    coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                    jsonPointer: /properties/café
+              provenance:
+                owner: urn:runtimeconditions:conformance:source-name-preservation
+                extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                jsonPointer: /properties/café
+            - name: patch9
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:source-name-preservation
+                    extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                    coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                    jsonPointer: /properties/patch9
+              provenance:
+                owner: urn:runtimeconditions:conformance:source-name-preservation
+                extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                jsonPointer: /properties/patch9
+        provenance:
+            owner: urn:runtimeconditions:conformance:source-name-preservation
+            extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+            coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+schemas:
+    - coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+      owner: urn:runtimeconditions:conformance:source-name-preservation
+      id: source-names
+      kind: class
+      interfaceType: http_server2_url
+      exact:
+        additionalProperties: false
+        properties:
+            api_url:
+                type: string
+            café:
+                type: string
+            patch9:
+                type: string
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: api_url
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:source-name-preservation
+                    extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                    coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                    jsonPointer: /properties/api_url
+              provenance:
+                owner: urn:runtimeconditions:conformance:source-name-preservation
+                extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                jsonPointer: /properties/api_url
+            - name: café
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:source-name-preservation
+                    extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                    coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                    jsonPointer: /properties/café
+              provenance:
+                owner: urn:runtimeconditions:conformance:source-name-preservation
+                extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                jsonPointer: /properties/café
+            - name: patch9
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: urn:runtimeconditions:conformance:source-name-preservation
+                    extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                    coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                    jsonPointer: /properties/patch9
+              provenance:
+                owner: urn:runtimeconditions:conformance:source-name-preservation
+                extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+                coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+                jsonPointer: /properties/patch9
+        provenance:
+            owner: urn:runtimeconditions:conformance:source-name-preservation
+            extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+            coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names
+      provenance:
+        owner: urn:runtimeconditions:conformance:source-name-preservation
+        extensionSha256: d67d8a2e3006009958159e7e4de04330e292f6bab69ea0c5e3cc62a27dc7520d
+        coordinate: urn:runtimeconditions:conformance:source-name-preservation#schema:source-names

@@ -5,42 +5,71 @@ import (
 	"go/token"
 	"sort"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
-var initialisms = map[string]bool{
-	"ACL": true, "API": true, "ASCII": true, "CPU": true, "CSS": true,
-	"DNS": true, "EOF": true, "GUID": true, "HTML": true, "HTTP": true,
-	"HTTPS": true, "ID": true, "IP": true, "JSON": true, "QPS": true,
-	"RAM": true, "RPC": true, "SDK": true, "SLA": true, "SMTP": true,
-	"SQL": true, "SSH": true, "TCP": true, "TLS": true, "TTL": true,
-	"UDP": true, "UI": true, "UID": true, "URI": true, "URL": true,
-	"UTF8": true, "UUID": true, "VM": true, "XML": true, "XMPP": true,
-	"XSRF": true, "XSS": true,
+// goTokens derives Go naming components from the exact source name. The
+// normalized model intentionally does not carry language-specific tokens.
+func goTokens(value string) []string {
+	var result []string
+	var current []rune
+	runes := []rune(value)
+	flush := func() {
+		if len(current) != 0 {
+			result = append(result, string(current))
+			current = nil
+		}
+	}
+	for index, character := range runes {
+		if !unicode.IsLetter(character) && !unicode.IsDigit(character) {
+			flush()
+			continue
+		}
+		if len(current) != 0 {
+			previous := runes[index-1]
+			next := rune(0)
+			if index+1 < len(runes) {
+				next = runes[index+1]
+			}
+			boundary := unicode.IsUpper(character) && (unicode.IsLower(previous) || unicode.IsDigit(previous))
+			boundary = boundary || (unicode.IsUpper(character) && unicode.IsUpper(previous) && unicode.IsLower(next))
+			boundary = boundary || (unicode.IsDigit(character) != unicode.IsDigit(previous))
+			if boundary {
+				flush()
+			}
+		}
+		current = append(current, character)
+	}
+	flush()
+	return result
 }
 
 func pascal(tokens []string) string {
 	var result strings.Builder
 	for _, value := range tokens {
-		upper := strings.ToUpper(value)
-		if initialisms[upper] {
-			result.WriteString(upper)
-			continue
-		}
 		lower := strings.ToLower(value)
 		if lower == "" {
 			continue
 		}
-		result.WriteString(strings.ToUpper(lower[:1]))
-		result.WriteString(lower[1:])
+		first, size := utf8.DecodeRuneInString(lower)
+		result.WriteString(strings.ToUpper(string(first)))
+		result.WriteString(lower[size:])
 	}
 	name := result.String()
-	if name == "" {
-		return "X"
-	}
-	if name[0] >= '0' && name[0] <= '9' {
-		return "X" + name
-	}
 	return name
+}
+
+func validateGoIdentifier(name string, request *symbolRequest) error {
+	if name != "" && token.IsIdentifier(name) && !token.Lookup(name).IsKeyword() {
+		return nil
+	}
+	return &DiagnosticError{Diagnostic: Diagnostic{
+		Category:   "symbol",
+		Code:       "RCG2011",
+		Coordinate: request.coordinate,
+		Message:    fmt.Sprintf("Go source name for %s %q produces invalid identifier %q", request.category, request.coordinate, name),
+	}}
 }
 
 func lowerIdentifier(tokens []string) string {
@@ -72,6 +101,9 @@ type symbolRequest struct {
 func allocateSymbols(packageCoordinate string, requests []*symbolRequest) error {
 	for _, request := range requests {
 		request.name = pascal(request.base)
+		if err := validateGoIdentifier(request.name, request); err != nil {
+			return err
+		}
 	}
 	for {
 		groups := map[string][]*symbolRequest{}
@@ -105,6 +137,9 @@ func allocateSymbols(packageCoordinate string, requests []*symbolRequest) error 
 				}
 				tokens = append(tokens, request.base...)
 				request.name = pascal(tokens)
+				if err := validateGoIdentifier(request.name, request); err != nil {
+					return err
+				}
 			}
 			changed = true
 		}

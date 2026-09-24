@@ -1,0 +1,9 @@
+apiVersion: runtimeconditions.io/go-package-target/v1alpha1
+kind: RuntimeConditionsGoPackageTarget
+packageKey: conformance-source-name-preservation
+rootExtension: urn:runtimeconditions:conformance:source-name-preservation
+modulePath: example.com/runtimeconditions/conformance/source-name-preservation
+packageName: sourcenamepreservation
+version: v1.0.0
+minimumGoVersion: "1.22"
+publicationMode: github-tag

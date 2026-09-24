@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-	"unicode/utf8"
 )
 
 type NormalizeConfig struct {
@@ -95,12 +94,12 @@ func appendVocabulary(model *BindingModel, document ResolvedDocument, interfaces
 		})
 		if root {
 			model.Vocabulary.OwnedDeclarations = append(model.Vocabulary.OwnedDeclarations, DeclarationModel{
-				Coordinate: coordinate, Owner: owner, Kind: kind.Name, Tokens: tokenize(kind.Name),
+				Coordinate: coordinate, Owner: owner, Kind: kind.Name,
 				Provenance: provenance(coordinate, ""),
 			})
 		} else {
 			model.Vocabulary.ImportedDeclarations = append(model.Vocabulary.ImportedDeclarations, DeclarationModel{
-				Coordinate: coordinate, Owner: owner, Kind: kind.Name, Tokens: tokenize(kind.Name),
+				Coordinate: coordinate, Owner: owner, Kind: kind.Name,
 				Provenance: provenance(coordinate, ""),
 			})
 		}
@@ -113,7 +112,6 @@ func appendVocabulary(model *BindingModel, document ResolvedDocument, interfaces
 		})
 		model.Vocabulary.Interfaces = append(model.Vocabulary.Interfaces, InterfaceModel{
 			Coordinate: coordinate, Owner: owner, Kind: interfaceType.TargetKind, Type: interfaceType.Name,
-			Tokens:     tokenize(interfaceType.Name),
 			Provenance: provenance(coordinate, ""),
 		})
 	}
@@ -136,7 +134,7 @@ func appendVocabulary(model *BindingModel, document ResolvedDocument, interfaces
 				})
 				model.Vocabulary.ConditionFields = append(model.Vocabulary.ConditionFields, FieldModel{
 					Coordinate: coordinate, Owner: owner, Kind: kind, InterfaceType: interfaceType,
-					Path: path, Segments: segments, Tokens: tokenize(field.Name),
+					Path: path, Segments: segments,
 					Provenance: provenance(coordinate, ""),
 				})
 			}
@@ -152,7 +150,7 @@ func appendVocabulary(model *BindingModel, document ResolvedDocument, interfaces
 		})
 		model.Vocabulary.InterfaceFields = append(model.Vocabulary.InterfaceFields, FieldModel{
 			Coordinate: coordinate, Owner: owner, Kind: field.TargetKind, InterfaceType: field.TargetType,
-			Path: path, Segments: segments, Tokens: tokenize(field.Name),
+			Path: path, Segments: segments,
 			Provenance: provenance(coordinate, ""),
 		})
 	}
@@ -180,11 +178,7 @@ func normalizeValues(values []any) []NormalizedValue {
 	_ = sortAny(sorted)
 	result := make([]NormalizedValue, 0, len(sorted))
 	for _, value := range sorted {
-		member := NormalizedValue{Value: value}
-		if text, ok := value.(string); ok {
-			member.Tokens = tokenize(text)
-		}
-		result = append(result, member)
+		result = append(result, NormalizedValue{Value: value})
 	}
 	return result
 }
@@ -218,7 +212,7 @@ func normalizeSchemas(document ResolvedDocument) ([]NormalizedSchema, error) {
 					return nil, err
 				}
 				definitions = append(definitions, NamedShape{
-					Name: name, Tokens: tokenize(name), JSONPointer: "/$defs/" + escapeJSONPointer(name), Shape: shape,
+					Name: name, JSONPointer: "/$defs/" + escapeJSONPointer(name), Shape: shape,
 					Provenance: Provenance{Owner: owner, ExtensionSHA256: document.SemanticSHA256, Coordinate: coordinate, JSONPointer: definitionPointer},
 				})
 			}
@@ -462,7 +456,7 @@ func projectDirectShape(schema, root map[string]any, coordinate, extensionDigest
 				return Shape{}, err
 			}
 			shape.Properties = append(shape.Properties, PropertyShape{
-				Name: name, Tokens: tokenize(name), Required: requiredSet[name], Shape: propertyShape,
+				Name: name, Required: requiredSet[name], Shape: propertyShape,
 				Provenance: Provenance{Owner: provenance.Owner, ExtensionSHA256: extensionDigest, Coordinate: coordinate, JSONPointer: propertyPointer},
 			})
 		}
@@ -1075,72 +1069,10 @@ func parsePath(path string) ([]PathSegment, error) {
 		if name == "" || strings.ContainsAny(name, "[]") {
 			return nil, fmt.Errorf("invalid field path segment %q", part)
 		}
-		segments = append(segments, PathSegment{Name: name, Array: array, Tokens: tokenize(name)})
+		segments = append(segments, PathSegment{Name: name, Array: array})
 	}
 	return segments, nil
 }
-
-func tokenize(value string) []string {
-	var raw []string
-	for i := 0; i < len(value); {
-		if value[i] >= utf8.RuneSelf {
-			start := i
-			for i < len(value) && value[i] >= utf8.RuneSelf {
-				_, size := utf8.DecodeRuneInString(value[i:])
-				i += size
-			}
-			var builder strings.Builder
-			builder.WriteByte('u')
-			for _, valueByte := range []byte(value[start:i]) {
-				builder.WriteString(fmt.Sprintf("%02X", valueByte))
-			}
-			raw = append(raw, builder.String())
-			continue
-		}
-		if !isASCIIAlphaNumeric(value[i]) {
-			i++
-			continue
-		}
-		start := i
-		i++
-		for i < len(value) && value[i] < utf8.RuneSelf && isASCIIAlphaNumeric(value[i]) {
-			previous := value[i-1]
-			current := value[i]
-			var next byte
-			if i+1 < len(value) {
-				next = value[i+1]
-			}
-			if tokenBoundary(previous, current, next) {
-				raw = append(raw, strings.ToLower(value[start:i]))
-				start = i
-			}
-			i++
-		}
-		raw = append(raw, strings.ToLower(value[start:i]))
-	}
-	if len(raw) == 0 {
-		return []string{"x"}
-	}
-	return raw
-}
-
-func tokenBoundary(previous, current, next byte) bool {
-	if isASCIIDigit(previous) != isASCIIDigit(current) {
-		return true
-	}
-	if isASCIILower(previous) && isASCIIUpper(current) {
-		return true
-	}
-	return isASCIIUpper(previous) && isASCIIUpper(current) && isASCIILower(next)
-}
-
-func isASCIIAlphaNumeric(value byte) bool {
-	return isASCIILower(value) || isASCIIUpper(value) || isASCIIDigit(value)
-}
-
-func isASCIILower(value byte) bool { return value >= 'a' && value <= 'z' }
-func isASCIIUpper(value byte) bool { return value >= 'A' && value <= 'Z' }
-func isASCIIDigit(value byte) bool { return value >= '0' && value <= '9' }
 
 func sortModel(model *BindingModel) {
 	sort.Slice(model.DependencyEdges, func(i, j int) bool {

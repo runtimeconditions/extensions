@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"go/token"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,19 +16,32 @@ import (
 
 func TestGoNamingRules(t *testing.T) {
 	tests := map[string]struct {
-		tokens []string
+		source string
 		want   string
 	}{
-		"initialisms":   {[]string{"http", "server", "2", "url"}, "HTTPServer2URL"},
-		"leading digit": {[]string{"9", "patch"}, "X9Patch"},
-		"encoded UTF-8": {[]string{"caf", "uC3A9"}, "CafUc3a9"},
+		"ordinary Pascal case": {"HTTPServer2URL", "HttpServer2Url"},
+		"leading digit":        {"9patch", "9Patch"},
+		"unicode letters":      {"café", "Café"},
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			if actual := pascal(test.tokens); actual != test.want {
-				t.Fatalf("pascal(%v) = %q, want %q", test.tokens, actual, test.want)
+			if actual := pascal(goTokens(test.source)); actual != test.want {
+				t.Fatalf("pascal(goTokens(%q)) = %q, want %q", test.source, actual, test.want)
 			}
 		})
+	}
+}
+
+func TestGoRejectsLeadingDigitIdentifiers(t *testing.T) {
+	if name := pascal(goTokens("9patch")); name != "9Patch" {
+		t.Fatalf("pascal(goTokens(%q)) = %q, want 9Patch", "9patch", name)
+	}
+	if token.IsIdentifier("9Patch") {
+		t.Fatal("Go accepted an identifier beginning with a digit")
+	}
+	err := validateGoIdentifier("9Patch", &symbolRequest{coordinate: "condition-field:9patch", category: "field"})
+	if err == nil || !strings.Contains(err.Error(), "RCG2011") {
+		t.Fatalf("leading-digit identifier error = %v, want RCG2011", err)
 	}
 }
 
@@ -191,34 +205,6 @@ func TestEmitRejectsMissingNestedModelField(t *testing.T) {
 	}
 }
 
-func TestLoadModelRejectsMissingStringValueTokens(t *testing.T) {
-	modelData, err := os.ReadFile(expectedModelPath("10-scoped-domains-collisions"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	model, err := normalizer.ParseYAMLData(modelData)
-	if err != nil {
-		t.Fatal(err)
-	}
-	vocabulary := model["vocabulary"].(map[string]any)
-	domain := vocabulary["valueDomains"].([]any)[0].(map[string]any)
-	value := domain["values"].([]any)[0].(map[string]any)
-	delete(value, "tokens")
-	data, err := yaml.Marshal(model)
-	if err != nil {
-		t.Fatal(err)
-	}
-	modelPath := filepath.Join(t.TempDir(), "model.yaml")
-	if err := os.WriteFile(modelPath, data, 0o600); err != nil {
-		t.Fatal(err)
-	}
-	_, err = LoadModel(modelPath)
-	pointer := "/vocabulary/valueDomains/0/values/0/tokens"
-	if err == nil || !strings.Contains(err.Error(), "RCG1021") || !strings.Contains(err.Error(), pointer) {
-		t.Fatalf("missing string value tokens error = %v, want RCG1021 at %s", err, pointer)
-	}
-}
-
 func cloneDocument(t *testing.T, value map[string]any) map[string]any {
 	t.Helper()
 	data, err := json.Marshal(value)
@@ -262,8 +248,8 @@ func TestSameDomainMemberCollisionFails(t *testing.T) {
 	for index := range model.Vocabulary.ValueDomains {
 		if model.Vocabulary.ValueDomains[index].InterfaceType == "http" && model.Vocabulary.ValueDomains[index].Path == "mode" {
 			model.Vocabulary.ValueDomains[index].Values = []normalizer.NormalizedValue{
-				{Value: "apiUrl", Tokens: []string{"api", "url"}},
-				{Value: "api_url", Tokens: []string{"api", "url"}},
+				{Value: "apiUrl"},
+				{Value: "api_url"},
 			}
 		}
 	}

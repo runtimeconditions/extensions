@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 154460c619a3bae5eb2d4a3709d2493d299e4f706908a70e69da10d181fc4ac0
+    semanticSha256: d912038a34f5c6c1962494342c866cdc84ea1546234b353a0e633b05290de7a0
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -47,8 +47,6 @@ vocabulary:
         - coordinate: kind:service
           owner: urn:runtimeconditions:conformance:additive-field:base
           kind: service
-          tokens:
-            - service
           provenance:
             owner: urn:runtimeconditions:conformance:additive-field:base
             extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
@@ -58,8 +56,6 @@ vocabulary:
           owner: urn:runtimeconditions:conformance:additive-field:base
           kind: service
           type: http
-          tokens:
-            - http
           provenance:
             owner: urn:runtimeconditions:conformance:additive-field:base
             extensionSha256: 8827c2637bd972ebfaf5e31cd00f8c000f5c59f7dee09fcb61efddf58dbb0586
@@ -72,10 +68,6 @@ vocabulary:
           path: credential
           segments:
             - name: credential
-              tokens:
-                - credential
-          tokens:
-            - credential
           provenance:
             owner: urn:runtimeconditions:conformance:additive-field
             extensionSha256: bb925391bf1258099593d029039280294dd5bb09f35af889bbb08317ae645bcd
@@ -91,16 +83,12 @@ scopes:
         kind: object
         properties:
             - name: credential
-              tokens:
-                - credential
               shape:
                 kind: object
                 required:
                     - token
                 properties:
                     - name: token
-                      tokens:
-                        - token
                       required: true
                       shape:
                         kind: scalar
@@ -126,8 +114,6 @@ scopes:
                 coordinate: urn:runtimeconditions:conformance:additive-field#schema:additive-credential
                 jsonPointer: /properties/credential
             - name: interface
-              tokens:
-                - interface
               shape:
                 kind: object
                 provenance:
@@ -166,16 +152,12 @@ schemas:
         kind: object
         properties:
             - name: credential
-              tokens:
-                - credential
               shape:
                 kind: object
                 required:
                     - token
                 properties:
                     - name: token
-                      tokens:
-                        - token
                       required: true
                       shape:
                         kind: scalar
@@ -229,8 +211,6 @@ schemas:
         kind: object
         properties:
             - name: interface
-              tokens:
-                - interface
               shape:
                 kind: object
                 provenance:

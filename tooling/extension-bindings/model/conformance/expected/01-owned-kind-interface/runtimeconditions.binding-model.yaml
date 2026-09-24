@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 79bdff3c3e55ff85074f9b7905cd28245ddd2e47e5fa03f4a8fbddcbba4186be
+    semanticSha256: 5d4c85d26d6a505cbc973d1bb19bbc13383fd9802e411f4434acb616171b2244
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -45,8 +45,6 @@ vocabulary:
         - coordinate: kind:service
           owner: urn:runtimeconditions:conformance:owned-kind-interface
           kind: service
-          tokens:
-            - service
           provenance:
             owner: urn:runtimeconditions:conformance:owned-kind-interface
             extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
@@ -56,8 +54,6 @@ vocabulary:
           owner: urn:runtimeconditions:conformance:owned-kind-interface
           kind: service
           type: http
-          tokens:
-            - http
           provenance:
             owner: urn:runtimeconditions:conformance:owned-kind-interface
             extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
@@ -70,10 +66,6 @@ vocabulary:
           path: region
           segments:
             - name: region
-              tokens:
-                - region
-          tokens:
-            - region
           provenance:
             owner: urn:runtimeconditions:conformance:owned-kind-interface
             extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
@@ -86,13 +78,7 @@ vocabulary:
           path: interface.endpoint
           segments:
             - name: interface
-              tokens:
-                - interface
             - name: endpoint
-              tokens:
-                - endpoint
-          tokens:
-            - endpoint
           provenance:
             owner: urn:runtimeconditions:conformance:owned-kind-interface
             extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
@@ -110,8 +96,6 @@ scopes:
             - region
         properties:
             - name: interface
-              tokens:
-                - interface
               required: true
               shape:
                 kind: object
@@ -119,8 +103,6 @@ scopes:
                     - endpoint
                 properties:
                     - name: endpoint
-                      tokens:
-                        - endpoint
                       required: true
                       shape:
                         kind: scalar
@@ -146,8 +128,6 @@ scopes:
                 coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
                 jsonPointer: /properties/interface
             - name: region
-              tokens:
-                - region
               required: true
               shape:
                 kind: scalar
@@ -202,8 +182,6 @@ schemas:
             - region
         properties:
             - name: interface
-              tokens:
-                - interface
               required: true
               shape:
                 kind: object
@@ -211,8 +189,6 @@ schemas:
                     - endpoint
                 properties:
                     - name: endpoint
-                      tokens:
-                        - endpoint
                       required: true
                       shape:
                         kind: scalar
@@ -238,8 +214,6 @@ schemas:
                 coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
                 jsonPointer: /properties/interface
             - name: region
-              tokens:
-                - region
               required: true
               shape:
                 kind: scalar

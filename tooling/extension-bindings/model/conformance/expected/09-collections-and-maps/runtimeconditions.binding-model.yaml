@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 53a9d8401c1183f27537be5da90b9cec36b85d31883163149194e6eb7bbdbe90
+    semanticSha256: c8b332c3bf5cbc96d52d435c524b78c6be54e00c10551454302f17b102c41d55
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -28,8 +28,6 @@ vocabulary:
         - coordinate: kind:collection
           owner: urn:runtimeconditions:conformance:collections-and-maps
           kind: collection
-          tokens:
-            - collection
           provenance:
             owner: urn:runtimeconditions:conformance:collections-and-maps
             extensionSha256: b4ee15cc315570817cd1668729875ea85c505f554f8596bc2a3db5cbef474dc4
@@ -43,8 +41,6 @@ scopes:
         kind: object
         properties:
             - name: entries
-              tokens:
-                - entries
               shape:
                 kind: array
                 items:
@@ -54,8 +50,6 @@ scopes:
                         - value
                     properties:
                         - name: key
-                          tokens:
-                            - key
                           required: true
                           shape:
                             kind: scalar
@@ -71,8 +65,6 @@ scopes:
                             coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
                             jsonPointer: /properties/entries/items/properties/key
                         - name: value
-                          tokens:
-                            - value
                           required: true
                           shape:
                             kind: scalar
@@ -106,8 +98,6 @@ scopes:
                 coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
                 jsonPointer: /properties/entries
             - name: labels
-              tokens:
-                - labels
               shape:
                 kind: map
                 mapValues:
@@ -129,8 +119,6 @@ scopes:
                 coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
                 jsonPointer: /properties/labels
             - name: tags
-              tokens:
-                - tags
               shape:
                 kind: array
                 items:
@@ -192,8 +180,6 @@ schemas:
         kind: object
         properties:
             - name: entries
-              tokens:
-                - entries
               shape:
                 kind: array
                 items:
@@ -203,8 +189,6 @@ schemas:
                         - value
                     properties:
                         - name: key
-                          tokens:
-                            - key
                           required: true
                           shape:
                             kind: scalar
@@ -220,8 +204,6 @@ schemas:
                             coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
                             jsonPointer: /properties/entries/items/properties/key
                         - name: value
-                          tokens:
-                            - value
                           required: true
                           shape:
                             kind: scalar
@@ -255,8 +237,6 @@ schemas:
                 coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
                 jsonPointer: /properties/entries
             - name: labels
-              tokens:
-                - labels
               shape:
                 kind: map
                 mapValues:
@@ -278,8 +258,6 @@ schemas:
                 coordinate: urn:runtimeconditions:conformance:collections-and-maps#schema:collection-shapes
                 jsonPointer: /properties/labels
             - name: tags
-              tokens:
-                - tags
               shape:
                 kind: array
                 items:

@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: b70de51cbb99ba7436bc6649c4921af1f3ab549b884f9ebc29e2de28d549c635
+    semanticSha256: a8eaa25f298dbca789845f205cf97b8e492d096282bdd2e9638cc01e55ca9cdb
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -33,8 +33,6 @@ vocabulary:
         - coordinate: kind:tree
           owner: urn:runtimeconditions:conformance:recursive-reference
           kind: tree
-          tokens:
-            - tree
           provenance:
             owner: urn:runtimeconditions:conformance:recursive-reference
             extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
@@ -44,8 +42,6 @@ vocabulary:
           owner: urn:runtimeconditions:conformance:recursive-reference
           kind: tree
           type: node
-          tokens:
-            - node
           provenance:
             owner: urn:runtimeconditions:conformance:recursive-reference
             extensionSha256: a42dabd740ca69d0d43fd85b39d05b9fee461b0394f4cd64e44b28d5959ae4b5
@@ -60,16 +56,12 @@ scopes:
         kind: object
         properties:
             - name: root
-              tokens:
-                - root
               shape:
                 kind: object
                 required:
                     - name
                 properties:
                     - name: children
-                      tokens:
-                        - children
                       shape:
                         kind: array
                         items:
@@ -91,8 +83,6 @@ scopes:
                         coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
                         jsonPointer: /$defs/node/properties/children
                     - name: name
-                      tokens:
-                        - name
                       required: true
                       shape:
                         kind: scalar
@@ -152,16 +142,12 @@ schemas:
         kind: object
         properties:
             - name: root
-              tokens:
-                - root
               shape:
                 kind: object
                 required:
                     - name
                 properties:
                     - name: children
-                      tokens:
-                        - children
                       shape:
                         kind: array
                         items:
@@ -183,8 +169,6 @@ schemas:
                         coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
                         jsonPointer: /$defs/node/properties/children
                     - name: name
-                      tokens:
-                        - name
                       required: true
                       shape:
                         kind: scalar
@@ -215,8 +199,6 @@ schemas:
             coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
       definitions:
         - name: node
-          tokens:
-            - node
           jsonPointer: /$defs/node
           shape:
             kind: object
@@ -224,8 +206,6 @@ schemas:
                 - name
             properties:
                 - name: children
-                  tokens:
-                    - children
                   shape:
                     kind: array
                     items:
@@ -247,8 +227,6 @@ schemas:
                     coordinate: urn:runtimeconditions:conformance:recursive-reference#schema:recursive-tree
                     jsonPointer: /$defs/node/properties/children
                 - name: name
-                  tokens:
-                    - name
                   required: true
                   shape:
                     kind: scalar
