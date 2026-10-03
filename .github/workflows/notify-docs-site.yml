@@ -1,0 +1,23 @@
+name: Notify docs site of catalog changes
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "catalog/**/releases/**/runtimeconditions.extension.yaml"
+      - "tooling/common/build_extensions_site.py"
+      - "tooling/common/serialization.py"
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Trigger docs site rebuild
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DOCS_REPO_DISPATCH_TOKEN }}
+          repository: runtimeconditions/runtimeconditions.github.io
+          event-type: extensions-updated
