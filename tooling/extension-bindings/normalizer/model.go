@@ -21,8 +21,8 @@ type ExtensionDefinition struct {
 }
 
 type ExtensionMetadata struct {
-	ID             string `yaml:"id" json:"id"`
-	Version        string `yaml:"version,omitempty" json:"version,omitempty"`
+	URI            string `yaml:"uri" json:"uri"`
+	Version        string `yaml:"version" json:"version"`
 	SemanticSHA256 string `yaml:"semanticSha256,omitempty" json:"semanticSha256,omitempty"`
 }
 

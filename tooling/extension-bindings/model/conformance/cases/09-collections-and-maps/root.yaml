@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:collections-and-maps
+  uri: https://runtimeconditions.io/conformance/collections-and-maps
   version: 1.0.0
 spec:
   kinds:

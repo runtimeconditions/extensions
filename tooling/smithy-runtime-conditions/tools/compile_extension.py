@@ -347,8 +347,8 @@ def build_outputs(
     extension_id = semantics.get("extensionId")
     if not isinstance(version, str) or not SEMVER.fullmatch(version):
         raise ValueError(f"invalid extension semantic version: {version!r}")
-    if not isinstance(extension_id, str) or f"/{version}/" not in extension_id:
-        raise ValueError("extensionId must contain the exact extensionVersion as a path segment")
+    if not isinstance(extension_id, str) or not extension_id.endswith(":" + version):
+        raise ValueError("extensionId must end with the exact extensionVersion after the final colon")
     try:
         operations = build_operations(shapes, service, semantics, operation_semantics)
     except ModelDrift:
@@ -376,7 +376,7 @@ def build_outputs(
         "apiVersion": EXTENSION_API_VERSION,
         "kind": "RuntimeConditionsExtensionDefinition",
         "metadata": {
-            "id": extension_id,
+            "uri": extension_id.rsplit(":", 1)[0],
             "version": version,
             "semanticSha256": spec_digest,
         },
@@ -404,7 +404,7 @@ def build_outputs(
             "source": provenance,
         },
         "extension": {
-            "id": extension_id,
+            "uri": extension_id.rsplit(":", 1)[0],
             "version": version,
             "semanticSha256": spec_digest,
         },
@@ -458,7 +458,7 @@ def review_markdown(
                 "",
                 "## Generated semantic release",
                 "",
-                f"- Extension: `{extension['metadata']['id']}`",
+                f"- Extension: `{extension['metadata']['uri'] + ':' + extension['metadata']['version']}`",
                 f"- Extension version: `{extension['metadata']['version']}`",
                 f"- Extension semantic SHA-256: `{extension['metadata']['semanticSha256']}`",
                 f"- Service-mapping semantic SHA-256: `{mapping['metadata']['semanticSha256']}`",
@@ -557,7 +557,7 @@ def main() -> int:
         encoding="utf-8",
     )
     print("classification: automatic")
-    print(f"extension: {extension['metadata']['id']}")
+    print(f"extension: {extension['metadata']['uri'] + ':' + extension['metadata']['version']}")
     print(f"canonical operations: {len(names)}")
     print(f"extension semantic sha256: {extension['metadata']['semanticSha256']}")
     return 0

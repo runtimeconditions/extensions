@@ -14,11 +14,11 @@ func TestRunWritesRepeatableModelAndSeparateLock(t *testing.T) {
 	lockPath := filepath.Join(temporary, "lock.yaml")
 	caseRoot := filepath.Join("..", "..", "..", "model", "conformance", "cases", "01-owned-kind-interface")
 	common := []string{
-		"--root", "urn:runtimeconditions:conformance:owned-kind-interface",
+		"--root", "https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0",
 		"--extension-root", caseRoot,
 		"--semantic-schema", filepath.Join("..", "..", "..", "model", "runtimeconditions.extension-semantic.schema.yaml"),
 		"--model-schema", filepath.Join("..", "..", "..", "model", "runtimeconditions.binding-model.schema.yaml"),
-		"--core-profile-id", "urn:runtimeconditions:test:core",
+		"--core-profile-id", "https://runtimeconditions.io/test/core:1.0.0",
 		"--core-profile-version", "1.0.0",
 		"--core-profile-semantic-sha256", strings.Repeat("c", 64),
 		"--normalizer-sha256", strings.Repeat("d", 64),

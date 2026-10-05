@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/go-package-target/v1alpha1
 kind: RuntimeConditionsGoPackageTarget
 packageKey: conformance-scoped-domains-collisions
-rootExtension: urn:runtimeconditions:conformance:scoped-domains-collisions
+rootExtension: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0
 modulePath: example.com/runtimeconditions/conformance/scoped-domains-collisions
 packageName: scopeddomainscollisions
 version: v1.0.0

@@ -16,7 +16,7 @@ This extension is not part of the core Runtime Conditions Profile vocabulary. Pr
 
 ```yaml
 extensions:
-  - https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
+  - https://runtimeconditions.io/common-integrations:v1alpha1
 ```
 
 This extension defines:
@@ -270,7 +270,7 @@ workload:
   version: v1.2.3
 
 extensions:
-  - https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
+  - https://runtimeconditions.io/common-integrations:v1alpha1
 
 conditions:
   - name: primary-db

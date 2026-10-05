@@ -94,7 +94,7 @@ def bridge_contract(bridge: dict[str, Any], inventory_identity: dict[str, str], 
         raise ValueError("semantic bridge extension must be an object")
     for field in ("id", "version", "conditionKind", "interfaceType"):
         require_string(extension.get(field), f"semantic bridge extension.{field}")
-    if not SEMVER.fullmatch(extension["version"]) or f"/{extension['version']}/" not in extension["id"]:
+    if not SEMVER.fullmatch(extension["version"]) or not extension["id"].endswith(":" + extension["version"]):
         raise ValueError("semantic bridge extension id and version must identify the same semantic release")
     configured_fields = bridge.get("conditionFields")
     if not isinstance(configured_fields, dict) or not configured_fields:
@@ -189,7 +189,7 @@ def build(inventory: dict[str, Any], bridge: dict[str, Any]) -> tuple[dict[str, 
         "schemas": [{"id": "nats-service-interface", "appliesToKind": kind, "appliesToInterfaceType": interface_type, "description": "Validates adapter-actionable NATS connection, subject authorization, and JetStream resource requirements.", "schema": schema}],
     }
     digest = semantic_sha256(spec)
-    extension = {"apiVersion": "runtimeconditions.io/v1alpha1", "kind": "RuntimeConditionsExtensionDefinition", "metadata": {"id": extension_config["id"], "version": extension_config["version"], "semanticSha256": digest}, "spec": spec}
+    extension = {"apiVersion": "runtimeconditions.io/v1alpha1", "kind": "RuntimeConditionsExtensionDefinition", "metadata": {"uri": extension_config["id"].rsplit(":", 1)[0], "version": extension_config["version"], "semanticSha256": digest}, "spec": spec}
     semantic_body = {"fields": fields, "operations": operations}
     service_mapping = {
         "apiVersion": "runtimeconditions.io/service-mapping/v1alpha1",
@@ -217,7 +217,7 @@ def main() -> int:
     extension, service_mapping = build(read_document(args.inventory), read_document(args.bridge))
     write_yaml(args.extension_output, extension)
     write_yaml(args.service_mapping_output, service_mapping)
-    print(f"extension: {extension['metadata']['id']}")
+    print(f"extension: {extension['metadata']['uri'] + ':' + extension['metadata']['version']}")
     print(f"extension semantic sha256: {extension['metadata']['semanticSha256']}")
     print(f"service operations: {service_mapping['metadata']['operationCount']}")
     print(f"service mapping semantic sha256: {service_mapping['metadata']['semanticSha256']}")

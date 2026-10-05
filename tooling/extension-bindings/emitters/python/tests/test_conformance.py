@@ -3,19 +3,19 @@
 from __future__ import annotations
 
 import ast
-from copy import deepcopy
-from dataclasses import replace
 import os
-from pathlib import Path
 import subprocess
 import sys
 import tomllib
+from copy import deepcopy
+from dataclasses import replace
+from pathlib import Path
 
+import pytest
+import yaml
 from jsonschema import Draft202012Validator
 from packaging.requirements import Requirement
 from packaging.specifiers import SpecifierSet
-import pytest
-import yaml
 
 from runtimeconditions_binding_emitter import (
     build_plan,
@@ -25,7 +25,6 @@ from runtimeconditions_binding_emitter import (
     render_sources,
 )
 from runtimeconditions_binding_emitter.package import DiagnosticError, PackageDependency
-
 
 TOOLING = Path(__file__).resolve().parents[3]
 MODELS = TOOLING / "model/conformance/expected"
@@ -233,19 +232,51 @@ def _check_conformance_ast(plan, package: Path) -> None:
     samples: dict[str, list[ast.expr]] = {}
     members: set[tuple[str, str]] = set()
     for node in ast.walk(exercise):
-        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-            if isinstance(node.func.value, ast.Name) and node.func.value.id == "b":
-                calls.setdefault(node.func.attr, []).append(node)
-        if isinstance(node, ast.AnnAssign) and isinstance(
-            node.annotation, ast.Attribute
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and isinstance(node.func.value, ast.Name)
+            and node.func.value.id == "b"
         ):
-            if node.value is not None:
-                samples.setdefault(_qualified(node.annotation), []).append(node.value)
-        if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Attribute):
-            if isinstance(node.value.value, ast.Name) and node.value.value.id == "b":
-                members.add((node.value.attr, node.attr))
+            calls.setdefault(node.func.attr, []).append(node)
+        if (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.annotation, ast.Attribute)
+            and node.value is not None
+        ):
+            samples.setdefault(_qualified(node.annotation), []).append(node.value)
+        if (
+            isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Attribute)
+            and isinstance(node.value.value, ast.Name)
+            and node.value.value.id == "b"
+        ):
+            members.add((node.value.attr, node.attr))
     for declaration in (*plan.declarations, *plan.imported_declarations):
-        assert calls.get(declaration.function), declaration.coordinate
+        if not calls.get(declaration.function):
+            fields = [
+                item
+                for item in plan.types
+                if item.is_declaration_field
+                and item.marker
+                and item.marker.protocol == declaration.protocol
+            ]
+            assert not fields, declaration.coordinate
+            # Declaration-only packages retain a function reference. Their
+            # complete positive calls are supplied by installed consumer
+            # fixtures, which can also import the interface/field provider.
+            assert any(
+                isinstance(node, ast.Assign)
+                and isinstance(node.value, ast.Attribute)
+                and isinstance(node.value.value, ast.Name)
+                and node.value.value.id == "b"
+                and node.value.attr == declaration.function
+                and any(
+                    isinstance(target, ast.Name) and target.id.startswith("_deferred_")
+                    for target in node.targets
+                )
+                for node in exercise.body
+            ), declaration.coordinate
     for item in plan.types:
         if item.kind == "object":
             assert calls.get(item.name), item.coordinate

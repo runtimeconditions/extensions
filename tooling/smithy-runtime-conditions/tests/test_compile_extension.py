@@ -45,7 +45,7 @@ class SmithySemanticBridgeCompilationTest(unittest.TestCase):
                 "operationNamesSha256": operation_fingerprint(names),
             },
             "extension": {
-                "id": "https://runtimeconditions.io/extensions/example/0.1.0/runtimeconditions.extension.yaml",
+                "id": "https://runtimeconditions.io/example:0.1.0",
                 "version": "0.1.0",
                 "extensionName": "example",
                 "serviceKey": "example",

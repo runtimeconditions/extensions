@@ -313,6 +313,26 @@ schemas, dependencies, requiredness, or any other extension semantics.
 
 ## 6. Extension definition resolution
 
+Extension definitions MUST contain `metadata.uri` and `metadata.version`.
+`metadata.id` is not part of the extension definition contract. Profiles,
+models, binding manifests, and dependency locks carry the exact identifier
+`<metadata.uri>:<metadata.version>`; the final colon separates URI and version.
+
+The URI MUST use HTTPS and have a path of `/<provider>/<service>` or
+`/<service>`. A providerless URI resolves under provider `rc` without changing
+its declared identity. The retrieval URL is
+`https://<domain>/extensions/<provider>/<service>/<version>/runtimeconditions.extension.yaml`.
+The `/extensions` prefix belongs to retrieval, not semantic identity. URI
+authority (including an explicit port), provider, service, and version MUST be
+preserved exactly. Credentials, queries, fragments, empty or traversal path
+segments, and escaped path aliases MUST be rejected. Versions need not be
+SemVer but MUST be non-empty safe path segments.
+
+An unavailable definition at the derived URL MUST fail as not found. Resolvers
+MUST NOT try an unprefixed URL, another provider, a direct-file identifier, or
+another version. Definitions MUST identify exactly the requested URI/version.
+Every transitive dependency MUST follow this same contract.
+
 ### 6.1 Resolver inputs and backends
 
 Extension identifiers are exact, case-sensitive absolute URIs. The resolver MUST
@@ -323,9 +343,11 @@ support these backends:
 3. Package-local vendored extension definitions discovered through a resolved
    binding package.
 4. A content-addressed local extension cache.
-5. `file:` URIs.
-6. `https:` URIs.
-7. `oci:` URIs.
+5. Locked `https:` retrieval using the catalog convention below.
+
+`file:` and `oci:` retrieval are deferred and MUST be rejected in this implementation.
+Local overrides, catalog roots, package resources, and verified caches remain
+explicit tooling inputs; they do not make non-HTTPS extension identities valid.
 
 Plain `http:` resolution MUST be rejected. An unknown URI scheme MUST be
 rejected. Supported network-backed schemes MUST resolve using network access
@@ -333,7 +355,7 @@ when encountered. CI promotion MUST use a committed dependency lock and MUST
 reject content whose digest or immutable locator does not match that lock.
 
 Repository-local discovery MUST parse candidate extension files and index them
-by `metadata.id`. It MUST NOT infer an identifier from a file path. Finding two
+by `<metadata.uri>:<metadata.version>`. It MUST NOT infer an identifier from a file path. Finding two
 different byte contents for one identifier MUST fail, even when both definitions
 normalize to the same vocabulary.
 
@@ -371,7 +393,7 @@ The resolver MUST perform these steps in order:
 
 1. Resolve the root identifier to one definition.
 2. Verify `kind` is `RuntimeConditionsExtensionDefinition`.
-3. Verify resolved `metadata.id` exactly equals the requested identifier.
+3. Verify `<metadata.uri>:<metadata.version>` exactly equals the requested identifier.
 4. Compute the source-byte SHA-256 and semantic SHA-256.
 5. Sort direct dependency identifiers by their exact UTF-8 byte sequence.
 6. Resolve every direct dependency recursively.
@@ -381,10 +403,10 @@ The resolver MUST perform these steps in order:
    ordered by exact extension identifier.
 10. Build the resolved vocabulary ownership index.
 11. Reject every vocabulary conflict defined by the core specification.
-12. Write the exact identifier, semantic version when present, semantic SHA-256,
+12. Write the exact identifier, exact non-empty extension version, semantic SHA-256,
     and dependency identifiers into the semantic closure supplied to the
     normalizer.
-13. Write the exact identifier, semantic version when present, source-byte
+13. Write the exact identifier, exact non-empty extension version, source-byte
     SHA-256, semantic SHA-256, source backend, immutable source locator, and
     dependency identifiers into the dependency lock.
 
@@ -405,13 +427,12 @@ release manifest. For every extension in the closure, the lock MUST record:
 - resolved immutable source locator.
 
 A repeated build MUST reject content whose digest differs from the lock. Every
-HTTPS redirect MUST fail. A mutable OCI tag is acceptable only when the final
-content matches the lock. OCI resolution MUST record the immutable manifest
-digest.
+HTTPS redirect MUST fail. `file:` and `oci:` source locators are unsupported and MUST fail. HTTPS
+locators MUST equal the URL derived from the requested identifier.
 
 The dependency lock and normalized model MUST remain separate data structures
 and separate canonicalization domains. The normalized model MUST record, for
-each extension, only the exact identifier, semantic version when present,
+each extension, only the exact identifier, exact non-empty extension version,
 semantic SHA-256, and exact direct dependency identifiers. It MUST NOT contain a
 source-byte SHA-256, source backend, source locator, dependency-lock digest, or
 other resolution-transport field.
@@ -438,8 +459,8 @@ The resolver is complete only when all checks below pass:
 5. One duplicate identifier with different bytes fails.
 6. One duplicate vocabulary definition in the same scope fails even when both
    definitions are textually identical.
-7. One local override, one catalog resolution, one `file:` resolution, one
-   locked `https:` resolution, and one locked `oci:` resolution produce the same
+7. One local override, one catalog resolution, one package resolution, one
+   verified cache resolution, and one locked `https:` resolution produce the same
    semantic closure record and normalized model bytes for byte-identical
    content; their lock entries retain their actual backend and immutable
    locator.
@@ -550,11 +571,11 @@ checkpoint that fails this schema MUST never reach an emitter.
 
 The model MUST contain:
 
-- root extension identity, semantic version when present, and semantic digest;
+- root extension identity, exact non-empty extension version, and semantic digest;
 - normalizer identity and digest;
 - core profile schema identity, version, and semantic digest;
 - complete topologically ordered extension closure containing each extension's
-  exact identifier, semantic version when present, semantic SHA-256, and exact
+  exact identifier, exact non-empty extension version, semantic SHA-256, and exact
   direct dependency identifiers;
 - dependency edges;
 - vocabulary owners;

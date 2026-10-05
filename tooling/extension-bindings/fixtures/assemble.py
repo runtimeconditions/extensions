@@ -34,16 +34,16 @@ MODEL = TOOLING / "model"
 CASES = MODEL / "conformance/cases"
 GO_TARGETS = TOOLING / "emitters/go/testdata/package-targets"
 PYTHON_EMITTER = TOOLING / "emitters/python/src"
-CORE_SCHEMA = WORKSPACE / "spec/schema/runtimeconditions.profile.v0.1.0.schema.yaml"
+CORE_SCHEMA = WORKSPACE / "spec/schema/runtimeconditions.profile.v0.2.0.schema.yaml"
 RESOURCE_NAMES = (
     "runtimeconditions.bindings.yaml",
     "runtimeconditions.binding-model.yaml",
     "runtimeconditions.extension.yaml",
     "runtimeconditions.binding-release.yaml",
 )
-CORE_ID = "https://runtimeconditions.io/schemas/profile/0.1.0/runtimeconditions.profile.schema.yaml"
-CORE_VERSION = "0.1.0"
-CORE_DIGEST = "49890a0f3e7276d1e480d654176672d977df9c63094f3a24983b0a8102e1a3e3"
+CORE_ID = "https://runtimeconditions.io/schemas/profile/0.2.0/runtimeconditions.profile.schema.yaml"
+CORE_VERSION = "0.2.0"
+CORE_DIGEST = "a090a8016d045f9c3fa872a67f8df293b77ca2809a1bea5ae9fa31a27a06109a"
 ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 
 # Dependency-first order. Each package is assembled from the same conformance
@@ -55,6 +55,14 @@ PACKAGES = (
     ("03-transitive-closure", "03-transitive-leaf"),
     ("03-transitive-closure", "03-transitive-middle"),
     ("03-transitive-closure", "03-transitive-closure"),
+    ("06-recursive-reference", "06-recursive-reference"),
+    ("07-object-alternatives", "07-object-alternatives"),
+    ("08-heterogeneous-union", "08-heterogeneous-union"),
+    ("09-collections-and-maps", "09-collections-and-maps"),
+    ("10-scoped-domains-collisions", "10-scoped-domains-collisions"),
+    ("11-source-name-preservation", "11-source-name-preservation"),
+    ("13-dependency-schema-only", "13-dependency-schema-only-dependency"),
+    ("13-dependency-schema-only", "13-dependency-schema-only"),
 )
 
 
@@ -109,7 +117,7 @@ def build_go_binary(source: Path, destination: Path, env: dict[str, str]) -> Non
 def extension_source(case: str, extension_id: str) -> Path:
     matches = [
         path for path in sorted((CASES / case).glob("*.yaml"))
-        if read_yaml(path).get("metadata", {}).get("id") == extension_id
+        if (read_yaml(path).get("metadata", {}).get("uri", "") + ":" + read_yaml(path).get("metadata", {}).get("version", "")) == extension_id
     ]
     if len(matches) != 1:
         fail(f"{case}: expected one source for {extension_id}, found {len(matches)}")
@@ -206,14 +214,9 @@ def python_target(go_target: dict[str, Any], by_id: dict[str, dict[str, Any]]) -
     return target
 
 
-def profiler_identities(go_path: Path, python_wheel: Path) -> dict[str, dict[str, str]]:
-    if not go_path.is_file() or not python_wheel.is_file():
-        fail("both profiler artifacts must be existing files")
-    build_info = run("go", "version", "-m", str(go_path))
-    if "go-rc-profiler" not in build_info:
-        fail("Go profiler binary lacks the expected Go build identity")
-    version_lines = re.findall(r"^\s*mod\s+\S*go-rc-profiler\s+(\S+)", build_info, re.M)
-    go_version = version_lines[0] if version_lines else "(devel)"
+def python_profiler_identity(python_wheel: Path) -> dict[str, str]:
+    if not python_wheel.is_file():
+        fail("Python profiler wheel must be an existing file")
     with zipfile.ZipFile(python_wheel) as archive:
         metadata_paths = [name for name in archive.namelist() if name.endswith(".dist-info/METADATA")]
         if len(metadata_paths) != 1:
@@ -222,11 +225,22 @@ def profiler_identities(go_path: Path, python_wheel: Path) -> dict[str, dict[str
     if metadata["Name"].lower().replace("_", "-") != "runtimeconditions-profiler":
         fail("Python profiler wheel has the wrong distribution name")
     return {
+        "name": "python-rc-profiler", "version": metadata["Version"],
+        "sha256": digest(python_wheel.read_bytes()),
+    }
+
+
+def profiler_identities(go_path: Path, python_wheel: Path) -> dict[str, dict[str, str]]:
+    if not go_path.is_file():
+        fail("Go profiler artifact must be an existing file")
+    build_info = run("go", "version", "-m", str(go_path))
+    if "go-rc-profiler" not in build_info:
+        fail("Go profiler binary lacks the expected Go build identity")
+    version_lines = re.findall(r"^\s*mod\s+\S*go-rc-profiler\s+(\S+)", build_info, re.M)
+    go_version = version_lines[0] if version_lines else "(devel)"
+    return {
         "go": {"name": "go-rc-profiler", "version": go_version, "sha256": digest(go_path.read_bytes())},
-        "python": {
-            "name": "python-rc-profiler", "version": metadata["Version"],
-            "sha256": digest(python_wheel.read_bytes()),
-        },
+        "python": python_profiler_identity(python_wheel),
     }
 
 
@@ -425,49 +439,59 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True, help="new or empty fixture directory")
     parser.add_argument("--python", type=Path, default=Path(sys.executable), help="Python with pinned emitter build tools")
-    parser.add_argument("--go-profiler", type=Path, required=True, help="actual Go profiler executable")
+    parser.add_argument("--go-profiler", type=Path, help="actual Go profiler executable")
     parser.add_argument("--python-profiler-wheel", type=Path, required=True, help="actual Python profiler wheel")
+    parser.add_argument("--python-only", action="store_true", help="assemble all positive Python conformance wheels without Go artifacts")
     args = parser.parse_args()
     output = args.output.resolve()
     if output.exists() and any(output.iterdir()):
         fail(f"{output}: output must be new or empty")
     output.mkdir(parents=True, exist_ok=True)
     check_core()
-    profiler = profiler_identities(args.go_profiler.resolve(), args.python_profiler_wheel.resolve())
+    if not args.python_only and args.go_profiler is None:
+        fail("--go-profiler is required unless --python-only is selected")
+    profiler = (
+        {"python": python_profiler_identity(args.python_profiler_wheel.resolve())}
+        if args.python_only else
+        profiler_identities(args.go_profiler.resolve(), args.python_profiler_wheel.resolve())
+    )
     sys.path.insert(0, str(PYTHON_EMITTER))
     from runtimeconditions_binding_emitter import build_plan, emit_package, load_model, load_target
 
     environment = os.environ.copy()
     environment["GOCACHE"] = str(output / "go-build-cache")
     normalizer = output / "tools/rc-binding-model"
-    go_emitter = output / "tools/rc-go-bindings"
     build_go_binary(TOOLING / "normalizer", normalizer, environment)
-    build_go_binary(TOOLING / "emitters/go", go_emitter, environment)
+    go_emitter = output / "tools/rc-go-bindings"
+    if not args.python_only:
+        build_go_binary(TOOLING / "emitters/go", go_emitter, environment)
     normalizer_digest = digest(normalizer.read_bytes())
-    go_targets = [read_yaml(GO_TARGETS / f"{target}.yaml") for _, target in PACKAGES]
+    selected = PACKAGES
+    go_targets = [read_yaml(GO_TARGETS / f"{target}.yaml") for _, target in selected]
     by_id = {target["rootExtension"]: target for target in go_targets}
-    if len(by_id) != len(PACKAGES):
+    if len(by_id) != len(selected):
         fail("package targets contain duplicate root extension IDs")
     python_targets = {item["rootExtension"]: python_target(item, by_id) for item in go_targets}
     artifacts: dict[str, dict[str, Path]] = {"go": {}, "python": {}}
-    for case, target_file in PACKAGES:
+    for case, target_file in selected:
         go_target = read_yaml(GO_TARGETS / f"{target_file}.yaml")
         extension_id = go_target["rootExtension"]
         model_path, normalized, lock = normalize(
             case, go_target, output / "models" / target_file, normalizer, normalizer_digest,
         )
-        go_package = output / "go/packages" / go_target["packageKey"]
-        run(
-            str(go_emitter), "--model", str(model_path),
-            "--package-config", str(GO_TARGETS / f"{target_file}.yaml"),
-            "--output", str(go_package),
-        )
-        go_dependencies = dependency_entries("go", go_target, by_id, artifacts)
-        write_resources(
-            go_package, case, go_target, model_path, normalized, lock,
-            "go", go_dependencies, profiler["go"],
-        )
-        artifacts["go"][extension_id] = go_archive(go_package, go_target, output / "go/proxy")
+        if not args.python_only:
+            go_package = output / "go/packages" / go_target["packageKey"]
+            run(
+                str(go_emitter), "--model", str(model_path),
+                "--package-config", str(GO_TARGETS / f"{target_file}.yaml"),
+                "--output", str(go_package),
+            )
+            go_dependencies = dependency_entries("go", go_target, by_id, artifacts)
+            write_resources(
+                go_package, case, go_target, model_path, normalized, lock,
+                "go", go_dependencies, profiler["go"],
+            )
+            artifacts["go"][extension_id] = go_archive(go_package, go_target, output / "go/proxy")
 
         py_target = python_targets[extension_id]
         py_target_path = output / "targets/python" / f"{target_file}.yaml"
@@ -483,9 +507,10 @@ def main() -> None:
             "python", python_dependencies, profiler["python"],
         )
         artifacts["python"][extension_id] = python_wheel(
-            py_package, output / "python/wheels", args.python.resolve(),
+            py_package, output / "python/wheels", args.python.absolute(),
         )
-        print(f"{target_file}: Go module and Python wheel assembled")
+        print(f"{target_file}: Python wheel assembled" if args.python_only else
+              f"{target_file}: Go module and Python wheel assembled")
     print(f"fixtures: {output}")
 
 

@@ -26,6 +26,7 @@ var conformanceCases = []string{
 	"10-scoped-domains-collisions",
 	"11-source-name-preservation",
 	"12-unsupported-structural-keyword",
+	"13-dependency-schema-only",
 }
 
 var negativeConformanceCases = map[string]bool{
@@ -98,7 +99,7 @@ func runConformanceCase(t *testing.T, schemas *Schemas, caseRoot string) (Bindin
 	if err != nil {
 		return BindingModel{}, err
 	}
-	closure, err := resolver.Resolve(context.Background(), definition.Metadata.ID)
+	closure, err := resolver.Resolve(context.Background(), definition.Metadata.Identifier())
 	if err != nil {
 		return BindingModel{}, err
 	}

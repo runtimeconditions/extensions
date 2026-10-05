@@ -9,7 +9,7 @@ metadata:
   operationCount: 112
   operationNamesSha256: 209771cb0915567090f615e18dacf594436fc6aadc2867f56535ae0db7935436
   semanticSha256: 54a92a0dc07c238ac56b125ca74f5bdcafa2741a45afd2440d91723dc865763d
-  semanticBridgeSha256: 999e7f7b169a61721feb4a36ccef0eb35efcc7fc21df7b8c9086428e3ca2989e
+  semanticBridgeSha256: e43159f714db387cad747af8f20b69d4fcc07efd0df63b9085f5f67aa48978d5
   source:
     repository: https://github.com/aws/api-models-aws.git
     revision: 073f307ee1fd0acea67b706ddbd4ad5437c67eb8
@@ -19,7 +19,7 @@ metadata:
     serviceShape: com.amazonaws.s3#AmazonS3
     serviceVersion: '2006-03-01'
 extension:
-  id: https://runtimeconditions.io/extensions/aws-s3/0.1.0/runtimeconditions.extension.yaml
+  id: https://runtimeconditions.io/aws/aws-s3:0.1.0
   version: 0.1.0
   semanticSha256: 1a505b63d55893c26f3ffe6cf3cd9f90f0b5bd7975fabe47ff444a3ed1e13c72
 operations:

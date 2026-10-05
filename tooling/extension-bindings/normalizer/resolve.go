@@ -8,7 +8,6 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -35,7 +34,6 @@ type ResolverConfig struct {
 	Network      bool
 	Locks        map[string]LockEntry
 	HTTPClient   *http.Client
-	OCIFetcher   OCIFetcher
 }
 
 type Resolver struct {
@@ -57,9 +55,7 @@ func NewResolver(config ResolverConfig) (*Resolver, error) {
 	if config.HTTPClient == nil {
 		config.HTTPClient = secureHTTPClient()
 	}
-	if config.OCIFetcher == nil {
-		config.OCIFetcher = registryOCIFetcher{client: config.HTTPClient}
-	}
+
 	resolver := &Resolver{
 		config:     config,
 		candidates: map[string][]sourceCandidate{},
@@ -110,7 +106,7 @@ func BuildDependencyLock(closure ResolvedClosure) DependencyLock {
 		dependencies := append([]string(nil), document.Definition.Spec.Dependencies...)
 		sort.Strings(dependencies)
 		lock.Extensions = append(lock.Extensions, DependencyLockEntry{
-			ID:             document.Definition.Metadata.ID,
+			ID:             document.Definition.Metadata.Identifier(),
 			Version:        document.Definition.Metadata.Version,
 			SourceSHA256:   document.SourceSHA256,
 			SemanticSHA256: document.SemanticSHA256,
@@ -125,7 +121,7 @@ func BuildDependencyLock(closure ResolvedClosure) DependencyLock {
 func ValidateDependencyLock(closure ResolvedClosure, lock DependencyLock) error {
 	expected := make(map[string]ResolvedDocument, len(closure.Documents))
 	for _, document := range closure.Documents {
-		expected[document.Definition.Metadata.ID] = document
+		expected[document.Definition.Metadata.Identifier()] = document
 	}
 	actual := make(map[string]DependencyLockEntry, len(lock.Extensions))
 	for _, entry := range lock.Extensions {
@@ -153,9 +149,7 @@ func ValidateDependencyLock(closure ResolvedClosure, lock DependencyLock) error 
 			return diagnostic("extension-dependency", "RCB1224", id, "", "dependency lock semantic record does not match the resolved closure")
 		}
 		locatorMatches := entry.SourceLocator == document.Locator
-		if !locatorMatches && entry.SourceBackend == "oci" && document.Backend == "oci" {
-			locatorMatches = ociLocatorResolvesTo(entry.SourceLocator, document.Locator)
-		}
+
 		if entry.SourceSHA256 != document.SourceSHA256 || entry.SourceBackend != document.Backend || !locatorMatches {
 			return diagnostic("extension-dependency", "RCB1225", id, "", "dependency lock source record does not match resolved content")
 		}
@@ -206,7 +200,7 @@ func (r *Resolver) indexRoot(root, backend string) error {
 			// Non-extension YAML in a catalog is not a resolver candidate.
 			return nil
 		}
-		if definition.Kind != ExtensionKind || definition.Metadata.ID == "" {
+		if definition.Kind != ExtensionKind || definition.Metadata.Identifier() == "" {
 			return nil
 		}
 		relative, err := filepath.Rel(root, path)
@@ -214,7 +208,7 @@ func (r *Resolver) indexRoot(root, backend string) error {
 			return err
 		}
 		locator := backend + ":" + filepath.ToSlash(relative)
-		r.candidates[definition.Metadata.ID] = append(r.candidates[definition.Metadata.ID], sourceCandidate{
+		r.candidates[definition.Metadata.Identifier()] = append(r.candidates[definition.Metadata.Identifier()], sourceCandidate{
 			path: path, backend: backend, locator: locator,
 		})
 		return nil
@@ -245,10 +239,10 @@ func (r *Resolver) indexCache(root string) error {
 		if err != nil {
 			return err
 		}
-		if definition.Kind != ExtensionKind || definition.Metadata.ID == "" {
+		if definition.Kind != ExtensionKind || definition.Metadata.Identifier() == "" {
 			return diagnostic("structural", "RCB1237", "cache:sha256:"+digest, "", "cached content is not an extension definition")
 		}
-		r.candidates[definition.Metadata.ID] = append(r.candidates[definition.Metadata.ID], sourceCandidate{
+		r.candidates[definition.Metadata.Identifier()] = append(r.candidates[definition.Metadata.Identifier()], sourceCandidate{
 			path: path, backend: "cache", locator: "cache:sha256:" + digest,
 		})
 		return nil
@@ -278,8 +272,8 @@ func (r *Resolver) addFileCandidate(id, path, backend, locator string) error {
 	if err != nil {
 		return err
 	}
-	if definition.Metadata.ID != id {
-		return diagnostic("unknown-extension", "RCB1201", id, "/metadata/id", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.ID))
+	if definition.Metadata.Identifier() != id {
+		return diagnostic("unknown-extension", "RCB1201", id, "/metadata/uri", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.Identifier()))
 	}
 	r.candidates[id] = append(r.candidates[id], sourceCandidate{path: path, backend: backend, locator: locator})
 	return nil
@@ -337,9 +331,8 @@ func backendRank(backend string) int {
 }
 
 func (r *Resolver) Resolve(ctx context.Context, rootID string) (ResolvedClosure, error) {
-	parsed, err := url.Parse(rootID)
-	if err != nil || !parsed.IsAbs() {
-		return ResolvedClosure{}, diagnostic("unknown-extension", "RCB1203", rootID, "", "root extension identifier must be an absolute URI")
+	if _, err := ParseExtensionIdentifier(rootID); err != nil {
+		return ResolvedClosure{}, diagnostic("unknown-extension", "RCB1203", rootID, "", err.Error())
 	}
 	state := visitState{activeIndex: map[string]int{}, complete: map[string]bool{}}
 	if err := r.visit(ctx, rootID, &state); err != nil {
@@ -353,7 +346,7 @@ func (r *Resolver) Resolve(ctx context.Context, rootID string) (ResolvedClosure,
 		Root: rootID, Documents: ordered, ByID: map[string]ResolvedDocument{}, Edges: state.edges,
 	}
 	for _, document := range state.ordered {
-		closure.ByID[document.Definition.Metadata.ID] = document
+		closure.ByID[document.Definition.Metadata.Identifier()] = document
 	}
 	sort.Slice(closure.Edges, func(i, j int) bool {
 		if closure.Edges[i].From != closure.Edges[j].From {
@@ -375,7 +368,7 @@ func topologicalDocuments(documents []ResolvedDocument, edges []DependencyEdge) 
 	indegree := make(map[string]int, len(documents))
 	dependents := make(map[string][]string, len(documents))
 	for _, document := range documents {
-		id := document.Definition.Metadata.ID
+		id := document.Definition.Metadata.Identifier()
 		byID[id] = document
 		indegree[id] = 0
 	}
@@ -450,6 +443,10 @@ func (r *Resolver) visit(ctx context.Context, id string, state *visitState) erro
 }
 
 func (r *Resolver) load(ctx context.Context, id string) (ResolvedDocument, error) {
+	identity, err := ParseExtensionIdentifier(id)
+	if err != nil {
+		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1207", id, "", err.Error())
+	}
 	if loaded, exists := r.loaded[id]; exists {
 		return loaded, nil
 	}
@@ -461,49 +458,7 @@ func (r *Resolver) load(ctx context.Context, id string) (ResolvedDocument, error
 		}
 		return r.finishLoad(id, data, candidate.backend, candidate.locator)
 	}
-	if lock, locked := r.config.Locks[id]; locked && lock.Locator != "" {
-		locator, err := url.Parse(lock.Locator)
-		if err != nil || !locator.IsAbs() {
-			return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1205", id, "", "dependency lock source locator must be an absolute URI")
-		}
-		switch locator.Scheme {
-		case "file":
-			data, err := os.ReadFile(locator.Path)
-			if err != nil {
-				return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1205", id, "", fmt.Sprintf("file resolution failed: %v", err))
-			}
-			if lock.SourceSHA256 == "" || SHA256Hex(data) != lock.SourceSHA256 {
-				return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1212", id, "", "file content does not match the dependency lock")
-			}
-			return r.finishLoad(id, data, "file", lock.Locator)
-		case "https":
-			return r.loadHTTPS(ctx, id, lock.Locator)
-		case "oci":
-			return r.loadOCI(ctx, id)
-		case "http":
-			return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1206", id, "", "plain HTTP resolution is forbidden")
-		}
-	}
-	parsed, err := url.Parse(id)
-	if err != nil {
-		return ResolvedDocument{}, err
-	}
-	switch parsed.Scheme {
-	case "file":
-		data, err := os.ReadFile(parsed.Path)
-		if err != nil {
-			return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1205", id, "", fmt.Sprintf("file resolution failed: %v", err))
-		}
-		return r.finishLoad(id, data, "file", id)
-	case "https":
-		return r.loadHTTPS(ctx, id, id)
-	case "oci":
-		return r.loadOCI(ctx, id)
-	case "http":
-		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1206", id, "", "plain HTTP resolution is forbidden")
-	default:
-		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1207", id, "", fmt.Sprintf("no declared source resolved URI scheme %q", parsed.Scheme))
-	}
+	return r.loadHTTPS(ctx, id, identity.DefinitionURL())
 }
 
 func (r *Resolver) loadHTTPS(ctx context.Context, id, locator string) (ResolvedDocument, error) {
@@ -526,6 +481,9 @@ func (r *Resolver) loadHTTPS(ctx context.Context, id, locator string) (ResolvedD
 		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1210", id, "", fmt.Sprintf("HTTPS resolution failed: %v", err))
 	}
 	defer response.Body.Close()
+	if response.StatusCode == http.StatusNotFound {
+		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1211", id, "", "extension not found at "+locator)
+	}
 	if response.StatusCode != http.StatusOK {
 		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1211", id, "", fmt.Sprintf("HTTPS resolution returned %s", response.Status))
 	}
@@ -546,34 +504,6 @@ func (r *Resolver) loadHTTPS(ctx context.Context, id, locator string) (ResolvedD
 	return document, nil
 }
 
-func (r *Resolver) loadOCI(ctx context.Context, id string) (ResolvedDocument, error) {
-	if !r.config.Network {
-		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1214", id, "", "network resolution is disabled")
-	}
-	lock, locked := r.config.Locks[id]
-	if !locked || lock.SourceSHA256 == "" || lock.Locator == "" {
-		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1215", id, "", "OCI resolution requires source and immutable locator locks")
-	}
-	if r.config.OCIFetcher == nil {
-		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1216", id, "", "OCI resolver backend is not configured")
-	}
-	data, locator, err := r.config.OCIFetcher.Fetch(ctx, id, lock)
-	if err != nil {
-		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1217", id, "", fmt.Sprintf("OCI resolution failed: %v", err))
-	}
-	if !ociLocatorResolvesTo(lock.Locator, locator) || SHA256Hex(data) != lock.SourceSHA256 {
-		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1218", id, "", "OCI content or immutable locator does not match the dependency lock")
-	}
-	document, err := r.finishLoad(id, data, "oci", locator)
-	if err != nil {
-		return ResolvedDocument{}, err
-	}
-	if lock.SemanticSHA256 != "" && document.SemanticSHA256 != lock.SemanticSHA256 {
-		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1213", id, "", "OCI semantic digest does not match the dependency lock")
-	}
-	return document, nil
-}
-
 func readLimited(reader io.Reader) ([]byte, error) {
 	data, err := io.ReadAll(io.LimitReader(reader, maxYAMLBytes+1))
 	if err != nil {
@@ -590,8 +520,8 @@ func (r *Resolver) finishLoad(requestedID string, data []byte, backend, locator 
 	if err != nil {
 		return ResolvedDocument{}, err
 	}
-	if definition.Metadata.ID != requestedID {
-		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1220", requestedID, "/metadata/id", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.ID))
+	if definition.Metadata.Identifier() != requestedID {
+		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1220", requestedID, "/metadata/uri", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.Identifier()))
 	}
 	if err := r.config.Schemas.ValidateExtension(mapping, definition); err != nil {
 		return ResolvedDocument{}, err
@@ -618,9 +548,9 @@ func validateVocabularyConflicts(documents []ResolvedDocument) error {
 		sort.Strings(coordinates)
 		for _, coordinate := range coordinates {
 			if previous, exists := owners[coordinate]; exists {
-				return diagnostic("vocabulary-conflict", "RCB1221", coordinate, "", fmt.Sprintf("defined by both %q and %q", previous, definition.Metadata.ID))
+				return diagnostic("vocabulary-conflict", "RCB1221", coordinate, "", fmt.Sprintf("defined by both %q and %q", previous, definition.Metadata.Identifier()))
 			}
-			owners[coordinate] = definition.Metadata.ID
+			owners[coordinate] = definition.Metadata.Identifier()
 		}
 	}
 	return nil
@@ -688,7 +618,7 @@ func validateVocabularyReferences(documents []ResolvedDocument) error {
 		}
 	}
 	for _, document := range documents {
-		owner := document.Definition.Metadata.ID
+		owner := document.Definition.Metadata.Identifier()
 		for _, interfaceType := range document.Definition.Spec.InterfaceTypes {
 			if !kinds[interfaceType.TargetKind] {
 				return diagnostic("unknown-extension", "RCB1227", owner, "", fmt.Sprintf("interface type %q targets unknown kind %q", interfaceType.Name, interfaceType.TargetKind))

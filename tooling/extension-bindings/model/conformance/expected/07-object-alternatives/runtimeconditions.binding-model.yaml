@@ -1,57 +1,57 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 5257b861f1c2e4e3e88de9dc3fd757f84fe0597753adba93dcdc359c0e1b09b1
+    semanticSha256: 850a8568af31f06b8cd84090eea9aedc48a325f7809aa00b6191aa6ccb28a32e
     normalizer:
         name: rc-binding-model
         version: 0.1.0
         sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 coreProfileSchema:
-    id: https://runtimeconditions.io/schemas/profile/0.1.0/runtimeconditions.profile.schema.yaml
-    version: 0.1.0
-    semanticSha256: 49890a0f3e7276d1e480d654176672d977df9c63094f3a24983b0a8102e1a3e3
+    id: https://runtimeconditions.io/schemas/profile/0.2.0/runtimeconditions.profile.schema.yaml
+    version: 0.2.0
+    semanticSha256: a090a8016d045f9c3fa872a67f8df293b77ca2809a1bea5ae9fa31a27a06109a
 rootExtension:
-    id: urn:runtimeconditions:conformance:object-alternatives
+    id: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
     version: 1.0.0
-    semanticSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
+    semanticSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
 extensions:
-    - id: urn:runtimeconditions:conformance:object-alternatives
+    - id: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
       version: 1.0.0
-      semanticSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
+      semanticSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
 vocabulary:
     owners:
         - coordinate: interface:deployment:process
           category: interface
-          owner: urn:runtimeconditions:conformance:object-alternatives
+          owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
           kind: deployment
           interfaceType: process
         - coordinate: kind:deployment
           category: kind
-          owner: urn:runtimeconditions:conformance:object-alternatives
+          owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
           kind: deployment
     ownedDeclarations:
         - coordinate: kind:deployment
-          owner: urn:runtimeconditions:conformance:object-alternatives
+          owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
           kind: deployment
           provenance:
-            owner: urn:runtimeconditions:conformance:object-alternatives
-            extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
+            owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+            extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
             coordinate: kind:deployment
     interfaces:
         - coordinate: interface:deployment:process
-          owner: urn:runtimeconditions:conformance:object-alternatives
+          owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
           kind: deployment
           type: process
           provenance:
-            owner: urn:runtimeconditions:conformance:object-alternatives
-            extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
+            owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+            extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
             coordinate: interface:deployment:process
 scopes:
     - coordinate: deployment:process
       kind: deployment
       interfaceType: process
       applicableSchemas:
-        - urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+        - https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
       projection:
         kind: object
         required:
@@ -66,60 +66,60 @@ scopes:
                         kind: scalar
                         scalar: string
                         provenance:
-                            owner: urn:runtimeconditions:conformance:object-alternatives
-                            extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                            coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                            owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                            extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                            coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                             jsonPointer: /properties/configuration/oneOf/0/properties/command
                       provenance:
-                        owner: urn:runtimeconditions:conformance:object-alternatives
-                        extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                        coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                        owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                        extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                        coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                         jsonPointer: /properties/configuration/oneOf/0/properties/command
                     - name: image
                       shape:
                         kind: scalar
                         scalar: string
                         provenance:
-                            owner: urn:runtimeconditions:conformance:object-alternatives
-                            extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                            coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                            owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                            extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                            coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                             jsonPointer: /properties/configuration/oneOf/1/properties/image
                       provenance:
-                        owner: urn:runtimeconditions:conformance:object-alternatives
-                        extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                        coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                        owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                        extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                        coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                         jsonPointer: /properties/configuration/oneOf/1/properties/image
                 provenance:
-                    owner: urn:runtimeconditions:conformance:object-alternatives
-                    extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                    coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                    owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                    extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                    coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                     jsonPointer: /properties/configuration
               provenance:
-                owner: urn:runtimeconditions:conformance:object-alternatives
-                extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                 jsonPointer: /properties/configuration
             - name: interface
               required: true
               shape:
                 kind: object
                 provenance:
-                    owner: urn:runtimeconditions:conformance:object-alternatives
-                    extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                    coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                    owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                    extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                    coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                     jsonPointer: /properties/interface
               provenance:
-                owner: urn:runtimeconditions:conformance:object-alternatives
-                extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                 jsonPointer: /properties/interface
         provenance:
-            owner: urn:runtimeconditions:conformance:object-alternatives
-            extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-            coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+            owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+            extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+            coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
 schemas:
-    - coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
-      owner: urn:runtimeconditions:conformance:object-alternatives
+    - coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
+      owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
       id: object-alternatives
       kind: deployment
       interfaceType: process
@@ -170,58 +170,58 @@ schemas:
                         kind: scalar
                         scalar: string
                         provenance:
-                            owner: urn:runtimeconditions:conformance:object-alternatives
-                            extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                            coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                            owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                            extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                            coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                             jsonPointer: /properties/configuration/oneOf/0/properties/command
                       provenance:
-                        owner: urn:runtimeconditions:conformance:object-alternatives
-                        extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                        coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                        owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                        extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                        coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                         jsonPointer: /properties/configuration/oneOf/0/properties/command
                     - name: image
                       shape:
                         kind: scalar
                         scalar: string
                         provenance:
-                            owner: urn:runtimeconditions:conformance:object-alternatives
-                            extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                            coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                            owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                            extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                            coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                             jsonPointer: /properties/configuration/oneOf/1/properties/image
                       provenance:
-                        owner: urn:runtimeconditions:conformance:object-alternatives
-                        extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                        coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                        owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                        extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                        coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                         jsonPointer: /properties/configuration/oneOf/1/properties/image
                 provenance:
-                    owner: urn:runtimeconditions:conformance:object-alternatives
-                    extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                    coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                    owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                    extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                    coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                     jsonPointer: /properties/configuration
               provenance:
-                owner: urn:runtimeconditions:conformance:object-alternatives
-                extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                 jsonPointer: /properties/configuration
             - name: interface
               required: true
               shape:
                 kind: object
                 provenance:
-                    owner: urn:runtimeconditions:conformance:object-alternatives
-                    extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                    coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                    owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                    extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                    coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                     jsonPointer: /properties/interface
               provenance:
-                owner: urn:runtimeconditions:conformance:object-alternatives
-                extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-                coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+                owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+                extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+                coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
                 jsonPointer: /properties/interface
         provenance:
-            owner: urn:runtimeconditions:conformance:object-alternatives
-            extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-            coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+            owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+            extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+            coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
       provenance:
-        owner: urn:runtimeconditions:conformance:object-alternatives
-        extensionSha256: 01ccacc12da88aff62243be459774d74fd29c38e4b7e25ec671a5492069b0df7
-        coordinate: urn:runtimeconditions:conformance:object-alternatives#schema:object-alternatives
+        owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+        extensionSha256: 17dccaf4fab3050b56ab6244bdd65ca4d60ed8d46c2a9ba559104a2a74b35ec4
+        coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives

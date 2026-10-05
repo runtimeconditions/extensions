@@ -1,11 +1,11 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:additive-field
+  uri: https://runtimeconditions.io/conformance/additive-field
   version: 1.0.0
 spec:
   dependencies:
-    - urn:runtimeconditions:conformance:additive-field:base
+    - https://runtimeconditions.io/conformance/additive-field-base:1.0.0
   conditionFields:
     - name: credential
       appliesToKinds: [service]

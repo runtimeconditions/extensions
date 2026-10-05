@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:go-fixture:marker-owner-a
+  uri: https://runtimeconditions.io/go-fixture/marker-owner-a
   version: 1.0.0
 spec:
   kinds:

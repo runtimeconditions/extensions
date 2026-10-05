@@ -32,7 +32,7 @@ func (transport ociRouteTransport) RoundTrip(request *http.Request) (*http.Respo
 }
 
 func TestRegistryOCIFetcherUsesImmutableManifestAndLockedLayer(t *testing.T) {
-	extension := fixtureExtension("urn:runtimeconditions:test:oci-registry", nil, kindSpec("oci"))
+	extension := fixtureExtension("https://runtimeconditions.io/test/oci-registry:1.0.0", nil, kindSpec("oci"))
 	extensionDigest := SHA256Hex(extension)
 	manifest := ociManifest{
 		SchemaVersion: 2,
@@ -53,7 +53,7 @@ func TestRegistryOCIFetcherUsesImmutableManifestAndLockedLayer(t *testing.T) {
 		"/v2/runtimeconditions/extensions/test/blobs/sha256:" + extensionDigest: extension,
 	}}}
 	fetcher := registryOCIFetcher{client: client}
-	actual, actualLocator, err := fetcher.Fetch(context.Background(), "urn:runtimeconditions:test:oci-registry", LockEntry{
+	actual, actualLocator, err := fetcher.Fetch(context.Background(), "https://runtimeconditions.io/test/oci-registry:1.0.0", LockEntry{
 		SourceSHA256: extensionDigest,
 		Locator:      locator,
 	})
@@ -66,7 +66,7 @@ func TestRegistryOCIFetcherUsesImmutableManifestAndLockedLayer(t *testing.T) {
 }
 
 func TestRegistryOCIFetcherResolvesMutableTagToImmutableManifest(t *testing.T) {
-	extension := fixtureExtension("urn:runtimeconditions:test:oci-tag", nil, kindSpec("oci"))
+	extension := fixtureExtension("https://runtimeconditions.io/test/oci-tag:1.0.0", nil, kindSpec("oci"))
 	extensionDigest := SHA256Hex(extension)
 	manifest := ociManifest{
 		SchemaVersion: 2,
@@ -88,7 +88,7 @@ func TestRegistryOCIFetcherResolvesMutableTagToImmutableManifest(t *testing.T) {
 		"/v2/runtimeconditions/extensions/test/blobs/sha256:" + extensionDigest: extension,
 	}}}
 	fetcher := registryOCIFetcher{client: client}
-	actual, actualLocator, err := fetcher.Fetch(context.Background(), "urn:runtimeconditions:test:oci-tag", LockEntry{
+	actual, actualLocator, err := fetcher.Fetch(context.Background(), "https://runtimeconditions.io/test/oci-tag:1.0.0", LockEntry{
 		SourceSHA256: extensionDigest,
 		Locator:      mutableLocator,
 	})

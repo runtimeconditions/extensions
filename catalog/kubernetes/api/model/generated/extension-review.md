@@ -6,7 +6,7 @@ The approved Kubernetes operation forms compile into an immutable extension rele
 
 ## Release
 
-- Extension: `https://runtimeconditions.io/extensions/kubernetes-api/0.1.0/runtimeconditions.extension.yaml`
+- Extension: `https://runtimeconditions.io/kubernetes/kubernetes-api:0.1.0`
 - Version: `0.1.0`
 - Extension semantic SHA-256: `74325613d6fad555e7ab3fc195fe373b16c1f1a7ab77cedacee06a96c4353896`
 - Service-mapping semantic SHA-256: `51e251ef09d58c2f8dc8c1e36033c060bfc8ef0fa1ebe19dc045b71c04303e66`

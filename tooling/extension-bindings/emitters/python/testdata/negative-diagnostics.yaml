@@ -21,12 +21,12 @@
     code: RCP2001
     coordinate: conformance-owned-kind-interface
     jsonPointer: ''
-    message: "symbol 'STREAMING' conflicts after full path: urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc/properties/mode#value:STREAMING and urn:runtimeconditions:conformance:scoped-domains-collisions#schema:service-grpc/properties/mode#value:streaming"
+    message: "symbol 'STREAMING' conflicts after full path: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-grpc/properties/mode#value:STREAMING and https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-grpc/properties/mode#value:streaming"
 - case: unnameable-field
   positiveCase: 01-owned-kind-interface
   expected:
     category: python-naming
     code: RCP2000
-    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http/properties/region
+    coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http/properties/region
     jsonPointer: ''
     message: "cannot derive Python identifier from '💥'"

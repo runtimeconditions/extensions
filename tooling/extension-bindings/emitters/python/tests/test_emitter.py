@@ -354,7 +354,7 @@ def test_target_model_mismatch_has_exact_diagnostic() -> None:
         build_plan(model, target)
     assert str(error.value) == (
         "RCP1009 conformance-owned-kind-interface /rootExtension: target root 'other' differs "
-        "from model root 'urn:runtimeconditions:conformance:owned-kind-interface'"
+        "from model root 'https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0'"
     )
 
 

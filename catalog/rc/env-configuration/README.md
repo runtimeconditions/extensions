@@ -16,13 +16,13 @@ This extension is not part of the core Runtime Conditions Profile vocabulary. Pr
 
 ```yaml
 extensions:
-  - https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
-  - https://runtimeconditions.io/extensions/env-configuration/v1alpha1/runtimeconditions.extension.yaml
+  - https://runtimeconditions.io/common-integrations:v1alpha1
+  - https://runtimeconditions.io/env-configuration:v1alpha1
 ```
 
 This extension defines the Condition field `configuration`.
 
-This extension depends on `https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml` for the common Condition kinds and interface types referenced by its standard property validation table.
+This extension depends on `https://runtimeconditions.io/common-integrations:v1alpha1` for the common Condition kinds and interface types referenced by its standard property validation table.
 
 This extension owns the unqualified Condition field name `configuration` only
 within the common integration scopes listed in this document. Other extensions
@@ -168,7 +168,7 @@ Extensions that define additional Condition kinds or interface types MAY define 
 
 A Condition that uses this extension is invalid if:
 
-- `configuration` appears and `https://runtimeconditions.io/extensions/env-configuration/v1alpha1/runtimeconditions.extension.yaml` is not declared
+- `configuration` appears and `https://runtimeconditions.io/env-configuration:v1alpha1` is not declared
 - `configuration` contains neither `env` nor `alternatives`
 - `configuration` contains both `env` and `alternatives`
 - `configuration.env` is present but empty
@@ -200,8 +200,8 @@ workload:
   version: v1.2.3
 
 extensions:
-  - https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
-  - https://runtimeconditions.io/extensions/env-configuration/v1alpha1/runtimeconditions.extension.yaml
+  - https://runtimeconditions.io/common-integrations:v1alpha1
+  - https://runtimeconditions.io/env-configuration:v1alpha1
 
 conditions:
   - name: todos-api

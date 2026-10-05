@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:additive-field:base
+  uri: https://runtimeconditions.io/conformance/additive-field-base
   version: 1.0.0
 spec:
   kinds:

@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/python-package-target/v1alpha1
 kind: RuntimeConditionsPythonPackageTarget
 packageKey: conformance-owned-kind-interface
-rootExtension: urn:runtimeconditions:conformance:owned-kind-interface
+rootExtension: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
 distributionName: runtimeconditions-conformance-owned-kind-interface
 importPackage: runtimeconditions_conformance_owned_kind_interface
 version: 1.0.0

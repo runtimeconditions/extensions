@@ -39,7 +39,7 @@ func run(arguments []string) error {
 	flags.Var(&overrides, "extension-override", "exact extension identifier and file as <id>=<path>; repeatable")
 	rootID := flags.String("root", "", "exact root extension identifier")
 	cacheDirectory := flags.String("cache", "", "content-addressed local extension cache")
-	network := flags.Bool("network", false, "permit locked HTTPS and OCI resolution")
+	network := flags.Bool("network", false, "permit locked HTTPS catalog resolution")
 	dependencyLockPath := flags.String("dependency-lock", "", "existing dependency-lock YAML to verify")
 	dependencyLockOutput := flags.String("dependency-lock-output", "", "new path for the resolved dependency-lock YAML")
 	semanticSchema := flags.String("semantic-schema", "../model/runtimeconditions.extension-semantic.schema.yaml", "extension semantic schema path")

@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/go-package-target/v1alpha1
 kind: RuntimeConditionsGoPackageTarget
 packageKey: go-fixture-optional-enum-fields
-rootExtension: urn:runtimeconditions:go-fixture:optional-enum-fields
+rootExtension: https://runtimeconditions.io/go-fixture/optional-enum-fields:1.0.0
 modulePath: example.com/runtimeconditions/go-fixture/optional-enum-fields
 packageName: optionalenumfields
 version: v1.0.0

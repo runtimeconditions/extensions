@@ -24,9 +24,9 @@ func testSchemas(t *testing.T) *Schemas {
 func testNormalizeConfig() NormalizeConfig {
 	return NormalizeConfig{
 		CoreProfileSchema: CoreProfileIdentity{
-			ID:             "https://runtimeconditions.io/schemas/profile/0.1.0/runtimeconditions.profile.schema.yaml",
-			Version:        "0.1.0",
-			SemanticSHA256: "49890a0f3e7276d1e480d654176672d977df9c63094f3a24983b0a8102e1a3e3",
+			ID:             "https://runtimeconditions.io/schemas/profile/0.2.0/runtimeconditions.profile.schema.yaml",
+			Version:        "0.2.0",
+			SemanticSHA256: "a090a8016d045f9c3fa872a67f8df293b77ca2809a1bea5ae9fa31a27a06109a",
 		},
 		Normalizer: ToolIdentity{
 			Name: NormalizerName, Version: NormalizerVersion, SHA256: strings.Repeat("d", 64),
@@ -93,7 +93,7 @@ func TestNormalizeEveryCatalogExtension(t *testing.T) {
 }
 
 func TestFieldValuesUseCompleteJSONSchemaValidation(t *testing.T) {
-	id := "urn:runtimeconditions:test:field-values-full-schema"
+	id := "https://runtimeconditions.io/test/field-values-full-schema:1.0.0"
 	document := fixtureExtension(id, nil, `  kinds:
     - name: service
   fieldValues:

@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/go-package-target/v1alpha1
 kind: RuntimeConditionsGoPackageTarget
 packageKey: conformance-collections-and-maps
-rootExtension: urn:runtimeconditions:conformance:collections-and-maps
+rootExtension: https://runtimeconditions.io/conformance/collections-and-maps:1.0.0
 modulePath: example.com/runtimeconditions/conformance/collections-and-maps
 packageName: collectionsandmaps
 version: v1.0.0

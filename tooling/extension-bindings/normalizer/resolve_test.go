@@ -3,11 +3,9 @@ package normalizer
 import (
 	"bytes"
 	"context"
-	"crypto/sha256"
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -26,7 +24,7 @@ func fixtureExtension(id string, dependencies []string, specBody string) []byte 
 			dependencyYAML.WriteByte('\n')
 		}
 	}
-	return []byte(fmt.Sprintf("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  id: %s\n  version: 1.0.0\nspec:\n%s%s", id, dependencyYAML.String(), specBody))
+	return []byte(fmt.Sprintf("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  uri: %s\n  version: 1.0.0\nspec:\n%s%s", strings.TrimSuffix(id, ":1.0.0"), dependencyYAML.String(), specBody))
 }
 
 func kindSpec(name string) string {
@@ -66,15 +64,15 @@ func diagnosticCode(t *testing.T, err error) string {
 func closureIDs(closure ResolvedClosure) []string {
 	ids := make([]string, 0, len(closure.Documents))
 	for _, document := range closure.Documents {
-		ids = append(ids, document.Definition.Metadata.ID)
+		ids = append(ids, document.Definition.Metadata.Identifier())
 	}
 	return ids
 }
 
 func TestResolverDirectDependencyOrder(t *testing.T) {
 	directory := t.TempDir()
-	rootID := "urn:runtimeconditions:test:direct:root"
-	dependencyID := "urn:runtimeconditions:test:direct:dependency"
+	rootID := "https://runtimeconditions.io/test/direct-root:1.0.0"
+	dependencyID := "https://runtimeconditions.io/test/direct-dependency:1.0.0"
 	writeFixture(t, directory, "root.yaml", fixtureExtension(rootID, []string{dependencyID}, kindSpec("root")))
 	writeFixture(t, directory, "dependency.yaml", fixtureExtension(dependencyID, nil, kindSpec("dependency")))
 	want := strings.Join([]string{dependencyID, rootID}, "\n")
@@ -91,10 +89,10 @@ func TestResolverDirectDependencyOrder(t *testing.T) {
 
 func TestResolverDeterministicDependencyOrder(t *testing.T) {
 	directory := t.TempDir()
-	rootID := "urn:runtimeconditions:test:order:root"
-	bID := "urn:runtimeconditions:test:order:b"
-	cID := "urn:runtimeconditions:test:order:c"
-	dID := "urn:runtimeconditions:test:order:d"
+	rootID := "https://runtimeconditions.io/test/order-root:1.0.0"
+	bID := "https://runtimeconditions.io/test/order-b:1.0.0"
+	cID := "https://runtimeconditions.io/test/order-c:1.0.0"
+	dID := "https://runtimeconditions.io/test/order-d:1.0.0"
 	writeFixture(t, directory, "root.yaml", fixtureExtension(rootID, []string{cID, bID}, kindSpec("root")))
 	writeFixture(t, directory, "b.yaml", fixtureExtension(bID, []string{dID}, kindSpec("b")))
 	writeFixture(t, directory, "c.yaml", fixtureExtension(cID, nil, kindSpec("c")))
@@ -113,9 +111,9 @@ func TestResolverDeterministicDependencyOrder(t *testing.T) {
 
 func TestResolverThreeLevelClosure(t *testing.T) {
 	directory := t.TempDir()
-	rootID := "urn:runtimeconditions:test:chain:root"
-	middleID := "urn:runtimeconditions:test:chain:middle"
-	leafID := "urn:runtimeconditions:test:chain:leaf"
+	rootID := "https://runtimeconditions.io/test/chain-root:1.0.0"
+	middleID := "https://runtimeconditions.io/test/chain-middle:1.0.0"
+	leafID := "https://runtimeconditions.io/test/chain-leaf:1.0.0"
 	writeFixture(t, directory, "root.yaml", fixtureExtension(rootID, []string{middleID}, kindSpec("root")))
 	writeFixture(t, directory, "middle.yaml", fixtureExtension(middleID, []string{leafID}, kindSpec("middle")))
 	writeFixture(t, directory, "leaf.yaml", fixtureExtension(leafID, nil, kindSpec("leaf")))
@@ -139,31 +137,31 @@ func TestResolverDependencyFailures(t *testing.T) {
 		code      string
 	}{
 		{
-			name: "two node cycle", root: "urn:runtimeconditions:test:cycle2:a", code: "RCB1204",
+			name: "two node cycle", root: "https://runtimeconditions.io/test/cycle2-a:1.0.0", code: "RCB1204",
 			documents: map[string][]byte{
-				"a.yaml": fixtureExtension("urn:runtimeconditions:test:cycle2:a", []string{"urn:runtimeconditions:test:cycle2:b"}, kindSpec("a")),
-				"b.yaml": fixtureExtension("urn:runtimeconditions:test:cycle2:b", []string{"urn:runtimeconditions:test:cycle2:a"}, kindSpec("b")),
+				"a.yaml": fixtureExtension("https://runtimeconditions.io/test/cycle2-a:1.0.0", []string{"https://runtimeconditions.io/test/cycle2-b:1.0.0"}, kindSpec("a")),
+				"b.yaml": fixtureExtension("https://runtimeconditions.io/test/cycle2-b:1.0.0", []string{"https://runtimeconditions.io/test/cycle2-a:1.0.0"}, kindSpec("b")),
 			},
 		},
 		{
-			name: "three node cycle", root: "urn:runtimeconditions:test:cycle3:a", code: "RCB1204",
+			name: "three node cycle", root: "https://runtimeconditions.io/test/cycle3-a:1.0.0", code: "RCB1204",
 			documents: map[string][]byte{
-				"a.yaml": fixtureExtension("urn:runtimeconditions:test:cycle3:a", []string{"urn:runtimeconditions:test:cycle3:b"}, kindSpec("a")),
-				"b.yaml": fixtureExtension("urn:runtimeconditions:test:cycle3:b", []string{"urn:runtimeconditions:test:cycle3:c"}, kindSpec("b")),
-				"c.yaml": fixtureExtension("urn:runtimeconditions:test:cycle3:c", []string{"urn:runtimeconditions:test:cycle3:a"}, kindSpec("c")),
+				"a.yaml": fixtureExtension("https://runtimeconditions.io/test/cycle3-a:1.0.0", []string{"https://runtimeconditions.io/test/cycle3-b:1.0.0"}, kindSpec("a")),
+				"b.yaml": fixtureExtension("https://runtimeconditions.io/test/cycle3-b:1.0.0", []string{"https://runtimeconditions.io/test/cycle3-c:1.0.0"}, kindSpec("b")),
+				"c.yaml": fixtureExtension("https://runtimeconditions.io/test/cycle3-c:1.0.0", []string{"https://runtimeconditions.io/test/cycle3-a:1.0.0"}, kindSpec("c")),
 			},
 		},
 		{
-			name: "missing direct", root: "urn:runtimeconditions:test:missing-direct:root", code: "RCB1207",
+			name: "missing direct", root: "https://runtimeconditions.io/test/missing-direct-root:1.0.0", code: "RCB1208",
 			documents: map[string][]byte{
-				"root.yaml": fixtureExtension("urn:runtimeconditions:test:missing-direct:root", []string{"urn:runtimeconditions:test:missing-direct:absent"}, kindSpec("root")),
+				"root.yaml": fixtureExtension("https://runtimeconditions.io/test/missing-direct-root:1.0.0", []string{"https://runtimeconditions.io/test/missing-direct-absent:1.0.0"}, kindSpec("root")),
 			},
 		},
 		{
-			name: "missing transitive", root: "urn:runtimeconditions:test:missing-transitive:root", code: "RCB1207",
+			name: "missing transitive", root: "https://runtimeconditions.io/test/missing-transitive-root:1.0.0", code: "RCB1208",
 			documents: map[string][]byte{
-				"root.yaml":   fixtureExtension("urn:runtimeconditions:test:missing-transitive:root", []string{"urn:runtimeconditions:test:missing-transitive:middle"}, kindSpec("root")),
-				"middle.yaml": fixtureExtension("urn:runtimeconditions:test:missing-transitive:middle", []string{"urn:runtimeconditions:test:missing-transitive:absent"}, kindSpec("middle")),
+				"root.yaml":   fixtureExtension("https://runtimeconditions.io/test/missing-transitive-root:1.0.0", []string{"https://runtimeconditions.io/test/missing-transitive-middle:1.0.0"}, kindSpec("root")),
+				"middle.yaml": fixtureExtension("https://runtimeconditions.io/test/missing-transitive-middle:1.0.0", []string{"https://runtimeconditions.io/test/missing-transitive-absent:1.0.0"}, kindSpec("middle")),
 			},
 		},
 	}
@@ -185,7 +183,7 @@ func TestResolverDependencyFailures(t *testing.T) {
 }
 
 func TestResolverRejectsDuplicateIdentifierBytes(t *testing.T) {
-	id := "urn:runtimeconditions:test:duplicate-id"
+	id := "https://runtimeconditions.io/test/duplicate-id:1.0.0"
 	first := t.TempDir()
 	second := t.TempDir()
 	writeFixture(t, first, "extension.yaml", fixtureExtension(id, nil, kindSpec("first")))
@@ -198,9 +196,9 @@ func TestResolverRejectsDuplicateIdentifierBytes(t *testing.T) {
 
 func TestResolverRejectsIdenticalVocabularyConflict(t *testing.T) {
 	directory := t.TempDir()
-	rootID := "urn:runtimeconditions:test:vocabulary:root"
-	firstID := "urn:runtimeconditions:test:vocabulary:first"
-	secondID := "urn:runtimeconditions:test:vocabulary:second"
+	rootID := "https://runtimeconditions.io/test/vocabulary-root:1.0.0"
+	firstID := "https://runtimeconditions.io/test/vocabulary-first:1.0.0"
+	secondID := "https://runtimeconditions.io/test/vocabulary-second:1.0.0"
 	writeFixture(t, directory, "root.yaml", fixtureExtension(rootID, []string{firstID, secondID}, kindSpec("root")))
 	writeFixture(t, directory, "first.yaml", fixtureExtension(firstID, nil, kindSpec("shared")))
 	writeFixture(t, directory, "second.yaml", fixtureExtension(secondID, nil, kindSpec("shared")))
@@ -212,7 +210,7 @@ func TestResolverRejectsIdenticalVocabularyConflict(t *testing.T) {
 
 func TestResolverRejectsInvalidFieldValuesPath(t *testing.T) {
 	directory := t.TempDir()
-	id := "urn:runtimeconditions:test:invalid-field-values-path"
+	id := "https://runtimeconditions.io/test/invalid-field-values-path:1.0.0"
 	document := fixtureExtension(id, nil, `  kinds:
     - name: service
   fieldValues:
@@ -255,32 +253,26 @@ func (fetcher fakeOCIFetcher) Fetch(_ context.Context, _ string, lock LockEntry)
 }
 
 func TestResolverBackendsProduceOneSemanticModel(t *testing.T) {
-	id := "urn:runtimeconditions:test:backends"
+	id := "https://runtimeconditions.io/test/backends:1.0.0"
 	data := fixtureExtension(id, nil, kindSpec("backend"))
 	sourceDigest := SHA256Hex(data)
 	directory := t.TempDir()
 	path := writeFixture(t, directory, "extension.yaml", data)
+	cache := t.TempDir()
+	writeFixture(t, cache, sourceDigest+".yaml", data)
 	schemas := testSchemas(t)
 
-	ociDigest := sha256.Sum256(data)
-	ociLocator := fmt.Sprintf("oci://registry.invalid/runtimeconditions/extension@sha256:%x", ociDigest)
-	fileLocator := (&url.URL{Scheme: "file", Path: path}).String()
-	httpsLocator := "https://resolver.invalid/runtimeconditions.extension.yaml"
+	identity, _ := ParseExtensionIdentifier(id)
+	httpsLocator := identity.DefinitionURL()
 
 	configs := map[string]ResolverConfig{
 		"override": {Schemas: schemas, Overrides: map[string]string{id: path}},
 		"catalog":  {Schemas: schemas, CatalogRoots: []string{directory}},
-		"file": {
-			Schemas: schemas,
-			Locks:   map[string]LockEntry{id: {SourceSHA256: sourceDigest, Locator: fileLocator}},
-		},
+		"package":  {Schemas: schemas, PackageRoots: []string{directory}},
+		"cache":    {Schemas: schemas, CacheDir: cache},
 		"https": {
 			Schemas: schemas, Network: true, HTTPClient: &http.Client{Transport: staticHTTPTransport{data: data}},
 			Locks: map[string]LockEntry{id: {SourceSHA256: sourceDigest, Locator: httpsLocator}},
-		},
-		"oci": {
-			Schemas: schemas, Network: true, OCIFetcher: fakeOCIFetcher{data: data},
-			Locks: map[string]LockEntry{id: {SourceSHA256: sourceDigest, Locator: ociLocator}},
 		},
 	}
 
@@ -328,7 +320,7 @@ func (transport *countingTransport) RoundTrip(*http.Request) (*http.Response, er
 }
 
 func TestNetworkDisabledPerformsNoRequest(t *testing.T) {
-	id := "urn:runtimeconditions:test:network-disabled"
+	id := "https://runtimeconditions.io/test/network-disabled:1.0.0"
 	transport := &countingTransport{}
 	resolver, err := NewResolver(ResolverConfig{
 		Schemas: testSchemas(t), Network: false,
@@ -349,48 +341,8 @@ func TestNetworkDisabledPerformsNoRequest(t *testing.T) {
 	}
 }
 
-func TestMutableOCILockResolvesToImmutableProvenance(t *testing.T) {
-	id := "urn:runtimeconditions:test:mutable-oci"
-	data := fixtureExtension(id, nil, kindSpec("oci"))
-	sourceDigest := SHA256Hex(data)
-	mutableLocator := "oci://registry.invalid/runtimeconditions/extensions/test:stable"
-	immutableLocator := "oci://registry.invalid/runtimeconditions/extensions/test@sha256:" + strings.Repeat("a", 64)
-	schemas := testSchemas(t)
-	resolver, err := NewResolver(ResolverConfig{
-		Schemas: schemas,
-		Network: true,
-		Locks: map[string]LockEntry{id: {
-			SourceSHA256: sourceDigest,
-			Locator:      mutableLocator,
-		}},
-		OCIFetcher: fakeOCIFetcher{data: data, locator: immutableLocator},
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	closure, err := resolver.Resolve(context.Background(), id)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if closure.Documents[0].Locator != immutableLocator {
-		t.Fatalf("resolved locator = %q, want %q", closure.Documents[0].Locator, immutableLocator)
-	}
-	suppliedLock := BuildDependencyLock(closure)
-	suppliedLock.Extensions[0].SourceLocator = mutableLocator
-	if err := ValidateDependencyLock(closure, suppliedLock); err != nil {
-		t.Fatalf("validate mutable OCI lookup lock: %v", err)
-	}
-	resolvedLock := BuildDependencyLock(closure)
-	if resolvedLock.Extensions[0].SourceLocator != immutableLocator {
-		t.Fatalf("resolved lock locator = %q, want %q", resolvedLock.Extensions[0].SourceLocator, immutableLocator)
-	}
-	if _, err := Normalize(closure, resolvedLock, schemas, testNormalizeConfig()); err != nil {
-		t.Fatal(err)
-	}
-}
-
 func TestContentAddressedCacheVerifiesEntryDigest(t *testing.T) {
-	id := "urn:runtimeconditions:test:content-addressed-cache"
+	id := "https://runtimeconditions.io/test/content-addressed-cache:1.0.0"
 	data := fixtureExtension(id, nil, kindSpec("cache"))
 	digest := SHA256Hex(data)
 	cacheDirectory := t.TempDir()
@@ -444,7 +396,7 @@ func TestResolverRejectsAnchorsAndNonPointerReferences(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			id := "urn:runtimeconditions:test:references:" + strings.ReplaceAll(test.name, " ", "-")
+			id := "https://runtimeconditions.io/test/references-" + strings.ReplaceAll(test.name, " ", "-") + ":1.0.0"
 			document := fixtureExtension(id, nil, `  schemas:
     - id: references
       description: Reference validation fixture.
@@ -461,9 +413,9 @@ func TestResolverRejectsAnchorsAndNonPointerReferences(t *testing.T) {
 }
 
 func TestSemanticAndSourceDigestOrdering(t *testing.T) {
-	id := "urn:runtimeconditions:test:digest-ordering"
-	first := []byte("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  id: urn:runtimeconditions:test:digest-ordering\n  version: 1.0.0\nspec:\n  kinds:\n    - name: beta\n    - name: alpha\n")
-	second := []byte("kind: RuntimeConditionsExtensionDefinition\napiVersion: runtimeconditions.io/v1alpha1\nmetadata: {version: '1.0.0', id: urn:runtimeconditions:test:digest-ordering}\nspec:\n  kinds: [{name: alpha}, {name: beta}]\n")
+	id := "https://runtimeconditions.io/test/digest-ordering:1.0.0"
+	first := []byte("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  uri: https://runtimeconditions.io/test/digest-ordering\n  version: 1.0.0\nspec:\n  kinds:\n    - name: beta\n    - name: alpha\n")
+	second := []byte("kind: RuntimeConditionsExtensionDefinition\napiVersion: runtimeconditions.io/v1alpha1\nmetadata: {version: '1.0.0', uri: https://runtimeconditions.io/test/digest-ordering}\nspec:\n  kinds: [{name: alpha}, {name: beta}]\n")
 	firstModel, firstLock := normalizeSingleSource(t, id, first)
 	secondModel, secondLock := normalizeSingleSource(t, id, second)
 	if firstLock.Extensions[0].SourceSHA256 == secondLock.Extensions[0].SourceSHA256 {
@@ -476,7 +428,7 @@ func TestSemanticAndSourceDigestOrdering(t *testing.T) {
 		t.Fatal("presentation and set ordering changes changed model bytes")
 	}
 
-	sourceFirst := []byte("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  id: urn:runtimeconditions:test:digest-ordering\n  version: 1.0.0\nspec:\n  kinds: [{name: alpha}]\n  schemas:\n    - id: examples\n      description: Ordered examples\n      schema:\n        type: string\n        examples: [first, second]\n")
+	sourceFirst := []byte("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  uri: https://runtimeconditions.io/test/digest-ordering\n  version: 1.0.0\nspec:\n  kinds: [{name: alpha}]\n  schemas:\n    - id: examples\n      description: Ordered examples\n      schema:\n        type: string\n        examples: [first, second]\n")
 	sourceSecond := []byte(strings.Replace(string(sourceFirst), "examples: [first, second]", "examples: [second, first]", 1))
 	firstModel, firstLock = normalizeSingleSource(t, id, sourceFirst)
 	secondModel, secondLock = normalizeSingleSource(t, id, sourceSecond)
@@ -513,7 +465,7 @@ func normalizeSingleSource(t *testing.T, id string, data []byte) ([]byte, Depend
 }
 
 func TestDependencyLockMustMatchClosure(t *testing.T) {
-	id := "urn:runtimeconditions:test:lock"
+	id := "https://runtimeconditions.io/test/lock:1.0.0"
 	data := fixtureExtension(id, nil, kindSpec("lock"))
 	directory := t.TempDir()
 	path := writeFixture(t, directory, "extension.yaml", data)
@@ -532,7 +484,7 @@ func TestDependencyLockMustMatchClosure(t *testing.T) {
 		code string
 	}{
 		{name: "missing", lock: DependencyLock{}, code: "RCB1223"},
-		{name: "extra", lock: DependencyLock{Extensions: append(BuildDependencyLock(closure).Extensions, DependencyLockEntry{ID: "urn:runtimeconditions:test:extra"})}, code: "RCB1226"},
+		{name: "extra", lock: DependencyLock{Extensions: append(BuildDependencyLock(closure).Extensions, DependencyLockEntry{ID: "https://runtimeconditions.io/test/extra:1.0.0"})}, code: "RCB1226"},
 		{name: "semantic mismatch", lock: func() DependencyLock {
 			lock := BuildDependencyLock(closure)
 			lock.Extensions[0].SemanticSHA256 = strings.Repeat("f", 64)

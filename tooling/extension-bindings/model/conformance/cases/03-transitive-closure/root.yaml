@@ -1,11 +1,11 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:transitive:root
+  uri: https://runtimeconditions.io/conformance/transitive-root
   version: 1.0.0
 spec:
   dependencies:
-    - urn:runtimeconditions:conformance:transitive:middle
+    - https://runtimeconditions.io/conformance/transitive-middle:1.0.0
   conditionFields:
     - name: command
       appliesToKinds: [worker]

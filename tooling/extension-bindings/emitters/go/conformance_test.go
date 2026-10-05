@@ -10,6 +10,7 @@ import (
 	"go/printer"
 	"go/scanner"
 	"go/token"
+	"go/types"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -34,6 +35,7 @@ var positiveGoCases = []string{
 	"09-collections-and-maps",
 	"10-scoped-domains-collisions",
 	"11-source-name-preservation",
+	"13-dependency-schema-only",
 }
 
 type conformanceModule struct {
@@ -121,10 +123,10 @@ func TestManifestRejectsProvisionalInventoryAndStaleIdentity(t *testing.T) {
 		t.Fatal(err)
 	}
 	compiler := jsonschema.NewCompiler()
-	if err := compiler.AddResource("urn:runtimeconditions:test:structural-manifest", resource); err != nil {
+	if err := compiler.AddResource("https://runtimeconditions.io/test/structural-manifest:1.0.0", resource); err != nil {
 		t.Fatal(err)
 	}
-	schema, err := compiler.Compile("urn:runtimeconditions:test:structural-manifest")
+	schema, err := compiler.Compile("https://runtimeconditions.io/test/structural-manifest:1.0.0")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -312,18 +314,8 @@ func assertStructuralManifest(t *testing.T, module generatedModule) {
 			(binding.Role != "interface" && binding.SourceName != binding.Path[len(binding.Path)-1].Name) {
 			t.Errorf("root binding loses serialized path name: %+v", binding)
 		}
-		if binding.Role == "interface" || binding.Role == "condition-field" {
-			implemented := false
-			for _, contract := range nativeTypes[binding.Value.Type].Implements {
-				if contract.DeclarationCoordinate == binding.DeclarationCoordinate {
-					implemented = true
-				}
-			}
-			if !implemented {
-				t.Errorf("root binding type %q lacks declaration marker %q", binding.Value.Type, binding.DeclarationCoordinate)
-			}
-		}
 	}
+	assertRootDeclarationContracts(t, module, manifest)
 	for _, entry := range manifest.Types {
 		shape, hasShape := shapes[entry.ModelRef]
 		if hasShape {
@@ -415,6 +407,108 @@ func assertStructuralManifest(t *testing.T, module generatedModule) {
 	}
 }
 
+func assertRootDeclarationContracts(t *testing.T, module generatedModule, manifest Manifest) {
+	t.Helper()
+	for _, interfaceModel := range module.model.Vocabulary.Interfaces {
+		if interfaceModel.Owner != module.model.RootExtension.ID {
+			continue
+		}
+		found := false
+		for _, binding := range manifest.RootBindings {
+			if binding.Role == "interface" && binding.ModelRef == manifestModelRef(interfaceModel.Provenance) &&
+				binding.Scope.Kind == interfaceModel.Kind && binding.Scope.InterfaceType == interfaceModel.Type {
+				found = true
+			}
+		}
+		if !found {
+			t.Errorf("model interface %s has no declaration binding", interfaceModel.Coordinate)
+		}
+	}
+	for _, scope := range module.model.Scopes {
+		if scope.Projection == nil {
+			continue
+		}
+		for _, property := range scope.Projection.Properties {
+			if property.Name == "interface" || property.Provenance.Owner != module.model.RootExtension.ID {
+				continue
+			}
+			found := false
+			for _, binding := range manifest.RootBindings {
+				if binding.Scope.Kind == scope.Kind && binding.Scope.InterfaceType == scope.InterfaceType &&
+					len(binding.Path) == 1 && binding.Path[0].Name == property.Name && !binding.Path[0].Array {
+					found = true
+					if binding.Role == "schema-field" && binding.ModelRef != manifestModelRef(property.Provenance) {
+						t.Errorf("root property %s.%s loses its model location", scope.Coordinate, property.Name)
+					}
+				}
+			}
+			if !found {
+				t.Errorf("model root property %s.%s has no declaration binding", scope.Coordinate, property.Name)
+			}
+		}
+	}
+
+	declarations := map[string]normalizer.DeclarationModel{}
+	for _, declaration := range append(append([]normalizer.DeclarationModel(nil), module.model.Vocabulary.OwnedDeclarations...), module.model.Vocabulary.ImportedDeclarations...) {
+		declarations[declaration.Coordinate] = declaration
+	}
+	nativeTypes := map[string]ManifestNamedType{}
+	for _, entry := range manifest.Types {
+		nativeTypes[entry.NativeName] = entry
+	}
+	expected := map[string]map[string]string{}
+	var requireContract func(string, normalizer.DeclarationModel)
+	requireContract = func(name string, declaration normalizer.DeclarationModel) {
+		entry, exists := nativeTypes[name]
+		if !exists {
+			t.Errorf("declaration field %q is not a generated named type", name)
+			return
+		}
+		if expected[name] == nil {
+			expected[name] = map[string]string{}
+		}
+		if _, exists := expected[name][declaration.Coordinate]; exists {
+			return
+		}
+		expected[name][declaration.Coordinate] = markerMethod(declaration)
+		for _, variant := range entry.Variants {
+			requireContract(variant.Value.Type, declaration)
+		}
+	}
+	for _, binding := range manifest.RootBindings {
+		declaration, exists := declarations[binding.DeclarationCoordinate]
+		if !exists || declaration.Kind != binding.Scope.Kind {
+			t.Errorf("root binding %s has no model declaration contract", binding.SourceName)
+			continue
+		}
+		requireContract(binding.Value.Type, declaration)
+	}
+
+	packageValue := typeCheckGeneratedPackage(t, module.path, module.target.ModulePath)
+	for _, entry := range manifest.Types {
+		actual := map[string]string{}
+		for _, contract := range entry.Implements {
+			actual[contract.DeclarationCoordinate] = contract.MarkerMethod
+		}
+		if len(actual) != len(expected[entry.NativeName]) {
+			t.Errorf("type %s declaration contracts differ: manifest %v, expected %v", entry.NativeName, actual, expected[entry.NativeName])
+		}
+		native := packageType(t, packageValue, entry.NativeName)
+		for coordinate, declaration := range declarations {
+			method := markerMethod(declaration)
+			signature := types.NewSignatureType(nil, nil, nil, types.NewTuple(), types.NewTuple(), false)
+			contract := types.NewInterfaceType([]*types.Func{types.NewFunc(token.NoPos, packageValue, method, signature)}, nil).Complete()
+			want := expected[entry.NativeName][coordinate] == method
+			if implements := types.Implements(native, contract); implements != want {
+				t.Errorf("Go type %s implements declaration %s = %t, want %t", entry.NativeName, coordinate, implements, want)
+			}
+			if want && actual[coordinate] != method {
+				t.Errorf("type %s lacks manifest marker %s for %s", entry.NativeName, method, coordinate)
+			}
+		}
+	}
+}
+
 func generateConformanceModules(t *testing.T, name, workspace string) []generatedModule {
 	t.Helper()
 	fixtureRoot := filepath.Join("..", "..", "model", "conformance", "cases", name)
@@ -423,19 +517,24 @@ func generateConformanceModules(t *testing.T, name, workspace string) []generate
 	case "02-additive-field":
 		specs = append(specs, conformanceModule{
 			targetFile: "02-additive-field-base.yaml",
-			rootID:     "urn:runtimeconditions:conformance:additive-field:base",
+			rootID:     "https://runtimeconditions.io/conformance/additive-field-base:1.0.0",
 		})
 	case "03-transitive-closure":
 		specs = append(specs,
 			conformanceModule{
 				targetFile: "03-transitive-leaf.yaml",
-				rootID:     "urn:runtimeconditions:conformance:transitive:leaf",
+				rootID:     "https://runtimeconditions.io/conformance/transitive-leaf:1.0.0",
 			},
 			conformanceModule{
 				targetFile: "03-transitive-middle.yaml",
-				rootID:     "urn:runtimeconditions:conformance:transitive:middle",
+				rootID:     "https://runtimeconditions.io/conformance/transitive-middle:1.0.0",
 			},
 		)
+	case "13-dependency-schema-only":
+		specs = append(specs, conformanceModule{
+			targetFile: "13-dependency-schema-only-dependency.yaml",
+			rootID:     "https://runtimeconditions.io/conformance/dependency-schema-only-dependency:1.0.0",
+		})
 	}
 	specs = append(specs, conformanceModule{targetFile: name + ".yaml", expected: name})
 
@@ -569,7 +668,7 @@ func validateYAMLDocument(t *testing.T, schemaPath, documentPath string) {
 		t.Fatal(err)
 	}
 	compiler := jsonschema.NewCompiler()
-	const schemaURL = "urn:runtimeconditions:test:binding-manifest"
+	const schemaURL = "https://runtimeconditions.io/test/binding-manifest:1.0.0"
 	if err := compiler.AddResource(schemaURL, resource); err != nil {
 		t.Fatal(err)
 	}

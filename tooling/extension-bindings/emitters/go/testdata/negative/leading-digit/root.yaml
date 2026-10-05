@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:go-fixture:leading-digit
+  uri: https://runtimeconditions.io/go-fixture/leading-digit
   version: 1.0.0
 spec:
   kinds:

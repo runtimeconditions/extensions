@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/go-package-target/v1alpha1
 kind: RuntimeConditionsGoPackageTarget
 packageKey: conformance-owned-kind-interface
-rootExtension: urn:runtimeconditions:conformance:owned-kind-interface
+rootExtension: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
 modulePath: example.com/runtimeconditions/conformance/owned-kind-interface
 packageName: ownedkindinterface
 version: v1.0.0

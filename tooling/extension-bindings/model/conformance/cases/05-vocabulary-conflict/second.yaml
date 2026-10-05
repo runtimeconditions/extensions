@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:conflict:second
+  uri: https://runtimeconditions.io/conformance/conflict-second
   version: 1.0.0
 spec:
   kinds:

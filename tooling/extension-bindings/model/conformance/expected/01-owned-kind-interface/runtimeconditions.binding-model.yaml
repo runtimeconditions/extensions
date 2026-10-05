@@ -1,78 +1,78 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: e0323707b7e606c8f6e6ad8497bed7037d20dd1d397a12ff767acac86e12a08c
+    semanticSha256: 19b6e158e1fc15fb0ec1b0f8b85c35b2282ef003fa772f4552cfa90131c7c59d
     normalizer:
         name: rc-binding-model
         version: 0.1.0
         sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 coreProfileSchema:
-    id: https://runtimeconditions.io/schemas/profile/0.1.0/runtimeconditions.profile.schema.yaml
-    version: 0.1.0
-    semanticSha256: 49890a0f3e7276d1e480d654176672d977df9c63094f3a24983b0a8102e1a3e3
+    id: https://runtimeconditions.io/schemas/profile/0.2.0/runtimeconditions.profile.schema.yaml
+    version: 0.2.0
+    semanticSha256: a090a8016d045f9c3fa872a67f8df293b77ca2809a1bea5ae9fa31a27a06109a
 rootExtension:
-    id: urn:runtimeconditions:conformance:owned-kind-interface
+    id: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
     version: 1.0.0
-    semanticSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+    semanticSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
 extensions:
-    - id: urn:runtimeconditions:conformance:owned-kind-interface
+    - id: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
       version: 1.0.0
-      semanticSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+      semanticSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
 vocabulary:
     owners:
         - coordinate: condition-field:service:http:region
           category: condition-field
-          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
           kind: service
           interfaceType: http
           path: region
         - coordinate: interface-field:service:http:endpoint
           category: interface-field
-          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
           kind: service
           interfaceType: http
           path: interface.endpoint
         - coordinate: interface:service:http
           category: interface
-          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
           kind: service
           interfaceType: http
         - coordinate: kind:service
           category: kind
-          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
           kind: service
     ownedDeclarations:
         - coordinate: kind:service
-          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
           kind: service
           provenance:
-            owner: urn:runtimeconditions:conformance:owned-kind-interface
-            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+            extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
             coordinate: kind:service
     interfaces:
         - coordinate: interface:service:http
-          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
           kind: service
           type: http
           provenance:
-            owner: urn:runtimeconditions:conformance:owned-kind-interface
-            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+            extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
             coordinate: interface:service:http
     conditionFields:
         - coordinate: condition-field:service:http:region
-          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
           kind: service
           interfaceType: http
           path: region
           segments:
             - name: region
           provenance:
-            owner: urn:runtimeconditions:conformance:owned-kind-interface
-            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+            extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
             coordinate: condition-field:service:http:region
     interfaceFields:
         - coordinate: interface-field:service:http:endpoint
-          owner: urn:runtimeconditions:conformance:owned-kind-interface
+          owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
           kind: service
           interfaceType: http
           path: interface.endpoint
@@ -80,15 +80,15 @@ vocabulary:
             - name: interface
             - name: endpoint
           provenance:
-            owner: urn:runtimeconditions:conformance:owned-kind-interface
-            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
+            owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+            extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
             coordinate: interface-field:service:http:endpoint
 scopes:
     - coordinate: service:http
       kind: service
       interfaceType: http
       applicableSchemas:
-        - urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+        - https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
       projection:
         kind: object
         required:
@@ -108,24 +108,24 @@ scopes:
                         kind: scalar
                         scalar: string
                         provenance:
-                            owner: urn:runtimeconditions:conformance:owned-kind-interface
-                            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                            coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                            owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                            extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                            coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                             jsonPointer: /properties/interface/properties/endpoint
                       provenance:
-                        owner: urn:runtimeconditions:conformance:owned-kind-interface
-                        extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                        coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                        owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                        extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                        coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                         jsonPointer: /properties/interface/properties/endpoint
                 provenance:
-                    owner: urn:runtimeconditions:conformance:owned-kind-interface
-                    extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                    owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                    extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                    coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                     jsonPointer: /properties/interface
               provenance:
-                owner: urn:runtimeconditions:conformance:owned-kind-interface
-                extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                 jsonPointer: /properties/interface
             - name: region
               required: true
@@ -133,22 +133,22 @@ scopes:
                 kind: scalar
                 scalar: string
                 provenance:
-                    owner: urn:runtimeconditions:conformance:owned-kind-interface
-                    extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                    owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                    extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                    coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                     jsonPointer: /properties/region
               provenance:
-                owner: urn:runtimeconditions:conformance:owned-kind-interface
-                extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                 jsonPointer: /properties/region
         provenance:
-            owner: urn:runtimeconditions:conformance:owned-kind-interface
-            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-            coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+            owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+            extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+            coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
 schemas:
-    - coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
-      owner: urn:runtimeconditions:conformance:owned-kind-interface
+    - coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
+      owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
       id: service-http
       kind: service
       interfaceType: http
@@ -194,24 +194,24 @@ schemas:
                         kind: scalar
                         scalar: string
                         provenance:
-                            owner: urn:runtimeconditions:conformance:owned-kind-interface
-                            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                            coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                            owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                            extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                            coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                             jsonPointer: /properties/interface/properties/endpoint
                       provenance:
-                        owner: urn:runtimeconditions:conformance:owned-kind-interface
-                        extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                        coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                        owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                        extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                        coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                         jsonPointer: /properties/interface/properties/endpoint
                 provenance:
-                    owner: urn:runtimeconditions:conformance:owned-kind-interface
-                    extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                    owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                    extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                    coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                     jsonPointer: /properties/interface
               provenance:
-                owner: urn:runtimeconditions:conformance:owned-kind-interface
-                extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                 jsonPointer: /properties/interface
             - name: region
               required: true
@@ -219,20 +219,20 @@ schemas:
                 kind: scalar
                 scalar: string
                 provenance:
-                    owner: urn:runtimeconditions:conformance:owned-kind-interface
-                    extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                    coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                    owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                    extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                    coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                     jsonPointer: /properties/region
               provenance:
-                owner: urn:runtimeconditions:conformance:owned-kind-interface
-                extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-                coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+                owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+                extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+                coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
                 jsonPointer: /properties/region
         provenance:
-            owner: urn:runtimeconditions:conformance:owned-kind-interface
-            extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-            coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+            owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+            extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+            coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
       provenance:
-        owner: urn:runtimeconditions:conformance:owned-kind-interface
-        extensionSha256: 78b218c4e7978047e4aa4e53917f377e26bc02cb83212109dd05348b8214de3c
-        coordinate: urn:runtimeconditions:conformance:owned-kind-interface#schema:service-http
+        owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+        extensionSha256: 0919abe9b1d990237662ff24b1f215bfe4c21728684bc3c671860e0cc3b2665e
+        coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http

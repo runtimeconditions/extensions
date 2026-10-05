@@ -1,0 +1,9 @@
+apiVersion: runtimeconditions.io/go-package-target/v1alpha1
+kind: RuntimeConditionsGoPackageTarget
+packageKey: conformance-dependency-schema-only-dependency
+rootExtension: https://runtimeconditions.io/conformance/dependency-schema-only-dependency:1.0.0
+modulePath: example.com/runtimeconditions/conformance/dependency-schema-only-dependency
+packageName: schemadependency
+version: v1.0.0
+minimumGoVersion: "1.22"
+publicationMode: github-tag

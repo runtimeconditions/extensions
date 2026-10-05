@@ -1,14 +1,14 @@
 apiVersion: runtimeconditions.io/go-package-target/v1alpha1
 kind: RuntimeConditionsGoPackageTarget
 packageKey: conformance-additive-field
-rootExtension: urn:runtimeconditions:conformance:additive-field
+rootExtension: https://runtimeconditions.io/conformance/additive-field:1.0.0
 modulePath: example.com/runtimeconditions/conformance/additive-field
 packageName: additivefield
 version: v1.0.0
 minimumGoVersion: "1.22"
 publicationMode: github-tag
 dependencies:
-  - extension: urn:runtimeconditions:conformance:additive-field:base
+  - extension: https://runtimeconditions.io/conformance/additive-field-base:1.0.0
     modulePath: example.com/runtimeconditions/conformance/additive-field-base
     packageName: additivefieldbase
     version: v1.0.0

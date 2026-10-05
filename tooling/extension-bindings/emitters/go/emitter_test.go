@@ -10,6 +10,7 @@ import (
 	"go/types"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"testing"
 
@@ -50,7 +51,7 @@ func TestGoRejectsLeadingDigitIdentifiers(t *testing.T) {
 
 func TestOptionalEnumFieldsUsePointers(t *testing.T) {
 	fixture := filepath.Join("testdata", "optional-enum-fields")
-	model := normalizeFixture(t, fixture, "urn:runtimeconditions:go-fixture:optional-enum-fields")
+	model := normalizeFixture(t, fixture, "https://runtimeconditions.io/go-fixture/optional-enum-fields:1.0.0")
 	target, err := LoadPackageTarget(filepath.Join(fixture, "package-target.yaml"))
 	if err != nil {
 		t.Fatal(err)
@@ -81,8 +82,8 @@ func TestOptionalEnumFieldsUsePointers(t *testing.T) {
 
 func TestMarkerMethodsUseOwnerCoordinate(t *testing.T) {
 	fixture := filepath.Join("testdata", "marker-owner-coordinate")
-	const ownerA = "urn:runtimeconditions:go-fixture:marker-owner-a"
-	const ownerB = "urn:runtimeconditions:go-fixture:marker-owner-b"
+	const ownerA = "https://runtimeconditions.io/go-fixture/marker-owner-a:1.0.0"
+	const ownerB = "https://runtimeconditions.io/go-fixture/marker-owner-b:1.0.0"
 	modelA := normalizeFixture(t, fixture, ownerA)
 	modelB := normalizeFixture(t, fixture, ownerB)
 	targetA, err := LoadPackageTarget(filepath.Join(fixture, "package-target-owner-a.yaml"))
@@ -133,9 +134,167 @@ func TestMarkerMethodsUseOwnerCoordinate(t *testing.T) {
 	}
 }
 
+func TestSchemaOnlyRootScalarsImplementDeclarations(t *testing.T) {
+	workspace := t.TempDir()
+	for _, scalar := range []string{"string", "boolean", "integer", "number", "null"} {
+		t.Run(scalar, func(t *testing.T) {
+			model := loadExpectedModel(t, "11-source-name-preservation")
+			model.Vocabulary.ConditionFields = nil
+			change := func(projection *normalizer.Shape) {
+				for index := range projection.Properties {
+					property := &projection.Properties[index]
+					if property.Name == "patch9" {
+						property.Shape = normalizer.Shape{Kind: "scalar", Scalar: scalar, Provenance: property.Shape.Provenance}
+					}
+				}
+			}
+			for index := range model.Scopes {
+				change(model.Scopes[index].Projection)
+			}
+			for index := range model.Schemas {
+				change(&model.Schemas[index].Projection)
+				model.Schemas[index].Exact["properties"].(map[string]any)["patch9"] = map[string]any{"type": scalar}
+			}
+			target := loadTestTarget(t, "11-source-name-preservation.yaml")
+			module := emitModifiedModel(t, model, target, filepath.Join(workspace, scalar))
+			assertStructuralManifest(t, module)
+			goWork := writeGoWork(t, workspace, []generatedModule{module})
+			runCommand(t, module.path, goWork, "go", "test", "./...")
+		})
+	}
+}
+
+func TestSchemaOnlyAdditiveFieldsImplementImportedDeclarations(t *testing.T) {
+	for _, name := range []string{"02-additive-field", "03-transitive-closure"} {
+		t.Run(name, func(t *testing.T) {
+			workspace := t.TempDir()
+			modules := generateConformanceModules(t, name, workspace)
+			root := modules[len(modules)-1]
+			fields := make([]normalizer.FieldModel, 0)
+			for _, field := range root.model.Vocabulary.ConditionFields {
+				if field.Owner != root.model.RootExtension.ID {
+					fields = append(fields, field)
+				}
+			}
+			root.model.Vocabulary.ConditionFields = fields
+			root = emitModifiedModel(t, root.model, root.target, filepath.Join(workspace, "schema-only-root"))
+			modules[len(modules)-1] = root
+			assertStructuralManifest(t, root)
+			consumer := writeDependencyConsumer(t, name, workspace, root)
+			goWork := writeGoWork(t, workspace, modules, consumer)
+			runCommand(t, root.path, goWork, "go", "test", "./...")
+			runCommand(t, consumer, goWork, "go", "test", "./...")
+		})
+	}
+}
+
+func TestNamedUnconstrainedShapeFailsBeforeWriting(t *testing.T) {
+	model := loadExpectedModel(t, "11-source-name-preservation")
+	model.Vocabulary.ConditionFields = nil
+	for index := range model.Scopes[0].Projection.Properties {
+		property := &model.Scopes[0].Projection.Properties[index]
+		if property.Name == "patch9" {
+			property.Shape = normalizer.Shape{Kind: "any", Provenance: property.Shape.Provenance}
+		}
+	}
+	digest, err := normalizer.ModelSemanticSHA256(model)
+	if err != nil {
+		t.Fatal(err)
+	}
+	model.Metadata.SemanticSHA256 = digest
+	output := filepath.Join(t.TempDir(), "generated")
+	err = Emit(model, loadTestTarget(t, "11-source-name-preservation.yaml"), output)
+	if err == nil || !strings.Contains(err.Error(), "RCG1024") {
+		t.Fatalf("named unconstrained shape error = %v, want RCG1024", err)
+	}
+	if _, err := os.Stat(output); !os.IsNotExist(err) {
+		t.Fatalf("unsupported shape created an output directory: %v", err)
+	}
+}
+
+func TestDeclarationConformanceUsesOneFieldPerScope(t *testing.T) {
+	for _, name := range []string{"08-heterogeneous-union", "10-scoped-domains-collisions"} {
+		t.Run(name, func(t *testing.T) {
+			model := loadExpectedModel(t, name)
+			ir, err := buildPackageIR(model, loadTestTarget(t, name+".yaml"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			source, err := ir.renderConformance()
+			if err != nil {
+				t.Fatal(err)
+			}
+			file, err := parser.ParseFile(token.NewFileSet(), "conformance_test.go", source, 0)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, declaration := range ir.declarations {
+				expected := map[string][]string{}
+				for _, binding := range ir.rootBindings {
+					if binding.declarationCoordinate == declaration.model.Coordinate {
+						expression := ir.referenceExpression(binding.value, lowerIdentifier([]string{ir.target.PackageName}), map[string]bool{})
+						expected[binding.scope.Coordinate] = append(expected[binding.scope.Coordinate], normalizeExpression(t, expression))
+					}
+				}
+				for _, arguments := range expected {
+					sort.Strings(arguments)
+				}
+				matched := map[string]bool{}
+				calls := 0
+				ast.Inspect(file, func(node ast.Node) bool {
+					call, ok := node.(*ast.CallExpr)
+					if !ok {
+						return true
+					}
+					function, ok := call.Fun.(*ast.SelectorExpr)
+					if !ok || function.Sel.Name != declaration.function.name {
+						return true
+					}
+					calls++
+					var actual []string
+					for _, argument := range call.Args {
+						actual = append(actual, printNode(token.NewFileSet(), argument))
+					}
+					sort.Strings(actual)
+					found := false
+					for scope, arguments := range expected {
+						if !matched[scope] && strings.Join(actual, "\n") == strings.Join(arguments, "\n") {
+							matched[scope] = true
+							found = true
+							break
+						}
+					}
+					if !found {
+						t.Errorf("declaration %s arguments do not match one distinct scope: %v", function.Sel.Name, actual)
+					}
+					return true
+				})
+				if calls != len(expected) || len(matched) != len(expected) {
+					t.Errorf("declaration %s has %d conformance calls, want one for each of %d scopes", declaration.function.name, calls, len(expected))
+				}
+			}
+		})
+	}
+}
+
+// These synthetic models test emitter regressions; they are not release or
+// installed-profiler acceptance fixtures.
+func emitModifiedModel(t *testing.T, model normalizer.BindingModel, target PackageTarget, output string) generatedModule {
+	t.Helper()
+	digest, err := normalizer.ModelSemanticSHA256(model)
+	if err != nil {
+		t.Fatal(err)
+	}
+	model.Metadata.SemanticSHA256 = digest
+	if err := Emit(model, target, output); err != nil {
+		t.Fatal(err)
+	}
+	return generatedModule{model: model, target: target, path: output}
+}
+
 func TestLeadingDigitEmissionHasExactDiagnostic(t *testing.T) {
 	fixture := filepath.Join("testdata", "negative", "leading-digit")
-	model := normalizeFixture(t, fixture, "urn:runtimeconditions:go-fixture:leading-digit")
+	model := normalizeFixture(t, fixture, "https://runtimeconditions.io/go-fixture/leading-digit:1.0.0")
 	target, err := LoadPackageTarget(filepath.Join(fixture, "package-target.yaml"))
 	if err != nil {
 		t.Fatal(err)
@@ -319,7 +478,7 @@ func cloneDocument(t *testing.T, value map[string]any) map[string]any {
 
 func TestFixedSymbolCollisionHasExactDiagnostic(t *testing.T) {
 	fixture := filepath.Join("testdata", "negative", "fixed-symbol-collision")
-	model := normalizeFixture(t, fixture, "urn:runtimeconditions:conformance:go-fixed-symbol-collision")
+	model := normalizeFixture(t, fixture, "https://runtimeconditions.io/conformance/go-fixed-symbol-collision:1.0.0")
 	target, err := LoadPackageTarget(filepath.Join(fixture, "package-target.yaml"))
 	if err != nil {
 		t.Fatal(err)
@@ -330,7 +489,7 @@ func TestFixedSymbolCollisionHasExactDiagnostic(t *testing.T) {
 
 func TestSameDomainMemberCollisionHasExactDiagnostic(t *testing.T) {
 	fixture := filepath.Join("testdata", "negative", "value-member-collision")
-	model := normalizeFixture(t, fixture, "urn:runtimeconditions:go-fixture:value-member-collision")
+	model := normalizeFixture(t, fixture, "https://runtimeconditions.io/go-fixture/value-member-collision:1.0.0")
 	target, err := LoadPackageTarget(filepath.Join(fixture, "package-target.yaml"))
 	if err != nil {
 		t.Fatal(err)
@@ -427,7 +586,7 @@ func normalizeFixture(t *testing.T, root, rootID string) normalizer.BindingModel
 	}
 	model, err := normalizer.Normalize(closure, normalizer.BuildDependencyLock(closure), schemas, normalizer.NormalizeConfig{
 		CoreProfileSchema: normalizer.CoreProfileIdentity{
-			ID: "urn:runtimeconditions:test:core-profile-schema", Version: "0.0.0-test", SemanticSHA256: strings.Repeat("c", 64),
+			ID: "https://runtimeconditions.io/test/core-profile-schema:1.0.0", Version: "0.0.0-test", SemanticSHA256: strings.Repeat("c", 64),
 		},
 		Normalizer: normalizer.ToolIdentity{
 			Name: normalizer.NormalizerName, Version: normalizer.NormalizerVersion, SHA256: strings.Repeat("d", 64),

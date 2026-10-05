@@ -12,7 +12,7 @@ An extension release is an immutable semantic vocabulary artifact. Its Runtime C
 - An additive vocabulary or validation change increments the minor version, a meaning-changing removal or incompatible reclassification increments the major version, and a correction that does not change accepted vocabulary or profile meaning increments the patch version.
 - During pre-adoption development, `0.x.y` releases may replace earlier experimental conventions without compatibility promises. Before public adoption, the same immutability and compatibility rules apply to every published identifier.
 
-The AWS S3 candidate therefore uses `https://runtimeconditions.io/extensions/aws-s3/0.1.0/runtimeconditions.extension.yaml` while retaining `apiVersion: runtimeconditions.io/v1alpha1` as the Runtime Conditions document schema version.
+The AWS S3 candidate therefore uses `https://runtimeconditions.io/aws/aws-s3:0.1.0` while retaining `apiVersion: runtimeconditions.io/v1alpha1` as the Runtime Conditions document schema version.
 
 ## Authoritative provenance
 
@@ -40,3 +40,13 @@ Extension and SDK review events are measured separately so extension-author burd
 ## Human review surface
 
 Humans review semantic bridge changes, added or removed operations, resource classifications, identity paths, roles, cross-service dependencies, representative profile changes, and adapter-facing impact. Generated extension YAML, language-neutral mappings, and language-specific SDK mappings are machine output and are not line-by-line review surfaces.
+
+## HTTPS catalog lookup
+
+A definition uses `metadata.uri` and `metadata.version`; its identifier is
+`<uri>:<version>`. The canonical URI has `/<provider>/<service>` or `/<service>`.
+The versioned artifact is retrieved from
+`https://<domain>/extensions/<provider>/<service>/<version>/runtimeconditions.extension.yaml`.
+Providerless identities use `rc` for lookup without changing the declared URI.
+A missing definition is not found; no alternate path or provider is tried.
+Only HTTPS retrieval is currently supported. `file:` and `oci:` are deferred.

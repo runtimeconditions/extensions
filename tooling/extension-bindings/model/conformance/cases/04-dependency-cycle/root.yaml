@@ -1,10 +1,10 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:cycle:root
+  uri: https://runtimeconditions.io/conformance/cycle-root
   version: 1.0.0
 spec:
   dependencies:
-    - urn:runtimeconditions:conformance:cycle:dependency
+    - https://runtimeconditions.io/conformance/cycle-dependency:1.0.0
   kinds:
     - name: root

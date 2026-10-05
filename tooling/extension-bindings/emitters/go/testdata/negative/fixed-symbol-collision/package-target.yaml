@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/go-package-target/v1alpha1
 kind: RuntimeConditionsGoPackageTarget
 packageKey: conformance-go-fixed-symbol-collision
-rootExtension: urn:runtimeconditions:conformance:go-fixed-symbol-collision
+rootExtension: https://runtimeconditions.io/conformance/go-fixed-symbol-collision:1.0.0
 modulePath: example.com/runtimeconditions/conformance/go-fixed-symbol-collision
 packageName: gofixedsymbolcollision
 version: v1.0.0

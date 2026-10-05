@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:object-alternatives
+  uri: https://runtimeconditions.io/conformance/object-alternatives
   version: 1.0.0
 spec:
   kinds:

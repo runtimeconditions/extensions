@@ -26,6 +26,7 @@ type typeReference struct {
 	builtin string
 	key     string
 	pointer bool
+	sample  string // Conformance literal from normalized values; not API metadata.
 }
 
 type fieldIR struct {
@@ -44,6 +45,7 @@ type typeIR struct {
 	request       *symbolRequest
 	kind          string
 	underlying    string
+	sample        string
 	fields        []fieldIR
 	element       typeReference
 	elementSource normalizer.Provenance
@@ -100,6 +102,7 @@ type packageIR struct {
 	schemas            map[string]normalizer.NormalizedSchema
 	domains            map[string]normalizer.ValueDomainModel
 	rootBindings       []rootBindingIR
+	sampleError        error
 }
 
 func Emit(model normalizer.BindingModel, target PackageTarget, output string) error {
@@ -288,6 +291,7 @@ func (ir *packageIR) ensureNamedShape(key, coordinate, sourceName string, base [
 	case "scalar":
 		typeValue.kind = "scalar"
 		typeValue.underlying = goScalar(shape.Scalar)
+		typeValue.sample = normalizedSample(shape)
 		typeValue.members = ir.stringMembers(context, shape)
 		if domain, ok := ir.domains[scopePathKey(context.scope.Kind, context.scope.InterfaceType, pathString(context.semanticPath))]; ok && shape.Scalar == "string" {
 			for _, value := range domain.Values {
@@ -367,7 +371,7 @@ func (ir *packageIR) ensureNamedShape(key, coordinate, sourceName string, base [
 			typeValue.variantSource = append(typeValue.variantSource, variant.Provenance)
 		}
 	case "any":
-		typeValue.kind = "any"
+		return nil, diagnostic("model", "RCG1024", coordinate, "unconstrained shape has no supported named Go declaration representation")
 	default:
 		return nil, diagnostic("model", "RCG1020", coordinate, fmt.Sprintf("unknown structural node %q", shape.Kind))
 	}
@@ -385,7 +389,7 @@ func (ir *packageIR) referenceForShape(context shapeContext, shape normalizer.Sh
 		return typeReference{key: definition.key, pointer: optionalPointer(definition, required)}, nil
 	}
 	if shape.Kind == "scalar" && len(ir.stringMembers(context, shape)) == 0 {
-		return typeReference{builtin: goScalar(shape.Scalar), pointer: !required}, nil
+		return typeReference{builtin: goScalar(shape.Scalar), pointer: !required, sample: normalizedSample(shape)}, nil
 	}
 	if shape.Kind == "any" {
 		return typeReference{builtin: "any"}, nil
@@ -506,14 +510,15 @@ func (ir *packageIR) ensureUnionVariant(union *typeIR, context shapeContext, ind
 }
 
 func (ir *packageIR) addMethod(typeValue *typeIR, method string) {
-	if typeValue.kind == "union" {
-		typeValue.methods[method] = true
-		for _, key := range typeValue.unionVariants {
-			ir.addMethod(ir.types[key], method)
-		}
+	if typeValue.methods[method] {
 		return
 	}
 	typeValue.methods[method] = true
+	if typeValue.kind == "union" {
+		for _, key := range typeValue.unionVariants {
+			ir.addMethod(ir.types[key], method)
+		}
+	}
 }
 
 func (ir *packageIR) stringMembers(context shapeContext, shape normalizer.Shape) []normalizer.NormalizedValue {
@@ -568,6 +573,19 @@ func (ir *packageIR) discoverStructuralTypes() error {
 			if !ok {
 				return diagnostic("model", "RCG2003", scope.Coordinate, fmt.Sprintf("kind %q has no declaration contract", scope.Kind))
 			}
+			if reference.key == "" {
+				last := path[len(path)-1]
+				prefixes := append(pathPrefixes(path), scopePrefixes(ir.model, scope)...)
+				key := "shape:" + scope.Coordinate + ":" + pathString(path) + ":" + property.Shape.Kind
+				typeValue, err := ir.ensureNamedShape(key, property.Shape.Provenance.Coordinate+property.Shape.Provenance.JSONPointer,
+					property.Name, last.tokens, prefixes, context, property.Shape)
+				if err != nil {
+					return err
+				}
+				reference.key = typeValue.key
+				reference.builtin = ""
+			}
+			ir.addMethod(ir.types[reference.key], markerMethod(declaration))
 			ir.rootBindings = append(ir.rootBindings, rootBindingIR{
 				role: "schema-field", provenance: property.Provenance,
 				declarationCoordinate: declaration.Coordinate, scope: scope,
@@ -775,12 +793,14 @@ func (ir *packageIR) renderConformance() ([]byte, error) {
 	buffer.WriteString("package conformance_test\n\n")
 	alias := lowerIdentifier([]string{ir.target.PackageName})
 	fmt.Fprintf(&buffer, "import %s %q\n\n", alias, ir.target.ModulePath)
-	buffer.WriteString("func pointer[T any](value T) *T { return &value }\n\n")
 	fmt.Fprintf(&buffer, "var _ %s.Declaration\n", alias)
 	keys := sortedTypeKeys(ir.types)
 	for _, key := range keys {
 		expression := ir.conformanceExpression(key, alias, map[string]bool{})
 		fmt.Fprintf(&buffer, "var _ %s.%s = %s\n", alias, ir.types[key].request.name, expression)
+		for _, alternative := range ir.optionalSamples(key, alias) {
+			fmt.Fprintf(&buffer, "var _ %s.%s = %s\n", alias, ir.types[key].request.name, alternative)
+		}
 	}
 	if len(ir.constants) != 0 {
 		buffer.WriteByte('\n')
@@ -789,29 +809,120 @@ func (ir *packageIR) renderConformance() ([]byte, error) {
 		}
 	}
 	for _, declaration := range ir.declarations {
-		var arguments []string
+		argumentsByScope := map[string][]string{}
+		rootTypes := map[string]bool{}
 		fmt.Fprintf(&buffer, "\nvar _ %s.%s\n", alias, declaration.fieldInterface.name)
-		for _, key := range keys {
-			if ir.types[key].methods[declaration.markerMethod] {
-				expression := ir.conformanceExpression(key, alias, map[string]bool{})
-				arguments = append(arguments, expression)
+		for _, binding := range ir.rootBindings {
+			if binding.declarationCoordinate == declaration.model.Coordinate {
+				expression := ir.referenceExpression(binding.value, alias, map[string]bool{})
+				argumentsByScope[binding.scope.Coordinate] = append(argumentsByScope[binding.scope.Coordinate], expression)
+				rootTypes[binding.value.key] = true
 				fmt.Fprintf(&buffer, "\nvar _ %s.%s = %s\n", alias, declaration.fieldInterface.name, expression)
 			}
 		}
-		fmt.Fprintf(&buffer, "\nvar _ %s.Declaration = %s.%s(%s)\n", alias, alias, declaration.function.name, strings.Join(arguments, ", "))
+		for _, key := range keys {
+			if !rootTypes[key] && ir.types[key].methods[declaration.markerMethod] {
+				expression := ir.conformanceExpression(key, alias, map[string]bool{})
+				fmt.Fprintf(&buffer, "\nvar _ %s.%s = %s\n", alias, declaration.fieldInterface.name, expression)
+			}
+		}
+		if len(argumentsByScope) == 0 {
+			// A declaration-only package cannot invent an interface owned by a
+			// consumer's other dependency. Its complete calls live in consumer
+			// fixtures; this reference retains native API coverage here.
+			fmt.Fprintf(&buffer, "var _ = %s.%s\n", alias, declaration.function.name)
+			continue
+		}
+		var scopes []string
+		for scope := range argumentsByScope {
+			scopes = append(scopes, scope)
+		}
+		sort.Strings(scopes)
+		for _, scope := range scopes {
+			fmt.Fprintf(&buffer, "\nvar _ %s.Declaration = %s.%s(%s)\n", alias, alias, declaration.function.name, strings.Join(argumentsByScope[scope], ", "))
+			for _, binding := range ir.rootBindings {
+				if binding.declarationCoordinate != declaration.model.Coordinate || binding.scope.Coordinate != scope {
+					continue
+				}
+				for _, alternative := range ir.optionalSamples(binding.value.key, alias) {
+					arguments := append([]string(nil), argumentsByScope[scope]...)
+					original := ir.referenceExpression(binding.value, alias, map[string]bool{})
+					if binding.value.pointer {
+						alternative = "&" + alternative
+					}
+					for index, argument := range arguments {
+						if argument == original {
+							arguments[index] = alternative
+							break
+						}
+					}
+					fmt.Fprintf(&buffer, "var _ %s.Declaration = %s.%s(%s)\n", alias, alias, declaration.function.name, strings.Join(arguments, ", "))
+				}
+			}
+		}
 	}
 	for _, declaration := range ir.model.Vocabulary.ImportedDeclarations {
 		declarationTokens := goTokens(declaration.Kind)
 		method := markerMethod(declaration)
 		localName := "imported" + pascal(declarationTokens) + "Field"
 		fmt.Fprintf(&buffer, "\ntype %s interface { %s() }\n", localName, method)
+		for _, binding := range ir.rootBindings {
+			if binding.declarationCoordinate == declaration.Coordinate {
+				fmt.Fprintf(&buffer, "var _ %s = %s\n", localName, ir.referenceExpression(binding.value, alias, map[string]bool{}))
+			}
+		}
 		for _, key := range keys {
 			if ir.types[key].methods[method] {
 				fmt.Fprintf(&buffer, "var _ %s = %s\n", localName, ir.conformanceExpression(key, alias, map[string]bool{}))
 			}
 		}
 	}
+	if ir.sampleError != nil {
+		return nil, ir.sampleError
+	}
 	return format.Source(buffer.Bytes())
+}
+
+// optionalSamples exercises each optional field separately. Native optionality
+// comes from the normalized projection; schema branch validation stays external.
+func (ir *packageIR) optionalSamples(key, alias string) []string {
+	typeValue := ir.types[key]
+	if typeValue == nil || typeValue.kind != "struct" {
+		return nil
+	}
+	var optional []fieldIR
+	for _, field := range typeValue.fields {
+		if !field.required {
+			optional = append(optional, field)
+		}
+	}
+	if len(optional) < 2 {
+		return nil
+	}
+	var result []string
+	for _, selected := range optional[1:] {
+		var fields []string
+		for _, field := range typeValue.fields {
+			if field.required || field.name == selected.name {
+				fields = append(fields, field.name+": "+ir.referenceExpression(field.typeRef, alias, map[string]bool{key: true}))
+			}
+		}
+		result = append(result, alias+"."+typeValue.request.name+"{"+strings.Join(fields, ", ")+"}")
+	}
+	return result
+}
+
+func normalizedSample(shape normalizer.Shape) string {
+	if len(shape.Values) == 0 {
+		return ""
+	}
+	if value, ok := shape.Values[0].Value.(string); ok {
+		return strconv.Quote(value)
+	}
+	if shape.Values[0].Value == nil {
+		return "struct{}{}"
+	}
+	return fmt.Sprint(shape.Values[0].Value)
 }
 
 func (ir *packageIR) conformanceExpression(key, alias string, active map[string]bool) string {
@@ -820,7 +931,18 @@ func (ir *packageIR) conformanceExpression(key, alias string, active map[string]
 	if active[key] {
 		switch typeValue.kind {
 		case "struct":
-			return qualified + "{}"
+			var fields []string
+			for _, field := range typeValue.fields {
+				if !field.required {
+					continue
+				}
+				if field.typeRef.key != "" && active[field.typeRef.key] {
+					ir.sampleError = diagnostic("model", "RCG1025", field.provenance.Coordinate+field.provenance.JSONPointer, "required recursive field has no finite conformance sample")
+					return qualified + "{}"
+				}
+				fields = append(fields, field.name+": "+ir.referenceExpression(field.typeRef, alias, active))
+			}
+			return qualified + "{" + strings.Join(fields, ", ") + "}"
 		case "slice":
 			return qualified + "{}"
 		case "map":
@@ -838,10 +960,20 @@ func (ir *packageIR) conformanceExpression(key, alias string, active map[string]
 				return alias + "." + constant.name
 			}
 		}
+		if typeValue.sample != "" {
+			return qualified + "(" + typeValue.sample + ")"
+		}
 		return qualified + "(" + zeroScalar(typeValue.underlying) + ")"
 	case "struct":
 		var fields []string
+		selectedOptional := false
 		for _, field := range typeValue.fields {
+			if !field.required {
+				if selectedOptional {
+					continue
+				}
+				selectedOptional = true
+			}
 			fields = append(fields, field.name+": "+ir.referenceExpression(field.typeRef, alias, copyActive))
 		}
 		return qualified + "{" + strings.Join(fields, ", ") + "}"
@@ -865,9 +997,19 @@ func (ir *packageIR) referenceExpression(reference typeReference, alias string, 
 		expression = ir.conformanceExpression(reference.key, alias, active)
 	} else {
 		expression = zeroScalar(reference.builtin)
+		if reference.sample != "" {
+			expression = reference.sample
+		}
 	}
 	if reference.pointer {
-		return "pointer(" + expression + ")"
+		if reference.key != "" && ir.types[reference.key].kind == "struct" {
+			return "&" + expression
+		}
+		nativeType := reference.builtin
+		if reference.key != "" {
+			nativeType = alias + "." + ir.types[reference.key].request.name
+		}
+		return "&[]" + nativeType + "{" + expression + "}[0]"
 	}
 	return expression
 }

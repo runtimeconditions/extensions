@@ -1,11 +1,11 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:conflict:root
+  uri: https://runtimeconditions.io/conformance/conflict-root
   version: 1.0.0
 spec:
   dependencies:
-    - urn:runtimeconditions:conformance:conflict:first
-    - urn:runtimeconditions:conformance:conflict:second
+    - https://runtimeconditions.io/conformance/conflict-first:1.0.0
+    - https://runtimeconditions.io/conformance/conflict-second:1.0.0
   kinds:
     - name: root

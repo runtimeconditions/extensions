@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import ast
-from collections import defaultdict
-from importlib import metadata
 import json
-from pathlib import Path
 import shutil
 import subprocess
 import sys
+from collections import defaultdict
+from importlib import metadata
+from pathlib import Path
 from typing import Any
 
 from .emitter import EmissionPlan, TypeExpr, TypePlan
@@ -315,6 +315,15 @@ def _conformance_source(plan: EmissionPlan, model: dict[str, Any]) -> str:
             and item.marker.owner == plan.target.root_extension
             and item.marker.protocol == declaration.protocol
         ]
+        if not fields:
+            # A declaration-only package cannot invent an interface supplied
+            # by a consumer's other installed dependency. Consumer fixtures
+            # provide complete calls; retain native API coverage here.
+            lines.append(
+                f"    _deferred_declaration_{declaration.function} = "
+                f"b.{declaration.function}"
+            )
+            continue
         for ordered in _field_groups(fields):
             arguments = ", ".join(object_variables[item.name] for item in ordered)
             lines.append(
@@ -346,6 +355,13 @@ def _conformance_source(plan: EmissionPlan, model: dict[str, Any]) -> str:
             and item.marker
             and item.marker.owner == imported_declaration.owner
         ]
+        if not fields:
+            lines.append(
+                f"    _deferred_imported_{imported_index} = "
+                f"b.{imported_declaration.function}"
+            )
+            imported_index += 1
+            continue
         for ordered in _field_groups(fields):
             arguments = ", ".join(object_variables[item.name] for item in ordered)
             lines.append(

@@ -26,7 +26,7 @@ class NATSServiceExtensionCompilationTest(unittest.TestCase):
         self.assertEqual(list(self.validator.iter_errors(condition)), [])
 
     def test_compiles_exact_extension_coordinates(self):
-        self.assertEqual(self.extension["metadata"]["id"], self.service_mapping["extension"]["id"])
+        self.assertEqual(self.extension["metadata"]["uri"] + ":" + self.extension["metadata"]["version"], self.service_mapping["extension"]["id"])
         self.assertEqual(self.extension["metadata"]["version"], self.service_mapping["extension"]["version"])
         self.assertEqual(self.extension["metadata"]["semanticSha256"], self.service_mapping["extension"]["semanticSha256"])
 

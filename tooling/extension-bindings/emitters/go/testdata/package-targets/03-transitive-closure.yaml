@@ -1,14 +1,14 @@
 apiVersion: runtimeconditions.io/go-package-target/v1alpha1
 kind: RuntimeConditionsGoPackageTarget
 packageKey: conformance-transitive-root
-rootExtension: urn:runtimeconditions:conformance:transitive:root
+rootExtension: https://runtimeconditions.io/conformance/transitive-root:1.0.0
 modulePath: example.com/runtimeconditions/conformance/transitive-root
 packageName: transitiveroot
 version: v1.0.0
 minimumGoVersion: "1.22"
 publicationMode: github-tag
 dependencies:
-  - extension: urn:runtimeconditions:conformance:transitive:middle
+  - extension: https://runtimeconditions.io/conformance/transitive-middle:1.0.0
     modulePath: example.com/runtimeconditions/conformance/transitive-middle
     packageName: transitivemiddle
     version: v1.0.0

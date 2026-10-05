@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: urn:runtimeconditions:conformance:owned-kind-interface
+  uri: https://runtimeconditions.io/conformance/owned-kind-interface
   version: 1.0.0
 spec:
   kinds:
