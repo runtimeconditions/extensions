@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: https://runtimeconditions.io/extensions/aws-s3/0.1.0/runtimeconditions.extension.yaml
+  id: https://runtimeconditions.io/extensions/aws/s3/0.1.0/runtimeconditions.extension.yaml
   version: 0.1.0
   semanticSha256: 1a505b63d55893c26f3ffe6cf3cd9f90f0b5bd7975fabe47ff444a3ed1e13c72
 spec:

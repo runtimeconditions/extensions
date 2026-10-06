@@ -14,7 +14,7 @@ operationSource:
   operationCount: 1123
   operationIdsSha256: f32fcf3c6d90729c067ef7df8b7ece4e9c9cc52a7a29958d1df6519e0471e15d
 extension:
-  id: https://runtimeconditions.io/extensions/kubernetes-api/0.1.0/runtimeconditions.extension.yaml
+  id: https://runtimeconditions.io/extensions/kubernetes/api/0.1.0/runtimeconditions.extension.yaml
   version: 0.1.0
   conditionKind: kubernetes.api
   interfaceType: api

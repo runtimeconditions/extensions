@@ -9,7 +9,7 @@ operationSource:
   service: nats
   semanticSha256: 0f6fb3a7c5f1f3c8c780724057ef96ca22a7b2d0c2766f493e22d5f444c88ee8
 extension:
-  id: https://runtimeconditions.io/extensions/nats-service/0.1.0/runtimeconditions.extension.yaml
+  id: https://runtimeconditions.io/extensions/nats/service/0.1.0/runtimeconditions.extension.yaml
   version: 0.1.0
   conditionKind: nats.service
   interfaceType: service

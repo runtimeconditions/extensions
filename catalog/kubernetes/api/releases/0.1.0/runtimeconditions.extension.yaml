@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: https://runtimeconditions.io/extensions/kubernetes-api/0.1.0/runtimeconditions.extension.yaml
+  id: https://runtimeconditions.io/extensions/kubernetes/api/0.1.0/runtimeconditions.extension.yaml
   version: 0.1.0
   semanticSha256: 74325613d6fad555e7ab3fc195fe373b16c1f1a7ab77cedacee06a96c4353896
 spec:

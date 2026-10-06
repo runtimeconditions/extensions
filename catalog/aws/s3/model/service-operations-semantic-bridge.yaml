@@ -11,7 +11,7 @@ operationSource:
   operationCount: 112
   operationNamesSha256: 209771cb0915567090f615e18dacf594436fc6aadc2867f56535ae0db7935436
 extension:
-  id: https://runtimeconditions.io/extensions/aws-s3/0.1.0/runtimeconditions.extension.yaml
+  id: https://runtimeconditions.io/extensions/aws/s3/0.1.0/runtimeconditions.extension.yaml
   version: 0.1.0
   extensionName: aws-s3
   serviceKey: s3

@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  id: https://runtimeconditions.io/extensions/nats-service/0.1.0/runtimeconditions.extension.yaml
+  id: https://runtimeconditions.io/extensions/nats/service/0.1.0/runtimeconditions.extension.yaml
   version: 0.1.0
   semanticSha256: aef0e170f79d739a505a0ab1a257000a9cc2b5fc85cec537fdcfb69e556aceab
 spec:

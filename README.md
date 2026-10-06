@@ -21,10 +21,10 @@ Per the [spec](https://github.com/runtimeconditions/spec/blob/main/docs/sixth-dr
 | Common Integrations | `https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml` | [`catalog/rc/common-integrations/`](catalog/rc/common-integrations/) |
 | Env Configuration | `https://runtimeconditions.io/extensions/env-configuration/v1alpha1/runtimeconditions.extension.yaml` | [`catalog/rc/env-configuration/`](catalog/rc/env-configuration/) |
 | Source Control | `https://runtimeconditions.io/extensions/source-control/0.1.0/runtimeconditions.extension.yaml` | [`catalog/rc/source-control/`](catalog/rc/source-control/) |
-| Amazon S3 | `https://runtimeconditions.io/extensions/aws-s3/0.1.0/runtimeconditions.extension.yaml` | [`catalog/aws/s3/`](catalog/aws/s3/) |
-| Kubernetes API | `https://runtimeconditions.io/extensions/kubernetes-api/0.1.0/runtimeconditions.extension.yaml` | [`catalog/kubernetes/api/`](catalog/kubernetes/api/) |
-| NATS | `https://runtimeconditions.io/extensions/nats-service/0.1.0/runtimeconditions.extension.yaml` | [`catalog/nats/service/`](catalog/nats/service/) |
-| Google Analytics | `https://runtimeconditions.io/extensions/google-analytics/0.1.0/runtimeconditions.extension.yaml` | [`catalog/google/analytics/`](catalog/google/analytics/) |
+| Amazon S3 | `https://runtimeconditions.io/extensions/aws/s3/0.1.0/runtimeconditions.extension.yaml` | [`catalog/aws/s3/`](catalog/aws/s3/) |
+| Kubernetes API | `https://runtimeconditions.io/extensions/kubernetes/api/0.1.0/runtimeconditions.extension.yaml` | [`catalog/kubernetes/api/`](catalog/kubernetes/api/) |
+| NATS | `https://runtimeconditions.io/extensions/nats/service/0.1.0/runtimeconditions.extension.yaml` | [`catalog/nats/service/`](catalog/nats/service/) |
+| Google Analytics | `https://runtimeconditions.io/extensions/google/analytics/0.1.0/runtimeconditions.extension.yaml` | [`catalog/google/analytics/`](catalog/google/analytics/) |
 
 ## Folder layout
 
