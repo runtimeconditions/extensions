@@ -8,16 +8,19 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 	"time"
+	"unicode"
 )
 
 type LockEntry struct {
 	SourceSHA256   string
 	SemanticSHA256 string
+	SourceBackend  string
 	Locator        string
 }
 
@@ -32,8 +35,11 @@ type ResolverConfig struct {
 	PackageRoots []string
 	CacheDir     string
 	Network      bool
-	Locks        map[string]LockEntry
-	HTTPClient   *http.Client
+	// RecordNetworkLocks permits initial development resolution and records exact fetched bytes.
+	// Released builds leave this false and require pre-existing source locks.
+	RecordNetworkLocks bool
+	Locks              map[string]LockEntry
+	HTTPClient         *http.Client
 }
 
 type Resolver struct {
@@ -106,7 +112,7 @@ func BuildDependencyLock(closure ResolvedClosure) DependencyLock {
 		dependencies := append([]string(nil), document.Definition.Spec.Dependencies...)
 		sort.Strings(dependencies)
 		lock.Extensions = append(lock.Extensions, DependencyLockEntry{
-			ID:             document.Definition.Metadata.Identifier(),
+			ID:             document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version,
 			Version:        document.Definition.Metadata.Version,
 			SourceSHA256:   document.SourceSHA256,
 			SemanticSHA256: document.SemanticSHA256,
@@ -121,7 +127,7 @@ func BuildDependencyLock(closure ResolvedClosure) DependencyLock {
 func ValidateDependencyLock(closure ResolvedClosure, lock DependencyLock) error {
 	expected := make(map[string]ResolvedDocument, len(closure.Documents))
 	for _, document := range closure.Documents {
-		expected[document.Definition.Metadata.Identifier()] = document
+		expected[document.Definition.Metadata.URI+":"+document.Definition.Metadata.Version] = document
 	}
 	actual := make(map[string]DependencyLockEntry, len(lock.Extensions))
 	for _, entry := range lock.Extensions {
@@ -200,7 +206,7 @@ func (r *Resolver) indexRoot(root, backend string) error {
 			// Non-extension YAML in a catalog is not a resolver candidate.
 			return nil
 		}
-		if definition.Kind != ExtensionKind || definition.Metadata.Identifier() == "" {
+		if definition.Kind != ExtensionKind || definition.Metadata.URI == "" || definition.Metadata.Version == "" {
 			return nil
 		}
 		relative, err := filepath.Rel(root, path)
@@ -208,7 +214,8 @@ func (r *Resolver) indexRoot(root, backend string) error {
 			return err
 		}
 		locator := backend + ":" + filepath.ToSlash(relative)
-		r.candidates[definition.Metadata.Identifier()] = append(r.candidates[definition.Metadata.Identifier()], sourceCandidate{
+		id := definition.Metadata.URI + ":" + definition.Metadata.Version
+		r.candidates[id] = append(r.candidates[id], sourceCandidate{
 			path: path, backend: backend, locator: locator,
 		})
 		return nil
@@ -239,10 +246,11 @@ func (r *Resolver) indexCache(root string) error {
 		if err != nil {
 			return err
 		}
-		if definition.Kind != ExtensionKind || definition.Metadata.Identifier() == "" {
+		if definition.Kind != ExtensionKind || definition.Metadata.URI == "" || definition.Metadata.Version == "" {
 			return diagnostic("structural", "RCB1237", "cache:sha256:"+digest, "", "cached content is not an extension definition")
 		}
-		r.candidates[definition.Metadata.Identifier()] = append(r.candidates[definition.Metadata.Identifier()], sourceCandidate{
+		id := definition.Metadata.URI + ":" + definition.Metadata.Version
+		r.candidates[id] = append(r.candidates[id], sourceCandidate{
 			path: path, backend: "cache", locator: "cache:sha256:" + digest,
 		})
 		return nil
@@ -272,8 +280,8 @@ func (r *Resolver) addFileCandidate(id, path, backend, locator string) error {
 	if err != nil {
 		return err
 	}
-	if definition.Metadata.Identifier() != id {
-		return diagnostic("unknown-extension", "RCB1201", id, "/metadata/uri", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.Identifier()))
+	if definition.Metadata.URI+":"+definition.Metadata.Version != id {
+		return diagnostic("unknown-extension", "RCB1201", id, "/metadata/uri", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.URI+":"+definition.Metadata.Version))
 	}
 	r.candidates[id] = append(r.candidates[id], sourceCandidate{path: path, backend: backend, locator: locator})
 	return nil
@@ -331,7 +339,7 @@ func backendRank(backend string) int {
 }
 
 func (r *Resolver) Resolve(ctx context.Context, rootID string) (ResolvedClosure, error) {
-	if _, err := ParseExtensionIdentifier(rootID); err != nil {
+	if _, err := extensionDefinitionURL(rootID); err != nil {
 		return ResolvedClosure{}, diagnostic("unknown-extension", "RCB1203", rootID, "", err.Error())
 	}
 	state := visitState{activeIndex: map[string]int{}, complete: map[string]bool{}}
@@ -346,7 +354,7 @@ func (r *Resolver) Resolve(ctx context.Context, rootID string) (ResolvedClosure,
 		Root: rootID, Documents: ordered, ByID: map[string]ResolvedDocument{}, Edges: state.edges,
 	}
 	for _, document := range state.ordered {
-		closure.ByID[document.Definition.Metadata.Identifier()] = document
+		closure.ByID[document.Definition.Metadata.URI+":"+document.Definition.Metadata.Version] = document
 	}
 	sort.Slice(closure.Edges, func(i, j int) bool {
 		if closure.Edges[i].From != closure.Edges[j].From {
@@ -368,7 +376,7 @@ func topologicalDocuments(documents []ResolvedDocument, edges []DependencyEdge) 
 	indegree := make(map[string]int, len(documents))
 	dependents := make(map[string][]string, len(documents))
 	for _, document := range documents {
-		id := document.Definition.Metadata.Identifier()
+		id := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
 		byID[id] = document
 		indegree[id] = 0
 	}
@@ -443,7 +451,7 @@ func (r *Resolver) visit(ctx context.Context, id string, state *visitState) erro
 }
 
 func (r *Resolver) load(ctx context.Context, id string) (ResolvedDocument, error) {
-	identity, err := ParseExtensionIdentifier(id)
+	locator, err := extensionDefinitionURL(id)
 	if err != nil {
 		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1207", id, "", err.Error())
 	}
@@ -458,7 +466,40 @@ func (r *Resolver) load(ctx context.Context, id string) (ResolvedDocument, error
 		}
 		return r.finishLoad(id, data, candidate.backend, candidate.locator)
 	}
-	return r.loadHTTPS(ctx, id, identity.DefinitionURL())
+	return r.loadHTTPS(ctx, id, locator)
+}
+
+// extensionDefinitionURL implements the normalizer's retrieval contract in
+// IMPLEMENTATION.md section 6. Semantic identity remains the declared URI and
+// version; the retrieval-only /extensions prefix and default provider rc never
+// enter models or dependency identifiers.
+func extensionDefinitionURL(id string) (string, error) {
+	separator := strings.LastIndex(id, ":")
+	if separator <= strings.LastIndex(id, "/") || separator == len(id)-1 {
+		return "", fmt.Errorf("extension identifier must contain an HTTPS URI and a non-empty version separated by the final colon")
+	}
+	uri, version := id[:separator], id[separator+1:]
+	parsed, err := url.Parse(uri)
+	if err != nil || !strings.HasPrefix(uri, "https://") || parsed.Hostname() == "" || parsed.User != nil ||
+		strings.ContainsAny(uri, "?#") || strings.Contains(parsed.RawPath, "%") || !strings.HasPrefix(parsed.Path, "/") {
+		return "", fmt.Errorf("extension URI must be absolute HTTPS without credentials, query, fragment, or escaped path aliases")
+	}
+	segments := strings.Split(strings.TrimPrefix(parsed.Path, "/"), "/")
+	if len(segments) != 1 && len(segments) != 2 {
+		return "", fmt.Errorf("extension URI path must be /<service> or /<provider>/<service>")
+	}
+	for _, segment := range append(segments, version) {
+		if segment == "" || segment == "." || segment == ".." || strings.ContainsAny(segment, ":/?#%\\") ||
+			strings.ContainsFunc(segment, func(r rune) bool { return unicode.IsSpace(r) || r < 0x20 || r == 0x7f }) {
+			return "", fmt.Errorf("extension provider, service, and version must be non-empty safe path segments")
+		}
+	}
+	provider, service := "rc", segments[0]
+	if len(segments) == 2 {
+		provider, service = segments[0], segments[1]
+	}
+	authority, _, _ := strings.Cut(strings.TrimPrefix(uri, "https://"), "/")
+	return "https://" + authority + "/extensions/" + provider + "/" + service + "/" + version + "/runtimeconditions.extension.yaml", nil
 }
 
 func (r *Resolver) loadHTTPS(ctx context.Context, id, locator string) (ResolvedDocument, error) {
@@ -466,10 +507,10 @@ func (r *Resolver) loadHTTPS(ctx context.Context, id, locator string) (ResolvedD
 		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1208", id, "", "network resolution is disabled")
 	}
 	lock, locked := r.config.Locks[id]
-	if !locked || lock.SourceSHA256 == "" || lock.Locator == "" {
+	if (!locked || lock.SourceSHA256 == "" || lock.Locator == "") && !r.config.RecordNetworkLocks {
 		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1209", id, "", "HTTPS resolution requires source digest and locator locks")
 	}
-	if lock.Locator != locator {
+	if locked && lock.Locator != locator {
 		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1209", id, "", "HTTPS locator does not match the dependency lock")
 	}
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, locator, nil)
@@ -491,7 +532,7 @@ func (r *Resolver) loadHTTPS(ctx context.Context, id, locator string) (ResolvedD
 	if err != nil {
 		return ResolvedDocument{}, err
 	}
-	if SHA256Hex(data) != lock.SourceSHA256 {
+	if locked && SHA256Hex(data) != lock.SourceSHA256 {
 		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1212", id, "", "HTTPS content does not match the dependency lock")
 	}
 	document, err := r.finishLoad(id, data, "https", response.Request.URL.String())
@@ -500,6 +541,37 @@ func (r *Resolver) loadHTTPS(ctx context.Context, id, locator string) (ResolvedD
 	}
 	if lock.SemanticSHA256 != "" && document.SemanticSHA256 != lock.SemanticSHA256 {
 		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1213", id, "", "HTTPS semantic digest does not match the dependency lock")
+	}
+	if !locked {
+		if r.config.Locks == nil {
+			r.config.Locks = map[string]LockEntry{}
+		}
+		r.config.Locks[id] = LockEntry{SourceSHA256: document.SourceSHA256, SemanticSHA256: document.SemanticSHA256, Locator: locator}
+	}
+	if r.config.CacheDir != "" {
+		if err := os.MkdirAll(r.config.CacheDir, 0755); err != nil {
+			return ResolvedDocument{}, err
+		}
+		path := filepath.Join(r.config.CacheDir, document.SourceSHA256+".yaml")
+		file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
+		if os.IsExist(err) {
+			cached, readErr := os.ReadFile(path)
+			if readErr != nil || SHA256Hex(cached) != document.SourceSHA256 {
+				return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1236", id, "", "cached content does not match its digest")
+			}
+		} else if err != nil {
+			return ResolvedDocument{}, err
+		} else {
+			_, writeErr := file.Write(data)
+			closeErr := file.Close()
+			if writeErr != nil || closeErr != nil {
+				_ = os.Remove(path)
+				if writeErr != nil {
+					return ResolvedDocument{}, writeErr
+				}
+				return ResolvedDocument{}, closeErr
+			}
+		}
 	}
 	return document, nil
 }
@@ -516,12 +588,16 @@ func readLimited(reader io.Reader) ([]byte, error) {
 }
 
 func (r *Resolver) finishLoad(requestedID string, data []byte, backend, locator string) (ResolvedDocument, error) {
+	lock, locked := r.config.Locks[requestedID]
+	if locked && lock.SourceSHA256 != "" && SHA256Hex(data) != lock.SourceSHA256 {
+		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1212", requestedID, "", "resolved content does not match the dependency lock")
+	}
 	definition, mapping, err := DecodeExtension(data)
 	if err != nil {
 		return ResolvedDocument{}, err
 	}
-	if definition.Metadata.Identifier() != requestedID {
-		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1220", requestedID, "/metadata/uri", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.Identifier()))
+	if definition.Metadata.URI+":"+definition.Metadata.Version != requestedID {
+		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1220", requestedID, "/metadata/uri", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.URI+":"+definition.Metadata.Version))
 	}
 	if err := r.config.Schemas.ValidateExtension(mapping, definition); err != nil {
 		return ResolvedDocument{}, err
@@ -529,6 +605,17 @@ func (r *Resolver) finishLoad(requestedID string, data []byte, backend, locator 
 	semanticData, semanticDigest, err := r.config.Schemas.CanonicalizeExtension(mapping)
 	if err != nil {
 		return ResolvedDocument{}, err
+	}
+	if locked && lock.SemanticSHA256 != "" && semanticDigest != lock.SemanticSHA256 {
+		return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1213", requestedID, "", "resolved semantic digest does not match the dependency lock")
+	}
+	if locked && lock.SourceBackend != "" {
+		if backend == "cache" {
+			// A verified cache is transport reuse; retain the locked source provenance.
+			backend, locator = lock.SourceBackend, lock.Locator
+		} else if backend != lock.SourceBackend || locator != lock.Locator {
+			return ResolvedDocument{}, diagnostic("extension-dependency", "RCB1225", requestedID, "", "resolved source locator does not match the dependency lock")
+		}
 	}
 	document := ResolvedDocument{
 		Definition: definition, Data: mapping, SemanticData: semanticData, Bytes: data,
@@ -548,9 +635,9 @@ func validateVocabularyConflicts(documents []ResolvedDocument) error {
 		sort.Strings(coordinates)
 		for _, coordinate := range coordinates {
 			if previous, exists := owners[coordinate]; exists {
-				return diagnostic("vocabulary-conflict", "RCB1221", coordinate, "", fmt.Sprintf("defined by both %q and %q", previous, definition.Metadata.Identifier()))
+				return diagnostic("vocabulary-conflict", "RCB1221", coordinate, "", fmt.Sprintf("defined by both %q and %q", previous, definition.Metadata.URI+":"+definition.Metadata.Version))
 			}
-			owners[coordinate] = definition.Metadata.Identifier()
+			owners[coordinate] = definition.Metadata.URI + ":" + definition.Metadata.Version
 		}
 	}
 	return nil
@@ -618,7 +705,7 @@ func validateVocabularyReferences(documents []ResolvedDocument) error {
 		}
 	}
 	for _, document := range documents {
-		owner := document.Definition.Metadata.Identifier()
+		owner := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
 		for _, interfaceType := range document.Definition.Spec.InterfaceTypes {
 			if !kinds[interfaceType.TargetKind] {
 				return diagnostic("unknown-extension", "RCB1227", owner, "", fmt.Sprintf("interface type %q targets unknown kind %q", interfaceType.Name, interfaceType.TargetKind))

@@ -141,6 +141,16 @@ func TestManifestRejectsProvisionalInventoryAndStaleIdentity(t *testing.T) {
 	if err := schema.Validate(manifest); err != nil {
 		t.Fatalf("structural manifest rejected: %v", err)
 	}
+	for _, emitter := range []string{EmitterName, EmitterName + "@sha256:" + strings.Repeat("A", 64)} {
+		invalid := make(map[string]any, len(manifest))
+		for key, value := range manifest {
+			invalid[key] = value
+		}
+		invalid["generated"] = map[string]any{"nonEditable": true, "emitter": emitter, "version": EmitterVersion}
+		if err := schema.Validate(invalid); err == nil {
+			t.Fatalf("invalid emitter identity accepted: %s", emitter)
+		}
+	}
 	for _, version := range []string{"runtimeconditions.io/bindings/v1alpha1", ManifestAPIVersion} {
 		legacy := make(map[string]any, len(manifest))
 		for key, value := range manifest {
@@ -178,6 +188,10 @@ func assertStructuralManifest(t *testing.T, module generatedModule) {
 	var manifest Manifest
 	if err := yaml.Unmarshal(data, &manifest); err != nil {
 		t.Fatal(err)
+	}
+	if manifest.Generated.Emitter != EmitterName+"@sha256:"+module.target.EmitterSHA256 ||
+		manifest.Generated.Version != EmitterVersion || !manifest.Generated.NonEditable {
+		t.Fatal("manifest emitter identity differs from the generating tool")
 	}
 	if manifest.APIVersion != ManifestAPIVersion || manifest.Model.APIVersion != module.model.APIVersion ||
 		manifest.Model.SemanticSHA256 != module.model.Metadata.SemanticSHA256 ||
@@ -555,6 +569,17 @@ func generateConformanceModules(t *testing.T, name, workspace string) []generate
 		if err != nil {
 			t.Fatal(err)
 		}
+		source, err := ir.renderConformance()
+		if err != nil {
+			t.Fatal(err)
+		}
+		directory := filepath.Join(output, "conformance")
+		if err = os.MkdirAll(directory, 0755); err != nil {
+			t.Fatal(err)
+		}
+		if err = os.WriteFile(filepath.Join(directory, "conformance_test.go"), source, 0644); err != nil {
+			t.Fatal(err)
+		}
 		modules = append(modules, generatedModule{model: model, target: target, path: output, ir: ir})
 	}
 	return modules
@@ -878,6 +903,7 @@ func printNode(fset *token.FileSet, node any) string {
 func assertDeterministicEmission(t *testing.T, model normalizer.BindingModel, target PackageTarget, firstPath string) {
 	t.Helper()
 	first := readTree(t, firstPath)
+	delete(first, "conformance/conformance_test.go")
 	for iteration := 0; iteration < 2; iteration++ {
 		output := filepath.Join(t.TempDir(), "output")
 		if err := Emit(model, target, output); err != nil {
@@ -957,4 +983,19 @@ func equalTree(left, right map[string][]byte) bool {
 		}
 	}
 	return true
+}
+
+func TestReusableNativeAPISurface(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "bindings.go")
+	if err := os.WriteFile(path, []byte("package generated\ntype FutureValue string\nfunc FutureDeclaration(value FutureValue) {}\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	surface, err := SourceAPISurface(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(surface) != 2 {
+		t.Fatalf("surface %v", surface)
+	}
 }

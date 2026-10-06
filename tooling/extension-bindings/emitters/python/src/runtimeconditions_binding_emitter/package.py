@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from collections.abc import Hashable
-from pathlib import Path
 import keyword
 import math
 import re
+from collections.abc import Hashable
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, NoReturn, cast
 
 import yaml
@@ -74,6 +74,7 @@ class PackageTarget:
     repository_url: str
     registry_id: str | None
     dependencies: tuple[PackageDependency, ...]
+    emitter_sha256: str = ""
 
 
 class _LimitedLoader(yaml.SafeLoader):
@@ -814,8 +815,9 @@ def load_target(path: str | Path) -> PackageTarget:
         "registryId",
         "repositoryUrl",
         "dependencies",
+        "emitterSha256",
     }
-    required = allowed - {"registryId", "dependencies"}
+    required = allowed - {"registryId", "dependencies", "emitterSha256"}
     for name in sorted(required - value.keys()):
         fail(
             "package-config",
@@ -838,6 +840,17 @@ def load_target(path: str | Path) -> PackageTarget:
             "RCP1006",
             "package-target",
             "unsupported target apiVersion or kind",
+        )
+    emitter_digest = value.get("emitterSha256", "")
+    if "emitterSha256" in value and (
+        not isinstance(emitter_digest, str) or not SHA_PATTERN.fullmatch(emitter_digest)
+    ):
+        fail(
+            "package-config",
+            "RCP1006",
+            "package-target",
+            "emitterSha256 must be a 64-character lowercase SHA-256 of the emitter tool",
+            "/emitterSha256",
         )
     for name in required - {"apiVersion", "kind"}:
         _target_string(value[name], name)
@@ -876,7 +889,10 @@ def load_target(path: str | Path) -> PackageTarget:
             "source directory does not match package key",
             "/sourceDirectory",
         )
-    if value["minimumPythonVersion"] != "3.11":
+    minimum = value["minimumPythonVersion"]
+    if not re.fullmatch(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", minimum) or tuple(
+        int(part) for part in minimum.split(".")
+    ) < (3, 11):
         fail(
             "package-config",
             "RCP1008",
@@ -995,4 +1011,5 @@ def load_target(path: str | Path) -> PackageTarget:
         value["repositoryUrl"],
         registry,
         tuple(dependencies),
+        emitter_digest,
     )

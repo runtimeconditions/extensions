@@ -34,7 +34,7 @@ MODEL = TOOLING / "model"
 CASES = MODEL / "conformance/cases"
 GO_TARGETS = TOOLING / "emitters/go/testdata/package-targets"
 PYTHON_EMITTER = TOOLING / "emitters/python/src"
-CORE_SCHEMA = WORKSPACE / "spec/schema/runtimeconditions.profile.v0.2.0.schema.yaml"
+CORE_SCHEMA = WORKSPACE / "spec/schema/runtimeconditions.profile.schema.yaml"
 RESOURCE_NAMES = (
     "runtimeconditions.bindings.yaml",
     "runtimeconditions.binding-model.yaml",
@@ -72,6 +72,14 @@ def fail(message: str) -> None:
 
 def digest(data: bytes) -> str:
     return sha256(data).hexdigest()
+
+
+def python_emitter_digest() -> str:
+    """Identify the development source snapshot, not a released wheel."""
+    source = TOOLING / "emitters/python"
+    paths = [source / "pyproject.toml", *sorted((PYTHON_EMITTER / "runtimeconditions_binding_emitter").glob("*.py"))]
+    inventory = {path.relative_to(source).as_posix(): digest(path.read_bytes()) for path in paths}
+    return digest(json.dumps(inventory, sort_keys=True, separators=(",", ":")).encode("utf-8"))
 
 
 def read_yaml(path: Path) -> dict[str, Any]:
@@ -325,6 +333,9 @@ def check_manifest(package_dir: Path, normalized: dict[str, Any], target: dict[s
         manifest["extension"]["semanticSha256"] != normalized["rootExtension"]["semanticSha256"]
     ):
         fail(f"{target['packageKey']}: binding manifest and root extension differ")
+    emitter = "rc-go-bindings" if language == "go" else "runtimeconditions-binding-emitter"
+    if manifest["generated"]["emitter"] != emitter + "@sha256:" + target["emitterSha256"]:
+        fail(f"{target['packageKey']}: binding manifest emitter digest differs")
     coordinate = target["modulePath"] if language == "go" else target["distributionName"]
     package = manifest["package"]
     expected = {
@@ -466,6 +477,8 @@ def main() -> None:
     if not args.python_only:
         build_go_binary(TOOLING / "emitters/go", go_emitter, environment)
     normalizer_digest = digest(normalizer.read_bytes())
+    go_digest = digest(go_emitter.read_bytes()) if not args.python_only else None
+    python_digest = python_emitter_digest()
     selected = PACKAGES
     go_targets = [read_yaml(GO_TARGETS / f"{target}.yaml") for _, target in selected]
     by_id = {target["rootExtension"]: target for target in go_targets}
@@ -480,10 +493,13 @@ def main() -> None:
             case, go_target, output / "models" / target_file, normalizer, normalizer_digest,
         )
         if not args.python_only:
+            go_target["emitterSha256"] = go_digest
+            go_target_path = output / "targets/go" / f"{target_file}.yaml"
+            write_yaml(go_target_path, go_target)
             go_package = output / "go/packages" / go_target["packageKey"]
             run(
                 str(go_emitter), "--model", str(model_path),
-                "--package-config", str(GO_TARGETS / f"{target_file}.yaml"),
+                "--package-config", str(go_target_path),
                 "--output", str(go_package),
             )
             go_dependencies = dependency_entries("go", go_target, by_id, artifacts)
@@ -494,6 +510,7 @@ def main() -> None:
             artifacts["go"][extension_id] = go_archive(go_package, go_target, output / "go/proxy")
 
         py_target = python_targets[extension_id]
+        py_target["emitterSha256"] = python_digest
         py_target_path = output / "targets/python" / f"{target_file}.yaml"
         write_yaml(py_target_path, py_target)
         py_package = output / "python/packages" / py_target["packageKey"]

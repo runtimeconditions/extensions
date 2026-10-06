@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -60,6 +61,7 @@ type PackageTarget struct {
 	Version          string              `yaml:"version" json:"version"`
 	MinimumGoVersion string              `yaml:"minimumGoVersion" json:"minimumGoVersion"`
 	PublicationMode  string              `yaml:"publicationMode" json:"publicationMode"`
+	EmitterSHA256    string              `yaml:"emitterSha256,omitempty" json:"emitterSha256,omitempty"`
 	Dependencies     []PackageDependency `yaml:"dependencies,omitempty" json:"dependencies,omitempty"`
 }
 
@@ -82,7 +84,7 @@ func LoadPackageTarget(path string) (PackageTarget, error) {
 	if err := rejectUnknownKeys(mapping, map[string]bool{
 		"apiVersion": true, "kind": true, "packageKey": true, "rootExtension": true,
 		"modulePath": true, "packageName": true, "version": true,
-		"minimumGoVersion": true, "publicationMode": true, "dependencies": true,
+		"minimumGoVersion": true, "publicationMode": true, "dependencies": true, "emitterSha256": true,
 	}); err != nil {
 		return PackageTarget{}, err
 	}
@@ -307,11 +309,20 @@ func validateInputs(model normalizer.BindingModel, target PackageTarget) error {
 	if !token.IsIdentifier(target.PackageName) || token.Lookup(target.PackageName).IsKeyword() {
 		return diagnostic("package-config", "RCG1010", target.PackageKey, fmt.Sprintf("invalid Go package name %q", target.PackageName))
 	}
-	if target.MinimumGoVersion != "1.22" {
+	versionParts := strings.Split(target.MinimumGoVersion, ".")
+	major, minor := 0, 0
+	if len(versionParts) == 2 {
+		major, _ = strconv.Atoi(versionParts[0])
+		minor, _ = strconv.Atoi(versionParts[1])
+	}
+	if len(versionParts) != 2 || fmt.Sprintf("%d.%d", major, minor) != target.MinimumGoVersion || major < 1 || (major == 1 && minor < 22) {
 		return diagnostic("package-config", "RCG1011", target.PackageKey, fmt.Sprintf("unsupported minimum Go version %q", target.MinimumGoVersion))
 	}
 	if target.PublicationMode != "github-tag" && target.PublicationMode != "registry" {
 		return diagnostic("package-config", "RCG1012", target.PackageKey, fmt.Sprintf("unsupported publication mode %q", target.PublicationMode))
+	}
+	if len(target.EmitterSHA256) != 64 || strings.Trim(target.EmitterSHA256, "0123456789abcdef") != "" {
+		return diagnostic("package-config", "RCG1009", target.PackageKey, "emitterSha256 must be a 64-character lowercase SHA-256 of the emitter tool")
 	}
 	rootDependencies := map[string]bool{}
 	rootFound := false

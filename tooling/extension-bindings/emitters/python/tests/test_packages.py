@@ -2,12 +2,9 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
-from dataclasses import replace
 import io
 import json
 import os
-from pathlib import Path
 import shutil
 import stat
 import struct
@@ -15,10 +12,14 @@ import subprocess
 import sys
 import tarfile
 import zipfile
+from copy import deepcopy
+from dataclasses import replace
+from hashlib import sha256
+from pathlib import Path
 
-from packaging.requirements import Requirement
 import pytest
 import yaml
+from packaging.requirements import Requirement
 
 from runtimeconditions_binding_emitter import (
     build_archives,
@@ -32,11 +33,16 @@ from runtimeconditions_binding_emitter import (
 from runtimeconditions_binding_emitter.archive import ARCHIVE_EPOCH, ArchiveArtifacts
 from runtimeconditions_binding_emitter.package import DiagnosticError, PackageDependency
 
-
 TOOLING = Path(__file__).resolve().parents[3]
 MODELS = TOOLING / "model/conformance/expected"
 TARGET = TOOLING / "emitters/python/testdata/package-target.yaml"
-LOCK = yaml.safe_load((TOOLING / "toolchain.lock.yaml").read_text(encoding="utf-8"))
+LOCK = yaml.safe_load(
+    Path(
+        os.environ.get(
+            "RC_BINDINGS_TEST_TOOLCHAIN_LOCK", str(TOOLING / "toolchain.lock.yaml")
+        )
+    ).read_text(encoding="utf-8")
+)
 BUILD_PYTHON = Path(
     os.environ.get("RC_BINDINGS_BUILD_PYTHON", sys.executable)
 ).absolute()
@@ -55,6 +61,23 @@ def _model(case: str) -> dict:
     return load_model(MODELS / case / "runtimeconditions.binding-model.yaml")
 
 
+def _development_target():
+    # Development fixtures identify the exact source snapshot executed here.
+    source = TOOLING / "emitters/python"
+    paths = [
+        source / "pyproject.toml",
+        *sorted((source / "src/runtimeconditions_binding_emitter").glob("*.py")),
+    ]
+    inventory = {
+        path.relative_to(source).as_posix(): sha256(path.read_bytes()).hexdigest()
+        for path in paths
+    }
+    digest = sha256(
+        json.dumps(inventory, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return replace(load_target(TARGET), emitter_sha256=digest)
+
+
 def _plan(case: str):
     model = _model(case)
     root = model["rootExtension"]["id"]
@@ -64,7 +87,7 @@ def _plan(case: str):
         if item["id"] == root
     )
     target = replace(
-        load_target(TARGET),
+        _development_target(),
         root_extension=root,
         dependencies=tuple(
             PackageDependency(item, f"test-{index}", f"test_{index}", "1.0.0")
@@ -91,7 +114,6 @@ def _build(model: dict, plan, root: Path, label: str) -> ArchiveArtifacts:
                 f"src/{plan.target.import_package}/{name}"
                 for name in (
                     "__init__.py",
-                    "_conformance.py",
                     "bindings.py",
                     "py.typed",
                     "runtimeconditions.bindings.yaml",
@@ -270,7 +292,7 @@ result = []
 for distribution_name, package_name in json.loads(sys.argv[1]):
     distribution = metadata.distribution(distribution_name)
     package = resources.files(package_name)
-    importlib.import_module(package_name + '._conformance').exercise()
+    importlib.import_module(package_name)
     result.append({
         'name': distribution.metadata['Name'],
         'version': distribution.version,
@@ -292,9 +314,9 @@ def _assert_installed(snapshot: list[dict], specs: list[tuple[dict, object]]) ->
         package_prefix = plan.target.import_package + "/"
         assert package_prefix + "runtimeconditions.bindings.yaml" in installed["files"]
         assert package_prefix + "py.typed" in installed["files"]
-        assert package_prefix + "_conformance.py" in installed["files"]
+        assert package_prefix + "_conformance.py" not in installed["files"]
         assert installed["py_typed"] == ""
-        assert installed["conformance"] is True
+        assert installed["conformance"] is False
         manifest = yaml.safe_load(installed["manifest"])
         assert manifest["extension"]["id"] == model["rootExtension"]["id"]
         assert (
@@ -367,7 +389,7 @@ def test_clean_wheel_install_and_sdist_rebuild(tmp_path: Path) -> None:
 
 
 def _target(root: str, key: str, dependencies: tuple[PackageDependency, ...] = ()):
-    base = load_target(TARGET)
+    base = _development_target()
     return replace(
         base,
         package_key=key,

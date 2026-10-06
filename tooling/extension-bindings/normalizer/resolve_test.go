@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"sort"
@@ -64,9 +65,34 @@ func diagnosticCode(t *testing.T, err error) string {
 func closureIDs(closure ResolvedClosure) []string {
 	ids := make([]string, 0, len(closure.Documents))
 	for _, document := range closure.Documents {
-		ids = append(ids, document.Definition.Metadata.Identifier())
+		ids = append(ids, document.Definition.Metadata.URI+":"+document.Definition.Metadata.Version)
 	}
 	return ids
+}
+
+func TestExtensionDefinitionURL(t *testing.T) {
+	for _, test := range []struct{ id, want string }{
+		{"https://example.test/provider/service:release-2026", "https://example.test/extensions/provider/service/release-2026/runtimeconditions.extension.yaml"},
+		{"https://example.test/service:1.2.3", "https://example.test/extensions/rc/service/1.2.3/runtimeconditions.extension.yaml"},
+		{"https://EXAMPLE.test:8443/Provider/Service:V1+build", "https://EXAMPLE.test:8443/extensions/Provider/Service/V1+build/runtimeconditions.extension.yaml"},
+	} {
+		got, err := extensionDefinitionURL(test.id)
+		if err != nil || got != test.want {
+			t.Errorf("extensionDefinitionURL(%q) = %q, %v; want %q", test.id, got, err, test.want)
+		}
+	}
+	for _, id := range []string{
+		"", "https://example.test/service", "https://example.test:8443/service", "https://example.test/service:",
+		"http://example.test/service:1", "file:///service:1", "oci://example.test/service:1",
+		"https://user@example.test/service:1", "https://example.test/service?query:1", "https://example.test/service#:1",
+		"https://example.test/:1", "https://example.test/provider//service:1", "https://example.test/a/b/c:1",
+		"https://example.test/../service:1", "https://example.test/service:..", "https://example.test/service:bad/version",
+		"https://example.test/%73ervice:1", "https://example.test/service:%31", "https://example.test/service:bad version",
+	} {
+		if _, err := extensionDefinitionURL(id); err == nil {
+			t.Errorf("invalid extension identifier accepted: %q", id)
+		}
+	}
 }
 
 func TestResolverDirectDependencyOrder(t *testing.T) {
@@ -262,8 +288,7 @@ func TestResolverBackendsProduceOneSemanticModel(t *testing.T) {
 	writeFixture(t, cache, sourceDigest+".yaml", data)
 	schemas := testSchemas(t)
 
-	identity, _ := ParseExtensionIdentifier(id)
-	httpsLocator := identity.DefinitionURL()
+	httpsLocator := "https://runtimeconditions.io/extensions/test/backends/1.0.0/runtimeconditions.extension.yaml"
 
 	configs := map[string]ResolverConfig{
 		"override": {Schemas: schemas, Overrides: map[string]string{id: path}},
@@ -307,6 +332,49 @@ func TestResolverBackendsProduceOneSemanticModel(t *testing.T) {
 		} else if string(encoded) != string(expected) {
 			t.Fatalf("%s backend changed semantic model bytes", name)
 		}
+	}
+}
+
+func TestDevelopmentHTTPSRecordsLockAndExplicitCache(t *testing.T) {
+	id := "https://new.example.test/future/service:1.0.0"
+	data := fixtureExtension(id, nil, kindSpec("future.kind"))
+	cache := filepath.Join(t.TempDir(), "explicit-cache")
+	config := ResolverConfig{Schemas: testSchemas(t), Network: true, RecordNetworkLocks: true, CacheDir: cache, HTTPClient: &http.Client{Transport: staticHTTPTransport{data: data}}}
+	resolver, err := NewResolver(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	closure, err := resolver.Resolve(context.Background(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lock := BuildDependencyLock(closure)
+	if len(lock.Extensions) != 1 || lock.Extensions[0].SourceSHA256 != SHA256Hex(data) || lock.Extensions[0].SourceBackend != "https" {
+		t.Fatalf("missing transport lock: %+v", lock)
+	}
+	if _, err := os.Stat(filepath.Join(cache, SHA256Hex(data)+".yaml")); err != nil {
+		t.Fatal(err)
+	}
+	config.Network = false
+	config.HTTPClient = &http.Client{Transport: &countingTransport{}}
+	resolver, err = NewResolver(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = resolver.Resolve(context.Background(), id); err != nil {
+		t.Fatal("explicit cache did not support offline reuse", err)
+	}
+	config.CacheDir = ""
+	config.Network = true
+	config.RecordNetworkLocks = false
+	config.HTTPClient = &http.Client{Transport: staticHTTPTransport{data: data}}
+	config.Locks = map[string]LockEntry{id: {SourceSHA256: strings.Repeat("0", 64), Locator: lock.Extensions[0].SourceLocator}}
+	resolver, err = NewResolver(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = resolver.Resolve(context.Background(), id); err == nil {
+		t.Fatal("locked HTTPS accepted changed bytes")
 	}
 }
 
@@ -365,6 +433,86 @@ func TestContentAddressedCacheVerifiesEntryDigest(t *testing.T) {
 	_, err = NewResolver(ResolverConfig{Schemas: testSchemas(t), CacheDir: tamperedDirectory})
 	if err == nil || diagnosticCode(t, err) != "RCB1236" {
 		t.Fatalf("expected RCB1236, got %v", err)
+	}
+}
+
+func TestSuppliedLockAppliesToLocalAndCachedDefinitions(t *testing.T) {
+	id := "https://new.example.test/locked/service:1.0.0"
+	data := fixtureExtension(id, nil, kindSpec("future.locked"))
+	directory := t.TempDir()
+	writeFixture(t, directory, "definition.yaml", data)
+	cache := t.TempDir()
+	writeFixture(t, cache, SHA256Hex(data)+".yaml", data)
+	for name, config := range map[string]ResolverConfig{
+		"catalog": {Schemas: testSchemas(t), CatalogRoots: []string{directory}},
+		"cache":   {Schemas: testSchemas(t), CacheDir: cache},
+	} {
+		t.Run(name, func(t *testing.T) {
+			config.Locks = map[string]LockEntry{id: {SourceSHA256: strings.Repeat("0", 64)}}
+			resolver, err := NewResolver(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err = resolver.Resolve(context.Background(), id); err == nil {
+				t.Fatal("local content ignored supplied lock")
+			}
+		})
+	}
+	locator, _ := extensionDefinitionURL(id)
+	resolver, err := NewResolver(ResolverConfig{Schemas: testSchemas(t), CacheDir: cache, Locks: map[string]LockEntry{id: {SourceSHA256: SHA256Hex(data), SourceBackend: "https", Locator: locator}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	closure, err := resolver.Resolve(context.Background(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if closure.Documents[0].Backend != "https" || closure.Documents[0].Locator != locator {
+		t.Fatal("cache changed locked source provenance")
+	}
+}
+
+func TestLockedHTTPSClosureOverTLS(t *testing.T) {
+	definitions := map[string][]byte{}
+	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+		data, ok := definitions[request.URL.Path]
+		if !ok {
+			http.NotFound(w, request)
+			return
+		}
+		_, _ = w.Write(data)
+	}))
+	defer server.Close()
+	rootID, dependencyID := server.URL+"/future/root:1.0.0", server.URL+"/future/base:1.0.0"
+	definitions["/extensions/future/root/1.0.0/runtimeconditions.extension.yaml"] = fixtureExtension(rootID, []string{dependencyID}, kindSpec("future.root"))
+	definitions["/extensions/future/base/1.0.0/runtimeconditions.extension.yaml"] = fixtureExtension(dependencyID, nil, kindSpec("future.base"))
+	config := ResolverConfig{Schemas: testSchemas(t), Network: true, RecordNetworkLocks: true, HTTPClient: server.Client()}
+	resolver, err := NewResolver(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	closure, err := resolver.Resolve(context.Background(), rootID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lock := BuildDependencyLock(closure)
+	config.RecordNetworkLocks = false
+	config.Locks = map[string]LockEntry{}
+	for _, entry := range lock.Extensions {
+		config.Locks[entry.ID] = LockEntry{SourceSHA256: entry.SourceSHA256, SemanticSHA256: entry.SemanticSHA256, SourceBackend: entry.SourceBackend, Locator: entry.SourceLocator}
+	}
+	resolver, _ = NewResolver(config)
+	locked, err := resolver.Resolve(context.Background(), rootID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = ValidateDependencyLock(locked, lock); err != nil {
+		t.Fatal(err)
+	}
+	definitions["/extensions/future/root/1.0.0/runtimeconditions.extension.yaml"] = append(definitions["/extensions/future/root/1.0.0/runtimeconditions.extension.yaml"], '\n')
+	resolver, _ = NewResolver(config)
+	if _, err = resolver.Resolve(context.Background(), rootID); err == nil {
+		t.Fatal("locked HTTPS accepted changed response bytes")
 	}
 }
 

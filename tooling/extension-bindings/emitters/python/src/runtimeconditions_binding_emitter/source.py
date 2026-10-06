@@ -376,7 +376,7 @@ def _conformance_source(plan: EmissionPlan, model: dict[str, Any]) -> str:
 
 
 def render_sources(plan: EmissionPlan, model: dict[str, Any]) -> dict[str, str]:
-    """Render only API and conformance Python source; do not write package metadata."""
+    """Render production API source; synthetic exercises belong to tooling tests."""
     if (
         model["metadata"]["semanticSha256"] != plan.model_digest
         or model["rootExtension"]["id"] != plan.target.root_extension
@@ -386,7 +386,6 @@ def render_sources(plan: EmissionPlan, model: dict[str, Any]) -> dict[str, str]:
     sources = {
         f"{prefix}/__init__.py": _init_source(plan, model),
         f"{prefix}/bindings.py": _bindings_source(plan, model),
-        f"{prefix}/_conformance.py": _conformance_source(plan, model),
     }
     try:
         formatter_version = metadata.version("ruff")
@@ -528,3 +527,8 @@ def _write_files(
             "cannot write generated package files",
         )
     return tuple(sorted(files))
+
+
+def render_assembly_metadata() -> dict[str, str]:
+    """Native source-distribution inclusion rules for orchestrator-owned files."""
+    return {"MANIFEST.in": "include runtimeconditions.file-manifest.yaml\n"}

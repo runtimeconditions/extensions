@@ -34,6 +34,31 @@ func testNormalizeConfig() NormalizeConfig {
 	}
 }
 
+func TestAlternativeStringConstantsShareOneDomain(t *testing.T) {
+	provenance := Provenance{Coordinate: "https://new.example.test/future:1.0.0#schema:channel", JSONPointer: "/properties/interface"}
+	shapes := []Shape{
+		{Kind: "scalar", Scalar: "string", Values: normalizeValues([]any{"publish"}), Provenance: provenance},
+		{Kind: "scalar", Scalar: "string", Values: normalizeValues([]any{"subscribe", "publish"}), Provenance: provenance},
+	}
+	merged := collapseEquivalentShapes(shapes, provenance)
+	if merged.Kind != "scalar" || merged.Scalar != "string" || len(merged.Values) != 2 || len(merged.Variants) != 0 {
+		t.Fatalf("alternative constants were not one domain: %+v", merged)
+	}
+	object := func(value string) Shape {
+		return Shape{Kind: "object", Required: []string{"action"}, Properties: []PropertyShape{{Name: "action", Required: true, Shape: Shape{Kind: "scalar", Scalar: "string", Values: normalizeValues([]any{value}), Provenance: provenance}, Provenance: provenance}}, Provenance: provenance}
+	}
+	projection, err := mergeAlternativeShapes([]Shape{object("publish"), object("subscribe")}, provenance)
+	if err != nil || len(projection.Properties) != 1 || projection.Properties[0].Shape.Kind != "scalar" || len(projection.Properties[0].Shape.Values) != 2 {
+		t.Fatalf("object alternatives did not share the field domain: %+v %v", projection, err)
+	}
+	first, second := shapes[0], shapes[1]
+	collections := []Shape{{Kind: "array", Items: &first, Provenance: provenance}, {Kind: "array", Items: &second, Provenance: provenance}}
+	collection := collapseEquivalentShapes(collections, provenance)
+	if collection.Kind != "array" || collection.Items == nil || collection.Items.Kind != "scalar" || len(collection.Items.Values) != 2 {
+		t.Fatalf("nested alternative domains were not merged: %+v", collection)
+	}
+}
+
 func TestNormalizeEveryCatalogExtension(t *testing.T) {
 	schemas := testSchemas(t)
 	resolver, err := NewResolver(ResolverConfig{

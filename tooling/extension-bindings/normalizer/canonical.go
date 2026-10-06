@@ -602,3 +602,7 @@ func diagnostic(category, code, coordinate, pointer, message string) error {
 func escapeJSONPointer(value string) string {
 	return strings.ReplaceAll(strings.ReplaceAll(value, "~", "~0"), "/", "~1")
 }
+
+// CanonicalJSON serializes JSON-compatible data using RFC 8785.
+// The bytes are used in memory for semantic digests, never as a checkpoint.
+func CanonicalJSON(value any) ([]byte, error) { return canonicalJSON(value) }

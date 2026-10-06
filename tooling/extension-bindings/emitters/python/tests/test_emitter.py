@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import ast
 import json
+import subprocess
+import sys
 import tomllib
 from copy import deepcopy
 from dataclasses import FrozenInstanceError, replace
+from hashlib import sha256
 from importlib import import_module, resources
 from pathlib import Path
 
@@ -26,7 +29,12 @@ from runtimeconditions_binding_emitter import (
     render_resources,
     render_sources,
 )
-from runtimeconditions_binding_emitter.metadata import SETUPTOOLS_VERSION
+from runtimeconditions_binding_emitter.source import _conformance_source
+from runtimeconditions_binding_emitter.metadata import (
+    EMITTER_NAME,
+    EMITTER_VERSION,
+    SETUPTOOLS_VERSION,
+)
 from runtimeconditions_binding_emitter.naming import (
     Symbol,
     allocate_symbols,
@@ -39,9 +47,26 @@ MODELS = TOOLING / "model/conformance/expected"
 TARGET = TOOLING / "emitters/python/testdata/package-target.yaml"
 
 
+def _development_target():
+    # Development fixtures identify the exact source snapshot executed here.
+    source = TOOLING / "emitters/python"
+    paths = [
+        source / "pyproject.toml",
+        *sorted((source / "src/runtimeconditions_binding_emitter").glob("*.py")),
+    ]
+    inventory = {
+        path.relative_to(source).as_posix(): sha256(path.read_bytes()).hexdigest()
+        for path in paths
+    }
+    digest = sha256(
+        json.dumps(inventory, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return replace(load_target(TARGET), emitter_sha256=digest)
+
+
 def _plan(case: str):
     model = load_model(MODELS / case / "runtimeconditions.binding-model.yaml")
-    target = load_target(TARGET)
+    target = _development_target()
     root = model["rootExtension"]["id"]
     dependencies = next(
         item.get("dependencies", [])
@@ -153,7 +178,7 @@ def test_distinct_root_properties_can_share_a_shape_location() -> None:
     duplicate["name"] = "branch"
     duplicate["provenance"]["jsonPointer"] = "/properties/branch"
     schema["projection"]["properties"].append(duplicate)
-    target = replace(load_target(TARGET), root_extension=model["rootExtension"]["id"])
+    target = replace(_development_target(), root_extension=model["rootExtension"]["id"])
     plan = build_plan(model, target)
     manifest_path = f"src/{plan.target.import_package}/runtimeconditions.bindings.yaml"
     manifest = yaml.safe_load(render_resources(plan, model)[manifest_path])
@@ -227,7 +252,7 @@ def test_any_uses_recursive_json_value_alias() -> None:
     shape = model["schemas"][0]["projection"]["properties"][1]["shape"]
     shape.pop("scalar")
     shape["kind"] = "any"
-    plan = build_plan(model, load_target(TARGET))
+    plan = build_plan(model, _development_target())
     assert plan.uses_json_value
     assert "Sequence[JSONValue]" in plan.json_value_alias_rhs
     assert any(
@@ -272,7 +297,7 @@ def test_required_nullable_value_has_no_initializer_default() -> None:
             "provenance": original["provenance"],
         }
     )
-    plan = build_plan(model, load_target(TARGET))
+    plan = build_plan(model, _development_target())
     region = next(item for item in plan.types if item.name == "Region")
     assert [
         (field.name, field.required, field.default_none) for field in region.fields
@@ -288,7 +313,7 @@ def test_renderer_rejects_a_different_model() -> None:
     model = load_model(
         MODELS / "01-owned-kind-interface/runtimeconditions.binding-model.yaml"
     )
-    plan = build_plan(model, load_target(TARGET))
+    plan = build_plan(model, _development_target())
     changed = deepcopy(model)
     changed["metadata"]["semanticSha256"] = "0" * 64
     with pytest.raises(DiagnosticError) as error:
@@ -298,11 +323,11 @@ def test_renderer_rejects_a_different_model() -> None:
     )
 
 
-def test_source_emission_writes_only_the_three_api_files(tmp_path: Path) -> None:
+def test_source_emission_writes_only_the_two_api_files(tmp_path: Path) -> None:
     model = load_model(
         MODELS / "01-owned-kind-interface/runtimeconditions.binding-model.yaml"
     )
-    plan = build_plan(model, load_target(TARGET))
+    plan = build_plan(model, _development_target())
     output = tmp_path / "binding-source"
     expected = render_sources(plan, model)
     assert emit_sources(plan, model, output) == tuple(sorted(expected))
@@ -349,7 +374,7 @@ def test_target_model_mismatch_has_exact_diagnostic() -> None:
     model = load_model(
         MODELS / "01-owned-kind-interface/runtimeconditions.binding-model.yaml"
     )
-    target = replace(load_target(TARGET), root_extension="other")
+    target = replace(_development_target(), root_extension="other")
     with pytest.raises(DiagnosticError) as error:
         build_plan(model, target)
     assert str(error.value) == (
@@ -444,8 +469,8 @@ def test_rendered_api_imports_and_conformance_runs(
     plan = _plan(case)
     package_name = "generated_" + case.replace("-", "_")
     plan = replace(plan, target=replace(plan.target, import_package=package_name))
-    sources = render_sources(plan, model)
-    assert sources == render_sources(plan, model)
+    sources = _synthetic_sources(plan, model)
+    assert sources == _synthetic_sources(plan, model)
     assert sorted(path.rsplit("/", 1)[-1] for path in sources) == [
         "__init__.py",
         "_conformance.py",
@@ -490,7 +515,7 @@ def test_conformance_covers_object_alternative_fields_separately() -> None:
     case = "07-object-alternatives"
     model = load_model(MODELS / case / "runtimeconditions.binding-model.yaml")
     plan = _plan(case)
-    source = render_sources(plan, model)[
+    source = _synthetic_sources(plan, model)[
         f"src/{plan.target.import_package}/_conformance.py"
     ]
     calls = [
@@ -517,7 +542,7 @@ def test_conformance_keeps_scoped_declarations_separate() -> None:
     case = "10-scoped-domains-collisions"
     model = load_model(MODELS / case / "runtimeconditions.binding-model.yaml")
     plan = _plan(case)
-    source = render_sources(plan, model)[
+    source = _synthetic_sources(plan, model)[
         f"src/{plan.target.import_package}/_conformance.py"
     ]
     calls = [line for line in source.splitlines() if "b.service(" in line]
@@ -550,12 +575,12 @@ def test_direct_additive_protocol_is_owned_by_dependency(
         "importedDeclarations"
     ]
     base_model["vocabulary"]["importedDeclarations"] = []
-    target = load_target(TARGET)
+    target = _development_target()
     base_target = replace(
         target, root_extension=base_id, import_package="owner_binding"
     )
     _write_sources(
-        tmp_path, render_sources(build_plan(base_model, base_target), base_model)
+        tmp_path, _synthetic_sources(build_plan(base_model, base_target), base_model)
     )
     addon_target = replace(
         target,
@@ -565,7 +590,7 @@ def test_direct_additive_protocol_is_owned_by_dependency(
             PackageDependency(base_id, "owner-binding", "owner_binding", "1.0.0"),
         ),
     )
-    _write_sources(tmp_path, render_sources(build_plan(model, addon_target), model))
+    _write_sources(tmp_path, _synthetic_sources(build_plan(model, addon_target), model))
     monkeypatch.syspath_prepend(str(tmp_path / "src"))
     owner = import_module("owner_binding")
     addon = import_module("direct_addon_binding")
@@ -595,7 +620,7 @@ def test_transitive_additive_protocol_reexports_through_direct_dependency(
     )
     middle_id = middle_extension["id"]
     leaf_extension = next(item for item in model["extensions"] if item["id"] == leaf_id)
-    target = load_target(TARGET)
+    target = _development_target()
 
     leaf_model = deepcopy(model)
     leaf_model["rootExtension"] = dict(leaf_extension)
@@ -606,7 +631,7 @@ def test_transitive_additive_protocol_reexports_through_direct_dependency(
     leaf_model["vocabulary"]["importedDeclarations"] = []
     leaf_target = replace(target, root_extension=leaf_id, import_package="leaf_binding")
     _write_sources(
-        tmp_path, render_sources(build_plan(leaf_model, leaf_target), leaf_model)
+        tmp_path, _synthetic_sources(build_plan(leaf_model, leaf_target), leaf_model)
     )
 
     middle_model = deepcopy(model)
@@ -621,7 +646,8 @@ def test_transitive_additive_protocol_reexports_through_direct_dependency(
         ),
     )
     _write_sources(
-        tmp_path, render_sources(build_plan(middle_model, middle_target), middle_model)
+        tmp_path,
+        _synthetic_sources(build_plan(middle_model, middle_target), middle_model),
     )
 
     root_target = replace(
@@ -632,7 +658,7 @@ def test_transitive_additive_protocol_reexports_through_direct_dependency(
             PackageDependency(middle_id, "middle-binding", "middle_binding", "1.0.0"),
         ),
     )
-    _write_sources(tmp_path, render_sources(build_plan(model, root_target), model))
+    _write_sources(tmp_path, _synthetic_sources(build_plan(model, root_target), model))
     monkeypatch.syspath_prepend(str(tmp_path / "src"))
     leaf = import_module("leaf_binding")
     middle = import_module("middle_binding")
@@ -664,7 +690,6 @@ def test_package_metadata_and_manifest_are_deterministic(case: str) -> None:
         "pyproject.toml",
         f"{prefix}/__init__.py",
         f"{prefix}/bindings.py",
-        f"{prefix}/_conformance.py",
         f"{prefix}/py.typed",
         f"{prefix}/runtimeconditions.bindings.yaml",
     }
@@ -692,7 +717,11 @@ def test_package_metadata_and_manifest_are_deterministic(case: str) -> None:
     manifest_source = files[f"{prefix}/runtimeconditions.bindings.yaml"]
     assert manifest_source.startswith("# Code generated by ")
     manifest = yaml.safe_load(manifest_source)
-    assert manifest["generated"]["nonEditable"] is True
+    assert manifest["generated"] == {
+        "nonEditable": True,
+        "emitter": f"{EMITTER_NAME}@sha256:{plan.target.emitter_sha256}",
+        "version": EMITTER_VERSION,
+    }
     assert manifest["model"]["semanticSha256"] == model["metadata"]["semanticSha256"]
     assert manifest["extension"] == {
         "id": model["rootExtension"]["id"],
@@ -955,3 +984,80 @@ def test_manifest_rejects_ambiguous_legacy_plan_coordinate() -> None:
 def test_generated_backend_pin_matches_toolchain_lock() -> None:
     lock = yaml.safe_load((TOOLING / "toolchain.lock.yaml").read_text(encoding="utf-8"))
     assert lock["python"]["tools"]["setuptools"] == SETUPTOOLS_VERSION
+
+
+@pytest.mark.parametrize("digest", ["", "a" * 63, "A" * 64, "g" * 64])
+def test_emitter_digest_required_before_writing(digest: str, tmp_path: Path) -> None:
+    model = load_model(
+        MODELS / "01-owned-kind-interface/runtimeconditions.binding-model.yaml"
+    )
+    plan = _plan("01-owned-kind-interface")
+    plan = replace(plan, target=replace(plan.target, emitter_sha256=digest))
+    output = tmp_path / "package"
+    with pytest.raises(DiagnosticError, match="RCP1006"):
+        emit_package(plan, model, output)
+    assert not output.exists()
+
+
+def test_emitter_digest_changes_only_manifest() -> None:
+    model = load_model(
+        MODELS / "01-owned-kind-interface/runtimeconditions.binding-model.yaml"
+    )
+    plan = _plan("01-owned-kind-interface")
+    before = render_package(plan, model)
+    target = replace(
+        plan.target,
+        emitter_sha256=sha256(plan.target.emitter_sha256.encode("ascii")).hexdigest(),
+    )
+    after = render_package(replace(plan, target=target), model)
+    assert {path for path in before if before[path] != after[path]} == {
+        f"src/{plan.target.import_package}/runtimeconditions.bindings.yaml"
+    }
+
+
+@pytest.mark.parametrize("digest", ["a" * 64, "", "A" * 64, "g" * 64, 123])
+def test_package_target_digest_loading(digest, tmp_path: Path) -> None:
+    data = yaml.safe_load(TARGET.read_text(encoding="utf-8"))
+    data["emitterSha256"] = digest
+    path = tmp_path / "target.yaml"
+    path.write_text(yaml.safe_dump(data), encoding="utf-8")
+    if digest == "a" * 64:
+        assert load_target(path).emitter_sha256 == digest
+    else:
+        with pytest.raises(DiagnosticError, match="RCP1006"):
+            load_target(path)
+
+
+@pytest.mark.parametrize(
+    "identity", [EMITTER_NAME, f"{EMITTER_NAME}@sha256:" + "A" * 64]
+)
+def test_manifest_schema_requires_emitter_digest(identity: str) -> None:
+    model = load_model(
+        MODELS / "01-owned-kind-interface/runtimeconditions.binding-model.yaml"
+    )
+    plan = _plan("01-owned-kind-interface")
+    path = f"src/{plan.target.import_package}/runtimeconditions.bindings.yaml"
+    manifest = yaml.safe_load(render_resources(plan, model)[path])
+    manifest["generated"]["emitter"] = identity
+    schema = yaml.safe_load(
+        (TOOLING / "model/runtimeconditions.binding-manifest.schema.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    with pytest.raises(ValidationError):
+        Draft202012Validator(schema).validate(manifest)
+
+
+def _synthetic_sources(plan, model):
+    """Create bounded synthetic API exercises only for tooling tests."""
+    sources = render_sources(plan, model)
+    path = f"src/{plan.target.import_package}/_conformance.py"
+    result = subprocess.run(
+        [sys.executable, "-m", "ruff", "format", "--stdin-filename", path, "-"],
+        input=_conformance_source(plan, model),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    sources[path] = result.stdout
+    return sources

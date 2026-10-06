@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import ast
+import json
 import os
 import subprocess
 import sys
 import tomllib
 from copy import deepcopy
 from dataclasses import replace
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -24,6 +26,8 @@ from runtimeconditions_binding_emitter import (
     load_target,
     render_sources,
 )
+from runtimeconditions_binding_emitter.source import _conformance_source
+from runtimeconditions_binding_emitter.verification import verify_package
 from runtimeconditions_binding_emitter.package import DiagnosticError, PackageDependency
 
 TOOLING = Path(__file__).resolve().parents[3]
@@ -34,6 +38,23 @@ CASES = sorted(
 )
 
 
+def _development_target():
+    # Development fixtures identify the exact source snapshot executed here.
+    source = TOOLING / "emitters/python"
+    paths = [
+        source / "pyproject.toml",
+        *sorted((source / "src/runtimeconditions_binding_emitter").glob("*.py")),
+    ]
+    inventory = {
+        path.relative_to(source).as_posix(): sha256(path.read_bytes()).hexdigest()
+        for path in paths
+    }
+    digest = sha256(
+        json.dumps(inventory, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return replace(load_target(TARGET), emitter_sha256=digest)
+
+
 def _plan(model: dict):
     root = model["rootExtension"]["id"]
     direct = next(
@@ -42,7 +63,7 @@ def _plan(model: dict):
         if item["id"] == root
     )
     target = replace(
-        load_target(TARGET),
+        _development_target(),
         root_extension=root,
         dependencies=tuple(
             PackageDependency(extension, f"test-{index}", f"test_{index}", "1.0.0")
@@ -88,7 +109,7 @@ def _stage_dependency_sources(model: dict, plan, source_root: Path) -> None:
             and item["owner"] != root
         ]
         target = replace(
-            load_target(TARGET),
+            _development_target(),
             root_extension=extension,
             package_key=f"dependency-{names[extension]}",
             distribution_name=names[extension].replace("_", "-"),
@@ -221,7 +242,24 @@ def _check_public_ast(plan, package: Path) -> None:
         assert markers == ([item.marker.method] if item.marker else [])
 
 
-def _check_conformance_ast(plan, package: Path) -> None:
+def _check_conformance_ast(plan, package: Path, model: dict) -> None:
+    # This synthetic consumer is temporary test input, never emitter output.
+    source = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "ruff",
+            "format",
+            "--stdin-filename",
+            "_conformance.py",
+            "-",
+        ],
+        input=_conformance_source(plan, model),
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout
+    (package / "_conformance.py").write_text(source, encoding="utf-8")
     tree = ast.parse((package / "_conformance.py").read_text(encoding="utf-8"))
     exercise = next(
         node
@@ -339,8 +377,10 @@ def test_phase3_positive_gates(case: str, tmp_path: Path) -> None:
     assert {
         Requirement(value).name for value in metadata["project"]["dependencies"]
     } == {dependency.distribution_name for dependency in plan.target.dependencies}
+    assert not (package / "_conformance.py").exists()
+    assert verify_package(plan, package, model)["modelMapping"] is True
     _check_public_ast(plan, package)
-    _check_conformance_ast(plan, package)
+    _check_conformance_ast(plan, package, model)
     ruff = Path(sys.executable).with_name("ruff")
     mypy = Path(sys.executable).with_name("mypy")
     assert ruff.is_file() and mypy.is_file()
@@ -377,8 +417,10 @@ def test_recursive_json_value_conformance(tmp_path: Path) -> None:
     assert plan.uses_json_value
     emit_package(plan, model, tmp_path / "package")
     package = tmp_path / "package/src" / plan.target.import_package
+    assert not (package / "_conformance.py").exists()
+    assert verify_package(plan, package, model)["modelMapping"] is True
     _check_public_ast(plan, package)
-    _check_conformance_ast(plan, package)
+    _check_conformance_ast(plan, package, model)
     subprocess.run(
         [str(Path(sys.executable).with_name("mypy")), "--strict", str(package)],
         check=True,
@@ -436,3 +478,19 @@ def test_python_negative_diagnostic(fixture: dict) -> None:
         "jsonPointer": diagnostic.json_pointer,
         "message": diagnostic.message,
     } == fixture["expected"]
+
+
+def test_manifest_mapping_tampering_is_rejected(tmp_path: Path) -> None:
+    model = load_model(
+        MODELS / "01-owned-kind-interface/runtimeconditions.binding-model.yaml"
+    )
+    plan = _plan(model)
+    emit_package(plan, model, tmp_path / "package")
+    package = tmp_path / "package/src" / plan.target.import_package
+    path = package / "runtimeconditions.bindings.yaml"
+    text = path.read_text(encoding="utf-8")
+    changed = text.replace("#", "#wrong", 1)
+    assert changed != text
+    path.write_text(changed, encoding="utf-8")
+    with pytest.raises(ValueError, match="manifest mappings"):
+        verify_package(plan, package, model)

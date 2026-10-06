@@ -29,7 +29,14 @@ properties:
     required: [nonEditable, emitter, version]
     properties:
       nonEditable: {const: true}
-      emitter: {type: string, minLength: 1}
+      emitter:
+        description: >-
+          Emitter name followed by @sha256: and the exact tool artifact digest.
+          Released generation uses the locked release digest; development fixtures
+          use the actual workspace executable or source snapshot digest. This
+          string preserves the v1alpha2 interface of installed profiler readers.
+        type: string
+        pattern: '^[A-Za-z0-9][A-Za-z0-9._-]*@sha256:[0-9a-f]{64}$'
       version: {type: string, minLength: 1}
   model:
     type: object

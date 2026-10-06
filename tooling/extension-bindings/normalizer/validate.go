@@ -102,20 +102,20 @@ func validateOrderingAnnotations(value any, pointer string) error {
 
 func (s *Schemas) ValidateExtension(data map[string]any, definition ExtensionDefinition) error {
 	if err := s.semantic.Validate(data); err != nil {
-		return diagnostic("structural", "RCB1102", definition.Metadata.Identifier(), "", fmt.Sprintf("extension semantic schema validation failed: %v", err))
+		return diagnostic("structural", "RCB1102", (definition.Metadata.URI + ":" + definition.Metadata.Version), "", fmt.Sprintf("extension semantic schema validation failed: %v", err))
 	}
 	if definition.APIVersion != "runtimeconditions.io/v1alpha1" {
-		return diagnostic("structural", "RCB1103", definition.Metadata.Identifier(), "/apiVersion", "unsupported extension API version")
+		return diagnostic("structural", "RCB1103", (definition.Metadata.URI + ":" + definition.Metadata.Version), "/apiVersion", "unsupported extension API version")
 	}
 	if definition.Kind != ExtensionKind {
-		return diagnostic("structural", "RCB1104", definition.Metadata.Identifier(), "/kind", "document is not a RuntimeConditionsExtensionDefinition")
+		return diagnostic("structural", "RCB1104", (definition.Metadata.URI + ":" + definition.Metadata.Version), "/kind", "document is not a RuntimeConditionsExtensionDefinition")
 	}
-	if _, err := ParseExtensionIdentity(definition.Metadata.URI, definition.Metadata.Version); err != nil {
-		return diagnostic("structural", "RCB1105", definition.Metadata.Identifier(), "/metadata/uri", err.Error())
+	if _, err := extensionDefinitionURL(definition.Metadata.URI + ":" + definition.Metadata.Version); err != nil {
+		return diagnostic("structural", "RCB1105", (definition.Metadata.URI + ":" + definition.Metadata.Version), "/metadata/uri", err.Error())
 	}
 	for index, dependency := range definition.Spec.Dependencies {
-		if _, err := ParseExtensionIdentifier(dependency); err != nil {
-			return diagnostic("extension-dependency", "RCB1110", definition.Metadata.Identifier(), fmt.Sprintf("/spec/dependencies/%d", index), err.Error())
+		if _, err := extensionDefinitionURL(dependency); err != nil {
+			return diagnostic("extension-dependency", "RCB1110", (definition.Metadata.URI + ":" + definition.Metadata.Version), fmt.Sprintf("/spec/dependencies/%d", index), err.Error())
 		}
 	}
 	if err := validateUniqueExtensionEntries(definition); err != nil {
@@ -124,13 +124,13 @@ func (s *Schemas) ValidateExtension(data map[string]any, definition ExtensionDef
 	for i, schema := range definition.Spec.Schemas {
 		pointer := fmt.Sprintf("/spec/schemas/%d/schema", i)
 		if dialect, exists := schema.Schema["$schema"]; exists && dialect != "https://json-schema.org/draft/2020-12/schema" {
-			return diagnostic("schema", "RCB1107", definition.Metadata.Identifier()+"#schema:"+schema.ID, pointer+"/$schema", "schema dialect must be JSON Schema Draft 2020-12")
+			return diagnostic("schema", "RCB1107", (definition.Metadata.URI+":"+definition.Metadata.Version)+"#schema:"+schema.ID, pointer+"/$schema", "schema dialect must be JSON Schema Draft 2020-12")
 		}
-		if err := validateLocalReferences(schema.Schema, definition.Metadata.Identifier()+"#schema:"+schema.ID, pointer); err != nil {
+		if err := validateLocalReferences(schema.Schema, (definition.Metadata.URI+":"+definition.Metadata.Version)+"#schema:"+schema.ID, pointer); err != nil {
 			return err
 		}
-		if err := compileExtensionSchema(schema.Schema, definition.Metadata.Identifier(), schema.ID); err != nil {
-			return diagnostic("schema", "RCB1108", definition.Metadata.Identifier()+"#schema:"+schema.ID, pointer, fmt.Sprintf("invalid JSON Schema Draft 2020-12 document: %v", err))
+		if err := compileExtensionSchema(schema.Schema, (definition.Metadata.URI + ":" + definition.Metadata.Version), schema.ID); err != nil {
+			return diagnostic("schema", "RCB1108", (definition.Metadata.URI+":"+definition.Metadata.Version)+"#schema:"+schema.ID, pointer, fmt.Sprintf("invalid JSON Schema Draft 2020-12 document: %v", err))
 		}
 	}
 	return nil
@@ -140,25 +140,25 @@ func validateUniqueExtensionEntries(definition ExtensionDefinition) error {
 	schemaIDs := map[string]struct{}{}
 	for i, schema := range definition.Spec.Schemas {
 		if _, exists := schemaIDs[schema.ID]; exists {
-			return diagnostic("vocabulary-conflict", "RCB1109", definition.Metadata.Identifier(), fmt.Sprintf("/spec/schemas/%d/id", i), fmt.Sprintf("duplicate schema id %q", schema.ID))
+			return diagnostic("vocabulary-conflict", "RCB1109", (definition.Metadata.URI + ":" + definition.Metadata.Version), fmt.Sprintf("/spec/schemas/%d/id", i), fmt.Sprintf("duplicate schema id %q", schema.ID))
 		}
 		schemaIDs[schema.ID] = struct{}{}
 	}
 	seenDeps := map[string]struct{}{}
 	for i, dependency := range definition.Spec.Dependencies {
 		if _, exists := seenDeps[dependency]; exists {
-			return diagnostic("extension-dependency", "RCB1110", definition.Metadata.Identifier(), fmt.Sprintf("/spec/dependencies/%d", i), fmt.Sprintf("duplicate dependency %q", dependency))
+			return diagnostic("extension-dependency", "RCB1110", (definition.Metadata.URI + ":" + definition.Metadata.Version), fmt.Sprintf("/spec/dependencies/%d", i), fmt.Sprintf("duplicate dependency %q", dependency))
 		}
 		seenDeps[dependency] = struct{}{}
 	}
 	for i, field := range definition.Spec.ConditionFields {
 		if reservedConditionField(field.Name) {
-			return diagnostic("vocabulary-conflict", "RCB1111", definition.Metadata.Identifier(), fmt.Sprintf("/spec/conditionFields/%d/name", i), fmt.Sprintf("condition field %q is reserved by the core", field.Name))
+			return diagnostic("vocabulary-conflict", "RCB1111", (definition.Metadata.URI + ":" + definition.Metadata.Version), fmt.Sprintf("/spec/conditionFields/%d/name", i), fmt.Sprintf("condition field %q is reserved by the core", field.Name))
 		}
 	}
 	for i, field := range definition.Spec.InterfaceFields {
 		if field.Name == "type" {
-			return diagnostic("vocabulary-conflict", "RCB1112", definition.Metadata.Identifier(), fmt.Sprintf("/spec/interfaceFields/%d/name", i), "interface field type is reserved by the core")
+			return diagnostic("vocabulary-conflict", "RCB1112", (definition.Metadata.URI + ":" + definition.Metadata.Version), fmt.Sprintf("/spec/interfaceFields/%d/name", i), "interface field type is reserved by the core")
 		}
 	}
 	return nil

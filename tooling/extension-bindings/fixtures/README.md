@@ -19,9 +19,20 @@ Each package contains the exact emitter-produced structural manifest plus the
 normalized model, resolved root extension, and
 schema-validated fixture release manifest at its final package-local resource
 location. The assembler produces both languages in dependency order and records
-SHA-256 of the actual normalizer executable, assembler script, profiler
-artifact, extension source, and direct dependency archives. It rejects missing
+SHA-256 of the actual normalizer executable, Go emitter executable, Python
+emitter source snapshot, assembler script, profiler artifact, extension source,
+and direct dependency archives. It rejects missing
 or contradictory identities instead of inventing release provenance.
+
+The assembler writes derived package targets under `targets/`, supplying
+`emitterSha256` without changing committed target fixtures. Go uses the built
+emitter executable's exact bytes. Python development uses the SHA-256 of a
+canonical JSON mapping from source-relative paths to exact file digests: the
+emitter's `pyproject.toml` and every `src/runtimeconditions_binding_emitter/*.py`
+file, with sorted keys, compact separators, and UTF-8 encoding. The emitted
+binding manifest records `<emitter-name>@sha256:<digest>` in `generated.emitter`.
+This identifies the actual development source snapshot; production generation
+must use its locked release artifact digest.
 
 ## Assemble
 

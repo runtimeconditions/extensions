@@ -711,17 +711,12 @@ func (ir *packageIR) files() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	conformance, err := ir.renderConformance()
-	if err != nil {
-		return nil, err
-	}
 	manifest, err := marshalManifest(ir.manifest())
 	if err != nil {
 		return nil, err
 	}
 	return map[string][]byte{
 		generatedGoFile:                   bindings,
-		"conformance/conformance_test.go": conformance,
 		"go.mod":                          ir.renderGoMod(),
 		"runtimeconditions.bindings.yaml": manifest,
 	}, nil
@@ -1045,7 +1040,7 @@ func (ir *packageIR) manifest() Manifest {
 	manifest := Manifest{
 		APIVersion: ManifestAPIVersion,
 		Kind:       ManifestKind,
-		Generated:  ManifestGenerated{NonEditable: true, Emitter: EmitterName, Version: EmitterVersion},
+		Generated:  ManifestGenerated{NonEditable: true, Emitter: EmitterName + "@sha256:" + ir.target.EmitterSHA256, Version: EmitterVersion},
 		Model:      ManifestModel{APIVersion: ir.model.APIVersion, SemanticSHA256: ir.model.Metadata.SemanticSHA256},
 		Extension:  ManifestExtension{ID: ir.model.RootExtension.ID, SemanticSHA256: ir.model.RootExtension.SemanticSHA256},
 		Package: ManifestPackage{

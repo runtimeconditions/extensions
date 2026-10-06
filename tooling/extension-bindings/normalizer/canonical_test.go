@@ -65,3 +65,13 @@ func TestCanonicalModelYAMLRestrictedProfile(t *testing.T) {
 		t.Fatal("canonical model contains source resolution identity")
 	}
 }
+
+func TestPublicCanonicalJSON(t *testing.T) {
+	actual, err := CanonicalJSON(map[string]any{"z": 1.0, "a": "sample"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(actual) != `{"a":"sample","z":1}` {
+		t.Fatalf("canonical bytes %s", actual)
+	}
+}

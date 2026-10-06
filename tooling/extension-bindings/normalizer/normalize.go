@@ -51,11 +51,12 @@ func Normalize(closure ResolvedClosure, lock DependencyLock, schemas *Schemas, c
 	for _, document := range closure.Documents {
 		dependencies := append([]string(nil), document.Definition.Spec.Dependencies...)
 		sort.Strings(dependencies)
+		id := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
 		model.Extensions = append(model.Extensions, ResolvedExtension{
-			ID: document.Definition.Metadata.Identifier(), Version: document.Definition.Metadata.Version,
+			ID: id, Version: document.Definition.Metadata.Version,
 			SemanticSHA256: document.SemanticSHA256, Dependencies: dependencies,
 		})
-		appendVocabulary(&model, document, interfaces, document.Definition.Metadata.Identifier() == closure.Root)
+		appendVocabulary(&model, document, interfaces, id == closure.Root)
 		normalizedSchemas, err := normalizeSchemas(document)
 		if err != nil {
 			return BindingModel{}, err
@@ -83,7 +84,7 @@ func Normalize(closure ResolvedClosure, lock DependencyLock, schemas *Schemas, c
 }
 
 func appendVocabulary(model *BindingModel, document ResolvedDocument, interfaces map[string][]string, root bool) {
-	owner := document.Definition.Metadata.Identifier()
+	owner := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
 	provenance := func(coordinate, pointer string) Provenance {
 		return Provenance{Owner: owner, ExtensionSHA256: document.SemanticSHA256, Coordinate: coordinate, JSONPointer: pointer}
 	}
@@ -184,7 +185,7 @@ func normalizeValues(values []any) []NormalizedValue {
 }
 
 func normalizeSchemas(document ResolvedDocument) ([]NormalizedSchema, error) {
-	owner := document.Definition.Metadata.Identifier()
+	owner := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
 	result := make([]NormalizedSchema, 0, len(document.Definition.Spec.Schemas))
 	for _, schema := range document.Definition.Spec.Schemas {
 		coordinate := owner + "#schema:" + schema.ID
@@ -670,6 +671,75 @@ func collapseEquivalentShapes(shapes []Shape, provenance Provenance) Shape {
 	deduplicated := deduplicateShapes(shapes)
 	if len(deduplicated) == 1 {
 		return deduplicated[0]
+	}
+	// Alternative string constants at one vocabulary path are one value
+	// domain. Branch-specific constraints remain in the exact schema.
+	allStringDomains := len(deduplicated) > 0
+	for _, shape := range deduplicated {
+		if shape.Kind != "scalar" || shape.Scalar != "string" || len(shape.Values) == 0 {
+			allStringDomains = false
+			break
+		}
+	}
+	if allStringDomains {
+		result := deduplicated[0]
+		result.Values = nil
+		result.Constraints = nil
+		seen := map[string]bool{}
+		for _, shape := range deduplicated {
+			for _, value := range shape.Values {
+				encoded, _ := canonicalJSON(value.Value)
+				if !seen[string(encoded)] {
+					seen[string(encoded)] = true
+					result.Values = append(result.Values, value)
+				}
+			}
+		}
+		return result
+	}
+	if len(deduplicated) > 0 {
+		kind, scalar := deduplicated[0].Kind, deduplicated[0].Scalar
+		sameKind := true
+		for _, shape := range deduplicated {
+			if shape.Kind != kind || shape.Scalar != scalar {
+				sameKind = false
+				break
+			}
+		}
+		if sameKind {
+			result := deduplicated[0]
+			switch kind {
+			case "object":
+				merged, err := mergeAlternativeShapes(deduplicated, result.Provenance)
+				if err == nil {
+					return merged
+				}
+			case "array", "map":
+				children := []Shape{}
+				for _, shape := range deduplicated {
+					if kind == "array" && shape.Items != nil {
+						children = append(children, *shape.Items)
+					} else if kind == "map" && shape.MapValues != nil {
+						children = append(children, *shape.MapValues)
+					}
+				}
+				if len(children) == len(deduplicated) {
+					child := collapseEquivalentShapes(children, children[0].Provenance)
+					result.Constraints = nil
+					if kind == "array" {
+						result.Items = &child
+					} else {
+						result.MapValues = &child
+					}
+					return result
+				}
+			case "scalar":
+				// An unconstrained alternative permits the whole scalar domain.
+				result.Values = nil
+				result.Constraints = nil
+				return result
+			}
+		}
 	}
 	return Shape{Kind: "union", Variants: deduplicated, Provenance: provenance}
 }

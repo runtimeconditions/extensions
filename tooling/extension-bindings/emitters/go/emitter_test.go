@@ -52,7 +52,7 @@ func TestGoRejectsLeadingDigitIdentifiers(t *testing.T) {
 func TestOptionalEnumFieldsUsePointers(t *testing.T) {
 	fixture := filepath.Join("testdata", "optional-enum-fields")
 	model := normalizeFixture(t, fixture, "https://runtimeconditions.io/go-fixture/optional-enum-fields:1.0.0")
-	target, err := LoadPackageTarget(filepath.Join(fixture, "package-target.yaml"))
+	target, err := loadFixtureTarget(t, filepath.Join(fixture, "package-target.yaml"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -86,11 +86,11 @@ func TestMarkerMethodsUseOwnerCoordinate(t *testing.T) {
 	const ownerB = "https://runtimeconditions.io/go-fixture/marker-owner-b:1.0.0"
 	modelA := normalizeFixture(t, fixture, ownerA)
 	modelB := normalizeFixture(t, fixture, ownerB)
-	targetA, err := LoadPackageTarget(filepath.Join(fixture, "package-target-owner-a.yaml"))
+	targetA, err := loadFixtureTarget(t, filepath.Join(fixture, "package-target-owner-a.yaml"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	targetB, err := LoadPackageTarget(filepath.Join(fixture, "package-target-owner-b.yaml"))
+	targetB, err := loadFixtureTarget(t, filepath.Join(fixture, "package-target-owner-b.yaml"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -295,7 +295,7 @@ func emitModifiedModel(t *testing.T, model normalizer.BindingModel, target Packa
 func TestLeadingDigitEmissionHasExactDiagnostic(t *testing.T) {
 	fixture := filepath.Join("testdata", "negative", "leading-digit")
 	model := normalizeFixture(t, fixture, "https://runtimeconditions.io/go-fixture/leading-digit:1.0.0")
-	target, err := LoadPackageTarget(filepath.Join(fixture, "package-target.yaml"))
+	target, err := loadFixtureTarget(t, filepath.Join(fixture, "package-target.yaml"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -479,7 +479,7 @@ func cloneDocument(t *testing.T, value map[string]any) map[string]any {
 func TestFixedSymbolCollisionHasExactDiagnostic(t *testing.T) {
 	fixture := filepath.Join("testdata", "negative", "fixed-symbol-collision")
 	model := normalizeFixture(t, fixture, "https://runtimeconditions.io/conformance/go-fixed-symbol-collision:1.0.0")
-	target, err := LoadPackageTarget(filepath.Join(fixture, "package-target.yaml"))
+	target, err := loadFixtureTarget(t, filepath.Join(fixture, "package-target.yaml"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -490,7 +490,7 @@ func TestFixedSymbolCollisionHasExactDiagnostic(t *testing.T) {
 func TestSameDomainMemberCollisionHasExactDiagnostic(t *testing.T) {
 	fixture := filepath.Join("testdata", "negative", "value-member-collision")
 	model := normalizeFixture(t, fixture, "https://runtimeconditions.io/go-fixture/value-member-collision:1.0.0")
-	target, err := LoadPackageTarget(filepath.Join(fixture, "package-target.yaml"))
+	target, err := loadFixtureTarget(t, filepath.Join(fixture, "package-target.yaml"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -617,9 +617,114 @@ func loadExpectedModel(t *testing.T, name string) normalizer.BindingModel {
 
 func loadTestTarget(t *testing.T, name string) PackageTarget {
 	t.Helper()
-	target, err := LoadPackageTarget(testTargetPath(name))
+	target, err := loadFixtureTarget(t, testTargetPath(name))
 	if err != nil {
 		t.Fatal(err)
 	}
 	return target
+}
+
+// Fixture provenance identifies the executable actually running the emitter code.
+func loadFixtureTarget(t *testing.T, path string) (PackageTarget, error) {
+	t.Helper()
+	target, err := LoadPackageTarget(path)
+	if err == nil && target.EmitterSHA256 == "" {
+		executable, readErr := os.Executable()
+		if readErr != nil {
+			t.Fatal(readErr)
+		}
+		data, readErr := os.ReadFile(executable)
+		if readErr != nil {
+			t.Fatal(readErr)
+		}
+		target.EmitterSHA256 = normalizer.SHA256Hex(data)
+	}
+	return target, err
+}
+
+func TestEmitterDigestRequiredBeforeWriting(t *testing.T) {
+	model := loadExpectedModel(t, "01-owned-kind-interface")
+	for _, value := range []string{"", strings.Repeat("a", 63), strings.Repeat("A", 64), strings.Repeat("g", 64)} {
+		t.Run("digest-"+value, func(t *testing.T) {
+			target := loadTestTarget(t, "01-owned-kind-interface.yaml")
+			target.EmitterSHA256 = value
+			output := filepath.Join(t.TempDir(), "package")
+			if err := Emit(model, target, output); err == nil || !strings.Contains(err.Error(), "RCG1009") {
+				t.Fatalf("invalid emitter digest: %v", err)
+			}
+			if _, err := os.Stat(output); !os.IsNotExist(err) {
+				t.Fatalf("output exists after rejection: %v", err)
+			}
+		})
+	}
+}
+
+func TestEmitterDigestChangesOnlyManifest(t *testing.T) {
+	model := loadExpectedModel(t, "01-owned-kind-interface")
+	target := loadTestTarget(t, "01-owned-kind-interface.yaml")
+	first, second := filepath.Join(t.TempDir(), "first"), filepath.Join(t.TempDir(), "second")
+	if err := Emit(model, target, first); err != nil {
+		t.Fatal(err)
+	}
+	target.EmitterSHA256 = normalizer.SHA256Hex([]byte(target.EmitterSHA256))
+	if err := Emit(model, target, second); err != nil {
+		t.Fatal(err)
+	}
+	err := filepath.WalkDir(first, func(path string, entry os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if entry.IsDir() {
+			return nil
+		}
+		relative, err := filepath.Rel(first, path)
+		if err != nil {
+			return err
+		}
+		a, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		b, err := os.ReadFile(filepath.Join(second, relative))
+		if err != nil {
+			return err
+		}
+		if relative == "runtimeconditions.bindings.yaml" {
+			if string(a) == string(b) {
+				t.Error("manifest did not record changed emitter digest")
+			}
+		} else if string(a) != string(b) {
+			t.Errorf("emitter digest changed %s", relative)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestProductionEmissionAndModelMapping(t *testing.T) {
+	model := loadExpectedModel(t, "01-owned-kind-interface")
+	target := loadTestTarget(t, "01-owned-kind-interface.yaml")
+	output := filepath.Join(t.TempDir(), "package")
+	if err := Emit(model, target, output); err != nil {
+		t.Fatal(err)
+	}
+	files := readTree(t, output)
+	if len(files) != 3 || files["bindings.go"] == nil || files["go.mod"] == nil || files["runtimeconditions.bindings.yaml"] == nil {
+		t.Fatalf("unexpected production inventory: %v", files)
+	}
+	if _, err := VerifyAPI(model, target, output); err != nil {
+		t.Fatal(err)
+	}
+	manifest := strings.Replace(string(files["runtimeconditions.bindings.yaml"]), "#", "#wrong", 1)
+	if manifest == string(files["runtimeconditions.bindings.yaml"]) {
+		t.Fatal("synthetic manifest has no model pointers")
+	}
+	if err := os.WriteFile(filepath.Join(output, "runtimeconditions.bindings.yaml"), []byte(manifest), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := VerifyAPI(model, target, output); err == nil || !strings.Contains(err.Error(), "manifest mappings") {
+		t.Fatalf("modified model pointer accepted: %v", err)
+	}
 }

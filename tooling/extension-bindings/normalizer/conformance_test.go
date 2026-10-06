@@ -99,7 +99,7 @@ func runConformanceCase(t *testing.T, schemas *Schemas, caseRoot string) (Bindin
 	if err != nil {
 		return BindingModel{}, err
 	}
-	closure, err := resolver.Resolve(context.Background(), definition.Metadata.Identifier())
+	closure, err := resolver.Resolve(context.Background(), definition.Metadata.URI+":"+definition.Metadata.Version)
 	if err != nil {
 		return BindingModel{}, err
 	}

@@ -9,7 +9,7 @@ from typing import Any, cast
 import yaml
 
 from .emitter import EmissionPlan, TypeExpr
-from .package import VERSION_PATTERN, fail
+from .package import SHA_PATTERN, VERSION_PATTERN, fail
 
 EMITTER_NAME = "runtimeconditions-binding-emitter"
 EMITTER_VERSION = "0.1.0"
@@ -130,7 +130,7 @@ def _model_locations(
 
     def walk(shape: dict[str, Any]) -> None:
         add(shape)
-        shapes[_location(shape["provenance"])] = shape
+        shapes.setdefault(_location(shape["provenance"]), shape)
         for property_ in shape.get("properties", []):
             add(property_)
             walk(property_["shape"])
@@ -277,6 +277,8 @@ def _manifest(plan: EmissionPlan, model: dict[str, Any]) -> str:
         if schema["owner"] != model["rootExtension"]["id"]:
             continue
         kind = schema.get("kind", schema["id"])
+        if kind not in declarations:
+            continue
         interface_type = schema.get("interfaceType", "")
         for property_ in schema["projection"].get("properties", []):
             name = property_["name"]
@@ -323,7 +325,7 @@ def _manifest(plan: EmissionPlan, model: dict[str, Any]) -> str:
         "kind": "RuntimeConditionsBindingManifest",
         "generated": {
             "nonEditable": True,
-            "emitter": EMITTER_NAME,
+            "emitter": f"{EMITTER_NAME}@sha256:{plan.target.emitter_sha256}",
             "version": EMITTER_VERSION,
         },
         "model": {
@@ -381,6 +383,16 @@ def _manifest(plan: EmissionPlan, model: dict[str, Any]) -> str:
 
 def render_resources(plan: EmissionPlan, model: dict[str, Any]) -> dict[str, str]:
     """Render package metadata and resources without writing an output tree."""
+    if not isinstance(plan.target.emitter_sha256, str) or not SHA_PATTERN.fullmatch(
+        plan.target.emitter_sha256
+    ):
+        fail(
+            "package-config",
+            "RCP1006",
+            plan.target.package_key,
+            "emitterSha256 must be a 64-character lowercase SHA-256 of the emitter tool",
+            "/emitterSha256",
+        )
     if (
         model["metadata"]["semanticSha256"] != plan.model_digest
         or model["rootExtension"]["id"] != plan.target.root_extension
