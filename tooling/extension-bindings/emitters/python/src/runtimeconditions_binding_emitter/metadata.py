@@ -150,6 +150,11 @@ def _model_locations(
     ):
         for item in vocabulary.get(group, []):
             add(item)
+    # Scope projections combine all applicable schemas. Prefer these complete
+    # shapes when one schema supplies fields and another adds constraints.
+    for scope in model.get("scopes", []):
+        if projection := scope.get("projection"):
+            walk(projection)
     for schema in model.get("schemas", []):
         add(schema)
         walk(schema["projection"])

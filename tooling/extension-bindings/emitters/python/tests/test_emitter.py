@@ -193,6 +193,93 @@ def test_distinct_root_properties_can_share_a_shape_location() -> None:
         assert native["sourceName"] == name
 
 
+def test_expanded_definition_does_not_duplicate_field_type() -> None:
+    model = load_model(
+        MODELS / "06-recursive-reference/runtimeconditions.binding-model.yaml"
+    )
+    schema = model["schemas"][0]
+    field = next(
+        item for item in schema["projection"]["properties"] if item["name"] == "root"
+    )
+    schema["definitions"].append(
+        {
+            "name": "root",
+            "jsonPointer": "/$defs/root",
+            "shape": deepcopy(field["shape"]),
+            "provenance": deepcopy(field["shape"]["provenance"]),
+        }
+    )
+    target = replace(_development_target(), root_extension=model["rootExtension"]["id"])
+    plan = build_plan(model, target)
+    assert f"type:{schema['coordinate']}:/$defs/root" not in plan.names
+    assert f"type:{schema['coordinate']}:/$defs/node" in plan.names
+    prefix = f"src/{target.import_package}"
+    assert render_sources(plan, model)[f"{prefix}/bindings.py"]
+    assert render_resources(plan, model)[f"{prefix}/runtimeconditions.bindings.yaml"]
+
+
+def test_condition_field_uses_combined_scope_projection() -> None:
+    model = load_model(
+        MODELS / "02-additive-field/runtimeconditions.binding-model.yaml"
+    )
+    schema = next(
+        item for item in model["schemas"] if item["id"] == "additive-credential"
+    )
+    shared = deepcopy(schema)
+    shared["id"] = "shared-shape"
+    shared["coordinate"] = schema["owner"] + "#schema:shared-shape"
+    shared.pop("kind")
+    shared.pop("interfaceType")
+    field = shared["projection"]["properties"][0]
+    label = field["shape"]["properties"][0]
+    label["name"] = "label"
+    field["shape"]["required"] = ["label"]
+    for item in (label, label["shape"]):
+        item["provenance"]["coordinate"] = shared["coordinate"]
+        item["provenance"]["jsonPointer"] = "/properties/credential/properties/label"
+    for item in (shared, shared["projection"], field, field["shape"]):
+        item["provenance"]["coordinate"] = shared["coordinate"]
+    shared["exact"] = {
+        "type": "object",
+        "properties": {
+            "credential": {
+                "type": "object",
+                "required": ["label"],
+                "properties": {"label": {"type": "string"}},
+            }
+        },
+    }
+    model["schemas"].append(shared)
+    scope = model["scopes"][0]
+    scope["applicableSchemas"].append(shared["coordinate"])
+    projected = next(
+        item
+        for item in scope["projection"]["properties"]
+        if item["name"] == "credential"
+    )["shape"]
+    projected["properties"].append(deepcopy(label))
+    projected["required"].append("label")
+
+    plan = build_plan(model, _plan("02-additive-field").target)
+    credential = next(
+        item for item in plan.types if item.schema_coordinate == schema["coordinate"]
+    )
+    assert {item.name: item.required for item in credential.fields} == {
+        "label": True,
+        "token": True,
+    }
+    path = f"src/{plan.target.import_package}/runtimeconditions.bindings.yaml"
+    manifest = yaml.safe_load(render_resources(plan, model)[path])
+    native = next(
+        item for item in manifest["types"] if item["nativeName"] == credential.name
+    )
+    mapping = next(item for item in native["fields"] if item["sourceName"] == "label")
+    assert mapping["modelRef"] == {
+        "coordinate": shared["coordinate"],
+        "jsonPointer": "/properties/credential/properties/label",
+    }
+
+
 def test_collections_recursive_references_and_domains() -> None:
     collections = _plan("09-collections-and-maps")
     annotations = {
@@ -252,6 +339,7 @@ def test_any_uses_recursive_json_value_alias() -> None:
     shape = model["schemas"][0]["projection"]["properties"][1]["shape"]
     shape.pop("scalar")
     shape["kind"] = "any"
+    model["scopes"][0]["projection"]["properties"][1]["shape"] = deepcopy(shape)
     plan = build_plan(model, _development_target())
     assert plan.uses_json_value
     assert "Sequence[JSONValue]" in plan.json_value_alias_rhs
@@ -297,6 +385,7 @@ def test_required_nullable_value_has_no_initializer_default() -> None:
             "provenance": original["provenance"],
         }
     )
+    model["scopes"][0]["projection"]["properties"][1]["shape"] = deepcopy(shape)
     plan = build_plan(model, _development_target())
     region = next(item for item in plan.types if item.name == "Region")
     assert [

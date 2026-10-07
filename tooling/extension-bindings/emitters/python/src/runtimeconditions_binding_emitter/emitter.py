@@ -275,6 +275,17 @@ def build_plan(model: dict[str, Any], target: PackageTarget) -> EmissionPlan:
     declaration_field_schemas: dict[str, str] = {}
     any_used = False
     definition_keys: dict[tuple[str, str], str] = {}
+    referenced_definitions: set[str] = set()
+    pending_definitions: dict[str, tuple[dict[str, Any], tuple[str, ...], str]] = {}
+    owned_field_roots = {
+        (item["kind"], item.get("interfaceType", ""), item["segments"][0]["name"])
+        for item in vocabulary.get("conditionFields", [])
+        if item["owner"] == root
+    }
+    scope_projections = {
+        (item["kind"], item.get("interfaceType", "")): item.get("projection", {})
+        for item in model.get("scopes", [])
+    }
     for schema in model.get("schemas", []):
         for definition in schema.get("definitions", []):
             definition_keys[(schema["coordinate"], definition["jsonPointer"])] = (
@@ -333,10 +344,11 @@ def build_plan(model: dict[str, Any], target: PackageTarget) -> EmissionPlan:
         if kind == "ref":
             ref = shape["ref"]
             reference_key = definition_keys.get(
-                (schema_coordinate, ref.removeprefix("#"))
+                (shape["provenance"]["coordinate"], ref.removeprefix("#"))
             )
             if reference_key is None:
                 fail("model", "RCP1012", coordinate, f"unresolved reference {ref!r}")
+            referenced_definitions.add(reference_key)
             return TypeExpr("ref", symbol_key=reference_key)
         if kind == "object":
             symbols.append(Symbol(key, coordinate, source, "pascal", parents=parents))
@@ -479,6 +491,26 @@ def build_plan(model: dict[str, Any], target: PackageTarget) -> EmissionPlan:
             key = f"type:field:{schema_coordinate}:{property_name}"
             declaration_field_schemas[key] = schema_coordinate
             shape = property_["shape"]
+            if (kind, interface or "", property_name) in owned_field_roots:
+                scope_properties = scope_projections.get(
+                    (kind, interface or ""), {}
+                ).get("properties", [])
+                projected_field = next(
+                    (
+                        item
+                        for item in scope_properties
+                        if item["name"] == property_name
+                    ),
+                    None,
+                )
+                if projected_field is None:
+                    fail(
+                        "model",
+                        "RCP1012",
+                        schema_coordinate,
+                        f"condition field {property_name!r} is absent from its scope projection",
+                    )
+                shape = projected_field["shape"]
             if shape["kind"] == "object":
                 register_shape(
                     shape, key, field_source, field_parents, schema_coordinate, marker
@@ -529,10 +561,26 @@ def build_plan(model: dict[str, Any], target: PackageTarget) -> EmissionPlan:
                 marker,
             )
             type_sources[key] = field_source
+        # Non-recursive references are expanded into the projection by the
+        # normalizer. Emit standalone definitions only for remaining references;
+        # otherwise expanded fields and their definitions can request one name.
         for definition in schema.get("definitions", []):
             definition_key = definition_keys[
                 (schema_coordinate, definition["jsonPointer"])
             ]
+            pending_definitions[definition_key] = (definition, scope, schema_coordinate)
+            # A schema without projected fields exposes its named definitions
+            # as its native structural API, including schema-only dependencies.
+            if not projection.get("properties"):
+                referenced_definitions.add(definition_key)
+
+    while required_definitions := sorted(
+        referenced_definitions.intersection(pending_definitions)
+    ):
+        for definition_key in required_definitions:
+            definition, scope, schema_coordinate = pending_definitions.pop(
+                definition_key
+            )
             register_shape(
                 definition["shape"],
                 definition_key,

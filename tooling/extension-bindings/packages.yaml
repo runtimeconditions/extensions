@@ -1,0 +1,138 @@
+# Delivery metadata only. Add future extension roots without changing tooling.
+apiVersion: runtimeconditions.io/package-catalog/v1alpha1
+kind: RuntimeConditionsPackageCatalog
+repositoryUrl: https://github.com/runtimeconditions/extensions
+packages:
+  aws-s3:
+    rootExtension: https://runtimeconditions.io/aws/aws-s3:0.2.0
+    coreProfileSchemaVersion: 0.2.0
+    languages:
+      go:
+        coordinate: github.com/runtimeconditions/extensions/bindings/aws-s3/go
+        name: awss3
+        version: 0.2.0
+        sourceDirectory: bindings/aws-s3/go
+        languageVersion: 1.25.0
+        publicationMode: github-tag
+      python:
+        coordinate: runtimeconditions-aws-s3
+        name: runtimeconditions_aws_s3
+        version: 0.2.0
+        sourceDirectory: bindings/aws-s3/python
+        languageVersion: 3.12.10
+        publicationMode: registry
+        registryId: pypi
+  common-integrations:
+    rootExtension: https://runtimeconditions.io/common-integrations:v1alpha1
+    coreProfileSchemaVersion: 0.2.0
+    languages:
+      go:
+        coordinate: github.com/runtimeconditions/extensions/bindings/common-integrations/go
+        name: commonintegrations
+        version: 0.1.0
+        sourceDirectory: bindings/common-integrations/go
+        languageVersion: 1.25.0
+        publicationMode: github-tag
+      python:
+        coordinate: runtimeconditions-common-integrations
+        name: runtimeconditions_common_integrations
+        version: 0.1.0
+        sourceDirectory: bindings/common-integrations/python
+        languageVersion: 3.12.10
+        publicationMode: registry
+        registryId: pypi
+  env-configuration:
+    rootExtension: https://runtimeconditions.io/env-configuration:v1alpha1
+    coreProfileSchemaVersion: 0.2.0
+    languages:
+      go:
+        coordinate: github.com/runtimeconditions/extensions/bindings/env-configuration/go
+        name: envconfiguration
+        version: 0.1.0
+        sourceDirectory: bindings/env-configuration/go
+        languageVersion: 1.25.0
+        publicationMode: github-tag
+      python:
+        coordinate: runtimeconditions-env-configuration
+        name: runtimeconditions_env_configuration
+        version: 0.1.0
+        sourceDirectory: bindings/env-configuration/python
+        languageVersion: 3.12.10
+        publicationMode: registry
+        registryId: pypi
+  google-analytics:
+    rootExtension: https://runtimeconditions.io/google/google-analytics:0.1.0
+    coreProfileSchemaVersion: 0.2.0
+    languages:
+      go:
+        coordinate: github.com/runtimeconditions/extensions/bindings/google-analytics/go
+        name: googleanalytics
+        version: 0.1.0
+        sourceDirectory: bindings/google-analytics/go
+        languageVersion: 1.25.0
+        publicationMode: github-tag
+      python:
+        coordinate: runtimeconditions-google-analytics
+        name: runtimeconditions_google_analytics
+        version: 0.1.0
+        sourceDirectory: bindings/google-analytics/python
+        languageVersion: 3.12.10
+        publicationMode: registry
+        registryId: pypi
+  kubernetes-api:
+    rootExtension: https://runtimeconditions.io/kubernetes/kubernetes-api:0.1.0
+    coreProfileSchemaVersion: 0.2.0
+    languages:
+      go:
+        coordinate: github.com/runtimeconditions/extensions/bindings/kubernetes-api/go
+        name: kubernetesapi
+        version: 0.1.0
+        sourceDirectory: bindings/kubernetes-api/go
+        languageVersion: 1.25.0
+        publicationMode: github-tag
+      python:
+        coordinate: runtimeconditions-kubernetes-api
+        name: runtimeconditions_kubernetes_api
+        version: 0.1.0
+        sourceDirectory: bindings/kubernetes-api/python
+        languageVersion: 3.12.10
+        publicationMode: registry
+        registryId: pypi
+  nats-service:
+    rootExtension: https://runtimeconditions.io/nats/nats-service:0.1.0
+    coreProfileSchemaVersion: 0.2.0
+    languages:
+      go:
+        coordinate: github.com/runtimeconditions/extensions/bindings/nats-service/go
+        name: natsservice
+        version: 0.1.0
+        sourceDirectory: bindings/nats-service/go
+        languageVersion: 1.25.0
+        publicationMode: github-tag
+      python:
+        coordinate: runtimeconditions-nats-service
+        name: runtimeconditions_nats_service
+        version: 0.1.0
+        sourceDirectory: bindings/nats-service/python
+        languageVersion: 3.12.10
+        publicationMode: registry
+        registryId: pypi
+  source-control:
+    rootExtension: https://runtimeconditions.io/source-control:0.1.0
+    coreProfileSchemaVersion: 0.2.0
+    languages:
+      go:
+        coordinate: github.com/runtimeconditions/extensions/bindings/source-control/go
+        name: sourcecontrol
+        version: 0.1.0
+        sourceDirectory: bindings/source-control/go
+        languageVersion: 1.25.0
+        publicationMode: github-tag
+      python:
+        coordinate: runtimeconditions-source-control
+        name: runtimeconditions_source_control
+        version: 0.1.0
+        sourceDirectory: bindings/source-control/python
+        languageVersion: 3.12.10
+        publicationMode: registry
+        registryId: pypi

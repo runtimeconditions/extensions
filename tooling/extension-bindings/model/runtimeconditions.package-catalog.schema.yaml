@@ -1,0 +1,72 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://runtimeconditions.io/schemas/runtimeconditions.package-catalog.v1alpha1.schema.yaml
+title: Runtime Conditions package catalog
+description: >-
+  Publication configuration for arbitrary extension roots and language targets.
+  Extension semantics and dependency declarations belong to the resolved
+  extensions, not this catalog. Consumers must verify that sourceDirectory equals
+  bindings/<containing-package-key>/<containing-language-key>; JSON Schema cannot
+  compare a value with its containing mapping keys.
+type: object
+additionalProperties: false
+required: [apiVersion, kind, packages]
+properties:
+  apiVersion: {const: runtimeconditions.io/package-catalog/v1alpha1}
+  kind: {const: RuntimeConditionsPackageCatalog}
+  repositoryUrl:
+    type: string
+    pattern: '^https://[^\s]+$'
+  packages:
+    type: object
+    minProperties: 1
+    propertyNames:
+      pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+    additionalProperties: {$ref: '#/$defs/packageSet'}
+$defs:
+  nonEmptyString: {type: string, minLength: 1}
+  semver:
+    type: string
+    pattern: '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$'
+  packageSet:
+    type: object
+    additionalProperties: false
+    required: [rootExtension, coreProfileSchemaVersion, languages]
+    properties:
+      rootExtension:
+        type: string
+        pattern: '^https://[^/?#@\s]+/[^/:?#%\s]+(?:/[^/:?#%\s]+)?:[^/:?#%\s]+$'
+      coreProfileSchemaVersion: {$ref: '#/$defs/semver'}
+      languages:
+        type: object
+        minProperties: 1
+        propertyNames:
+          pattern: '^[a-z][a-z0-9-]*$'
+        additionalProperties: {$ref: '#/$defs/languageTarget'}
+  languageTarget:
+    type: object
+    additionalProperties: false
+    required: [coordinate, version, sourceDirectory, languageVersion, publicationMode]
+    properties:
+      coordinate: {$ref: '#/$defs/nonEmptyString'}
+      name:
+        description: Optional native package or import name needed by an emitter.
+        $ref: '#/$defs/nonEmptyString'
+      version: {$ref: '#/$defs/semver'}
+      sourceDirectory:
+        type: string
+        pattern: '^bindings/[a-z0-9]+(?:-[a-z0-9]+)*/[a-z][a-z0-9-]*$'
+      languageVersion:
+        description: Exact compiler or interpreter version, including its patch version.
+        type: string
+        pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+      publicationMode: {enum: [github-tag, registry]}
+      registryId: {$ref: '#/$defs/nonEmptyString'}
+    allOf:
+      - if:
+          properties:
+            publicationMode: {const: registry}
+        then:
+          required: [registryId]
+        else:
+          not:
+            required: [registryId]

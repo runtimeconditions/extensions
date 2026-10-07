@@ -413,6 +413,7 @@ def test_recursive_json_value_conformance(tmp_path: Path) -> None:
     shape = model["schemas"][0]["projection"]["properties"][1]["shape"]
     shape.pop("scalar")
     shape["kind"] = "any"
+    model["scopes"][0]["projection"]["properties"][1]["shape"] = deepcopy(shape)
     plan = _plan(model)
     assert plan.uses_json_value
     emit_package(plan, model, tmp_path / "package")
@@ -444,6 +445,13 @@ def _mutate_negative(case: str, model: dict) -> None:
             if item["name"] == "mode"
         )
         shape["values"].append({"value": shape["values"][0]["value"].upper()})
+        scoped_shape = next(
+            item["shape"]
+            for item in model["scopes"][0]["projection"]["properties"]
+            if item["name"] == "mode"
+        )
+        scoped_shape.clear()
+        scoped_shape.update(deepcopy(shape))
     elif case == "unnameable-field":
         model["schemas"][0]["projection"]["properties"][1]["name"] = "💥"
     else:

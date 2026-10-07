@@ -1,0 +1,25 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://runtimeconditions.io/schemas/runtimeconditions.file-manifest.v1alpha1.schema.yaml
+title: Runtime Conditions generated file manifest
+description: >-
+  Checksums of every generated file except runtimeconditions.file-manifest.yaml
+  itself. Mapping keys are unique relative POSIX paths beneath the target root.
+  Consumers must compare the complete file set and recompute every digest.
+  Writers sort paths by UTF-8 bytes; timestamps and host paths are not recorded.
+type: object
+additionalProperties: false
+required: [apiVersion, kind, files]
+properties:
+  apiVersion: {const: runtimeconditions.io/file-manifest/v1alpha1}
+  kind: {const: RuntimeConditionsFileManifest}
+  files:
+    type: object
+    minProperties: 1
+    propertyNames:
+      allOf:
+        - pattern: '^[^/\\:\x00-\x1f\x7f]+(?:/[^/\\:\x00-\x1f\x7f]+)*$'
+        - not: {pattern: '(^|/)\.{1,2}(/|$)'}
+        - not: {const: runtimeconditions.file-manifest.yaml}
+    additionalProperties:
+      type: string
+      pattern: '^[0-9a-f]{64}$'

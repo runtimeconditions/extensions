@@ -1,0 +1,85 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://runtimeconditions.io/schemas/runtimeconditions.toolchain-lock.v1alpha1.schema.yaml
+title: Runtime Conditions toolchain lock
+description: >-
+  Development may use workspace tools. A released lock pins normalizer,
+  orchestrator, emitters and independently installed profilers by version and
+  artifact SHA-256. Consumers must check that each selected language has both
+  an emitter and a profiler and that the actual artifacts match their digests.
+type: object
+additionalProperties: false
+required: [apiVersion, kind, status]
+properties:
+  apiVersion: {const: runtimeconditions.io/toolchain-lock/v1alpha1}
+  kind: {const: RuntimeConditionsToolchainLock}
+  status:
+    type: string
+    pattern: '^(?:development|phase[0-9]+-development|released)$'
+  tools:
+    type: object
+    additionalProperties: false
+    properties:
+      normalizer: {$ref: '#/$defs/toolIdentity'}
+      orchestrator: {$ref: '#/$defs/toolIdentity'}
+      emitters: {$ref: '#/$defs/languageTools'}
+      profilers: {$ref: '#/$defs/languageTools'}
+  languages:
+    type: object
+    propertyNames:
+      pattern: '^[a-z][a-z0-9-]*$'
+    additionalProperties: {$ref: '#/$defs/languageToolchain'}
+  python:
+    description: Existing Python package-build tool pins, also used by the native emitter.
+    type: object
+    additionalProperties: false
+    required: [minimumVersion, interpreterVersion, packageManager, buildBackend, tools]
+    properties:
+      minimumVersion: {type: string, pattern: '^[0-9]+\.[0-9]+$'}
+      interpreterVersion: {$ref: '#/$defs/languageVersion'}
+      packageManager: {$ref: '#/$defs/nonEmptyString'}
+      buildBackend: {$ref: '#/$defs/nonEmptyString'}
+      tools: {$ref: '#/$defs/nativeTools'}
+allOf:
+  - if:
+      properties:
+        status: {const: released}
+    then:
+      required: [tools, languages]
+      properties:
+        tools:
+          required: [normalizer, orchestrator, emitters, profilers]
+        languages: {minProperties: 1}
+$defs:
+  nonEmptyString: {type: string, minLength: 1}
+  languageVersion: {type: string, pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'}
+  toolIdentity:
+    type: object
+    additionalProperties: false
+    required: [name, version, sha256]
+    properties:
+      name: {$ref: '#/$defs/nonEmptyString'}
+      version: {$ref: '#/$defs/nonEmptyString'}
+      sha256: {type: string, pattern: '^[0-9a-f]{64}$'}
+      artifactUrl:
+        description: Optional retrieval URL for the exact checksummed released artifact.
+        type: string
+        pattern: '^https://[^\s]+$'
+  languageTools:
+    type: object
+    minProperties: 1
+    propertyNames:
+      pattern: '^[a-z][a-z0-9-]*$'
+    additionalProperties: {$ref: '#/$defs/toolIdentity'}
+  nativeTools:
+    type: object
+    minProperties: 1
+    additionalProperties: {$ref: '#/$defs/nonEmptyString'}
+  languageToolchain:
+    type: object
+    additionalProperties: false
+    required: [languageVersion, packageManager, tools]
+    properties:
+      languageVersion: {$ref: '#/$defs/languageVersion'}
+      packageManager: {$ref: '#/$defs/nonEmptyString'}
+      buildBackend: {$ref: '#/$defs/nonEmptyString'}
+      tools: {$ref: '#/$defs/nativeTools'}
