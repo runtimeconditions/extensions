@@ -1,0 +1,38 @@
+apiVersion: runtimeconditions.io/binding-release/v1alpha1
+dependencyLock:
+    extensions:
+        - id: https://runtimeconditions.io/common-integrations:v1alpha1
+          version: v1alpha1
+          sourceSha256: 51c3ee571d69ad3d3690080d30f223ba1e8296c9e18aa4974fad367c6a01a2da
+          semanticSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+          sourceBackend: catalog
+          sourceLocator: catalog:rc/common-integrations/common-integrations-v1alpha1.yaml
+kind: RuntimeConditionsBindingRelease
+model:
+    apiVersion: runtimeconditions.io/binding-model/v1alpha1
+    semanticSha256: fe7747e31ec05f7282de377fc3e2c2bd89f7949048b1d0cefe557307a1f22a66
+package:
+    coordinate: github.com/runtimeconditions/extensions/bindings/common-integrations/go
+    language: go
+    minimumGoVersion: "1.25"
+    name: commonintegrations
+    packageKey: common-integrations
+    publicationMode: github-tag
+    version: v0.1.0
+packageDependencies: []
+provenance:
+    mode: production
+    orchestrator:
+        name: rc
+        version: 0.1.0
+        sha256: 44185e78ea5931ca244954f09c239107991d6d13b9f9f7162eac62eef52a2156
+    profiler:
+        name: go-rc-profiler
+        version: v0.0.3
+        sha256: a8b055076876f4a77667f0674caaadf473db7a43fe00745a3dff3aaa29f03f6e
+    sourceDirectory: bindings/common-integrations/go
+    targetReleaseTag: bindings/common-integrations/go/v0.1.0
+rootExtension:
+    id: https://runtimeconditions.io/common-integrations:v1alpha1
+    version: v1alpha1
+    semanticSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913

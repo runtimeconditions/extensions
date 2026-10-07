@@ -1,0 +1,1494 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: fe7747e31ec05f7282de377fc3e2c2bd89f7949048b1d0cefe557307a1f22a66
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: c078d3fa3a6db2e76fb96ee261655c212e01a12399a444c241f1015daf9e683f
+coreProfileSchema:
+    id: https://runtimeconditions.io/schemas/profile/0.2.0/runtimeconditions.profile.schema.yaml
+    version: 0.2.0
+    semanticSha256: a090a8016d045f9c3fa872a67f8df293b77ca2809a1bea5ae9fa31a27a06109a
+rootExtension:
+    id: https://runtimeconditions.io/common-integrations:v1alpha1
+    version: v1alpha1
+    semanticSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+extensions:
+    - id: https://runtimeconditions.io/common-integrations:v1alpha1
+      version: v1alpha1
+      semanticSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+vocabulary:
+    owners:
+        - coordinate: field-domain:api:http:interface.operations[].method:"DELETE"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          value: DELETE
+        - coordinate: field-domain:api:http:interface.operations[].method:"GET"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          value: GET
+        - coordinate: field-domain:api:http:interface.operations[].method:"HEAD"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          value: HEAD
+        - coordinate: field-domain:api:http:interface.operations[].method:"OPTIONS"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          value: OPTIONS
+        - coordinate: field-domain:api:http:interface.operations[].method:"PATCH"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          value: PATCH
+        - coordinate: field-domain:api:http:interface.operations[].method:"POST"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          value: POST
+        - coordinate: field-domain:api:http:interface.operations[].method:"PUT"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          value: PUT
+        - coordinate: field-domain:api:http:interface.operations[].method:"TRACE"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          value: TRACE
+        - coordinate: field-domain:api:http:interface.spec.format:"openapi"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.spec.format
+          value: openapi
+        - coordinate: field-domain:cache:key_value:interface.engine:"memcached"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+          interfaceType: key_value
+          path: interface.engine
+          value: memcached
+        - coordinate: field-domain:cache:key_value:interface.engine:"redis"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+          interfaceType: key_value
+          path: interface.engine
+          value: redis
+        - coordinate: field-domain:datastore:document:interface.engine:"couchbase"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: document
+          path: interface.engine
+          value: couchbase
+        - coordinate: field-domain:datastore:document:interface.engine:"mongodb"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: document
+          path: interface.engine
+          value: mongodb
+        - coordinate: field-domain:datastore:relational:interface.engine:"mariadb"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+          value: mariadb
+        - coordinate: field-domain:datastore:relational:interface.engine:"mysql"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+          value: mysql
+        - coordinate: field-domain:datastore:relational:interface.engine:"oracle"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+          value: oracle
+        - coordinate: field-domain:datastore:relational:interface.engine:"postgres"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+          value: postgres
+        - coordinate: field-domain:datastore:relational:interface.engine:"sqlite"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+          value: sqlite
+        - coordinate: field-domain:datastore:relational:interface.engine:"sqlserver"
+          category: field-value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+          value: sqlserver
+        - coordinate: interface-field:api:http:operations
+          category: interface-field
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations
+        - coordinate: interface-field:api:http:spec
+          category: interface-field
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.spec
+        - coordinate: interface-field:cache:key_value:engine
+          category: interface-field
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+          interfaceType: key_value
+          path: interface.engine
+        - coordinate: interface-field:datastore:document:engine
+          category: interface-field
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: document
+          path: interface.engine
+        - coordinate: interface-field:datastore:relational:engine
+          category: interface-field
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+        - coordinate: interface:api:http
+          category: interface
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+        - coordinate: interface:cache:key_value
+          category: interface
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+          interfaceType: key_value
+        - coordinate: interface:datastore:document
+          category: interface
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: document
+        - coordinate: interface:datastore:relational
+          category: interface
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+        - coordinate: kind:api
+          category: kind
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+        - coordinate: kind:cache
+          category: kind
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+        - coordinate: kind:datastore
+          category: kind
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+    ownedDeclarations:
+        - coordinate: kind:api
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: kind:api
+        - coordinate: kind:cache
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: kind:cache
+        - coordinate: kind:datastore
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: kind:datastore
+    interfaces:
+        - coordinate: interface:api:http
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          type: http
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface:api:http
+        - coordinate: interface:cache:key_value
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+          type: key_value
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface:cache:key_value
+        - coordinate: interface:datastore:document
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          type: document
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface:datastore:document
+        - coordinate: interface:datastore:relational
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          type: relational
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface:datastore:relational
+    interfaceFields:
+        - coordinate: interface-field:api:http:operations
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations
+          segments:
+            - name: interface
+            - name: operations
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface-field:api:http:operations
+        - coordinate: interface-field:api:http:spec
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.spec
+          segments:
+            - name: interface
+            - name: spec
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface-field:api:http:spec
+        - coordinate: interface-field:cache:key_value:engine
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+          interfaceType: key_value
+          path: interface.engine
+          segments:
+            - name: interface
+            - name: engine
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface-field:cache:key_value:engine
+        - coordinate: interface-field:datastore:document:engine
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: document
+          path: interface.engine
+          segments:
+            - name: interface
+            - name: engine
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface-field:datastore:document:engine
+        - coordinate: interface-field:datastore:relational:engine
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+          segments:
+            - name: interface
+            - name: engine
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: interface-field:datastore:relational:engine
+    valueDomains:
+        - coordinate: field-domain:api:http:interface.operations[].method
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.operations[].method
+          segments:
+            - name: interface
+            - name: operations
+              array: true
+            - name: method
+          values:
+            - value: DELETE
+            - value: GET
+            - value: HEAD
+            - value: OPTIONS
+            - value: PATCH
+            - value: POST
+            - value: PUT
+            - value: TRACE
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: field-domain:api:http:interface.operations[].method
+        - coordinate: field-domain:api:http:interface.spec.format
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: api
+          interfaceType: http
+          path: interface.spec.format
+          segments:
+            - name: interface
+            - name: spec
+            - name: format
+          values:
+            - value: openapi
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: field-domain:api:http:interface.spec.format
+        - coordinate: field-domain:cache:key_value:interface.engine
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: cache
+          interfaceType: key_value
+          path: interface.engine
+          segments:
+            - name: interface
+            - name: engine
+          values:
+            - value: memcached
+            - value: redis
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: field-domain:cache:key_value:interface.engine
+        - coordinate: field-domain:datastore:document:interface.engine
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: document
+          path: interface.engine
+          segments:
+            - name: interface
+            - name: engine
+          values:
+            - value: couchbase
+            - value: mongodb
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: field-domain:datastore:document:interface.engine
+        - coordinate: field-domain:datastore:relational:interface.engine
+          owner: https://runtimeconditions.io/common-integrations:v1alpha1
+          kind: datastore
+          interfaceType: relational
+          path: interface.engine
+          segments:
+            - name: interface
+            - name: engine
+          values:
+            - value: mariadb
+            - value: mysql
+            - value: oracle
+            - value: postgres
+            - value: sqlite
+            - value: sqlserver
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: field-domain:datastore:relational:interface.engine
+scopes:
+    - coordinate: api:http
+      kind: api
+      interfaceType: http
+      applicableSchemas:
+        - https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                properties:
+                    - name: operations
+                      shape:
+                        kind: array
+                        items:
+                            kind: object
+                            required:
+                                - method
+                                - path
+                            properties:
+                                - name: method
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    values:
+                                        - value: DELETE
+                                        - value: GET
+                                        - value: HEAD
+                                        - value: OPTIONS
+                                        - value: PATCH
+                                        - value: POST
+                                        - value: PUT
+                                        - value: TRACE
+                                    provenance:
+                                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/properties/method
+                                  provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/properties/method
+                                - name: path
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                    provenance:
+                                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/properties/path
+                                  provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/properties/path
+                                - name: requestBodySchema
+                                  shape:
+                                    kind: union
+                                    variants:
+                                        - kind: array
+                                          items:
+                                            kind: ref
+                                            ref: '#/$defs/simpleSchema'
+                                            provenance:
+                                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                                jsonPointer: /$defs/simpleSchema/oneOf/2/items
+                                          constraints:
+                                            maxItems: 1
+                                            minItems: 1
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/2
+                                        - kind: map
+                                          mapValues:
+                                            kind: ref
+                                            ref: '#/$defs/simpleSchema'
+                                            provenance:
+                                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                                jsonPointer: /$defs/simpleSchema/oneOf/0/additionalProperties
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/0
+                                        - kind: scalar
+                                          scalar: string
+                                          values:
+                                            - value: boolean
+                                            - value: integer
+                                            - value: "null"
+                                            - value: number
+                                            - value: string
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/1
+                                    provenance:
+                                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                        jsonPointer: /$defs/simpleSchema
+                                  provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/properties/requestBodySchema
+                                - name: responseSchema
+                                  shape:
+                                    kind: union
+                                    variants:
+                                        - kind: array
+                                          items:
+                                            kind: ref
+                                            ref: '#/$defs/simpleSchema'
+                                            provenance:
+                                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                                jsonPointer: /$defs/simpleSchema/oneOf/2/items
+                                          constraints:
+                                            maxItems: 1
+                                            minItems: 1
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/2
+                                        - kind: map
+                                          mapValues:
+                                            kind: ref
+                                            ref: '#/$defs/simpleSchema'
+                                            provenance:
+                                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                                jsonPointer: /$defs/simpleSchema/oneOf/0/additionalProperties
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/0
+                                        - kind: scalar
+                                          scalar: string
+                                          values:
+                                            - value: boolean
+                                            - value: integer
+                                            - value: "null"
+                                            - value: number
+                                            - value: string
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/1
+                                    provenance:
+                                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                        jsonPointer: /$defs/simpleSchema
+                                  provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/properties/responseSchema
+                            provenance:
+                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                jsonPointer: /properties/interface/properties/operations/items
+                        constraints:
+                            minItems: 1
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                            jsonPointer: /properties/interface/properties/operations
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                        jsonPointer: /properties/interface/properties/operations
+                    - name: spec
+                      shape:
+                        kind: object
+                        required:
+                            - format
+                            - uri
+                        properties:
+                            - name: format
+                              required: true
+                              shape:
+                                kind: scalar
+                                scalar: string
+                                values:
+                                    - value: openapi
+                                provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/spec/properties/format
+                              provenance:
+                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                jsonPointer: /properties/interface/properties/spec/properties/format
+                            - name: uri
+                              required: true
+                              shape:
+                                kind: scalar
+                                scalar: string
+                                constraints:
+                                    minLength: 1
+                                provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/spec/properties/uri
+                              provenance:
+                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                jsonPointer: /properties/interface/properties/spec/properties/uri
+                            - name: version
+                              shape:
+                                kind: scalar
+                                scalar: string
+                                constraints:
+                                    pattern: ^(?:=?[0-9]+\.[0-9]+\.[0-9]+|[<>]=?[0-9]+\.[0-9]+\.[0-9]+|\^[0-9]+\.[0-9]+\.[0-9]+|~[0-9]+\.[0-9]+\.[0-9]+)$
+                                provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/spec/properties/version
+                              provenance:
+                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                jsonPointer: /properties/interface/properties/spec/properties/version
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                            jsonPointer: /properties/interface/properties/spec
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                        jsonPointer: /properties/interface/properties/spec
+                provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+    - coordinate: cache:key_value
+      kind: cache
+      interfaceType: key_value
+      applicableSchemas:
+        - https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                properties:
+                    - name: engine
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        values:
+                            - value: memcached
+                            - value: redis
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+                            jsonPointer: /properties/interface/properties/engine
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+                        jsonPointer: /properties/interface/properties/engine
+                provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+    - coordinate: datastore:document
+      kind: datastore
+      interfaceType: document
+      applicableSchemas:
+        - https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                properties:
+                    - name: engine
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        values:
+                            - value: couchbase
+                            - value: mongodb
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+                            jsonPointer: /properties/interface/properties/engine
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+                        jsonPointer: /properties/interface/properties/engine
+                provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+    - coordinate: datastore:relational
+      kind: datastore
+      interfaceType: relational
+      applicableSchemas:
+        - https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                properties:
+                    - name: engine
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        values:
+                            - value: mariadb
+                            - value: mysql
+                            - value: oracle
+                            - value: postgres
+                            - value: sqlite
+                            - value: sqlserver
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+                            jsonPointer: /properties/interface/properties/engine
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+                        jsonPointer: /properties/interface/properties/engine
+                provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+schemas:
+    - coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+      owner: https://runtimeconditions.io/common-integrations:v1alpha1
+      id: api-http-interface
+      kind: api
+      interfaceType: http
+      exact:
+        $defs:
+            simpleSchema:
+                oneOf:
+                    - additionalProperties:
+                        $ref: '#/$defs/simpleSchema'
+                      type: object
+                    - enum:
+                        - boolean
+                        - integer
+                        - "null"
+                        - number
+                        - string
+                      type: string
+                    - items:
+                        $ref: '#/$defs/simpleSchema'
+                      maxItems: 1
+                      minItems: 1
+                      type: array
+        $schema: https://json-schema.org/draft/2020-12/schema
+        additionalProperties: true
+        properties:
+            interface:
+                additionalProperties: true
+                anyOf:
+                    - required:
+                        - operations
+                    - required:
+                        - spec
+                properties:
+                    operations:
+                        items:
+                            additionalProperties: false
+                            properties:
+                                method:
+                                    enum:
+                                        - DELETE
+                                        - GET
+                                        - HEAD
+                                        - OPTIONS
+                                        - PATCH
+                                        - POST
+                                        - PUT
+                                        - TRACE
+                                path:
+                                    minLength: 1
+                                    type: string
+                                requestBodySchema:
+                                    $ref: '#/$defs/simpleSchema'
+                                responseSchema:
+                                    $ref: '#/$defs/simpleSchema'
+                            required:
+                                - method
+                                - path
+                            type: object
+                        minItems: 1
+                        type: array
+                    spec:
+                        additionalProperties: false
+                        properties:
+                            format:
+                                const: openapi
+                            uri:
+                                minLength: 1
+                                type: string
+                            version:
+                                pattern: ^(?:=?[0-9]+\.[0-9]+\.[0-9]+|[<>]=?[0-9]+\.[0-9]+\.[0-9]+|\^[0-9]+\.[0-9]+\.[0-9]+|~[0-9]+\.[0-9]+\.[0-9]+)$
+                                type: string
+                        required:
+                            - format
+                            - uri
+                        type: object
+                    type:
+                        const: http
+                required:
+                    - type
+                type: object
+            kind:
+                const: api
+        required:
+            - interface
+            - kind
+        type: object
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                properties:
+                    - name: operations
+                      shape:
+                        kind: array
+                        items:
+                            kind: object
+                            required:
+                                - method
+                                - path
+                            properties:
+                                - name: method
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    values:
+                                        - value: DELETE
+                                        - value: GET
+                                        - value: HEAD
+                                        - value: OPTIONS
+                                        - value: PATCH
+                                        - value: POST
+                                        - value: PUT
+                                        - value: TRACE
+                                    provenance:
+                                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/properties/method
+                                  provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/properties/method
+                                - name: path
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                    provenance:
+                                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/properties/path
+                                  provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/properties/path
+                                - name: requestBodySchema
+                                  shape:
+                                    kind: union
+                                    variants:
+                                        - kind: array
+                                          items:
+                                            kind: ref
+                                            ref: '#/$defs/simpleSchema'
+                                            provenance:
+                                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                                jsonPointer: /$defs/simpleSchema/oneOf/2/items
+                                          constraints:
+                                            maxItems: 1
+                                            minItems: 1
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/2
+                                        - kind: map
+                                          mapValues:
+                                            kind: ref
+                                            ref: '#/$defs/simpleSchema'
+                                            provenance:
+                                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                                jsonPointer: /$defs/simpleSchema/oneOf/0/additionalProperties
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/0
+                                        - kind: scalar
+                                          scalar: string
+                                          values:
+                                            - value: boolean
+                                            - value: integer
+                                            - value: "null"
+                                            - value: number
+                                            - value: string
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/1
+                                    provenance:
+                                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                        jsonPointer: /$defs/simpleSchema
+                                  provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/properties/requestBodySchema
+                                - name: responseSchema
+                                  shape:
+                                    kind: union
+                                    variants:
+                                        - kind: array
+                                          items:
+                                            kind: ref
+                                            ref: '#/$defs/simpleSchema'
+                                            provenance:
+                                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                                jsonPointer: /$defs/simpleSchema/oneOf/2/items
+                                          constraints:
+                                            maxItems: 1
+                                            minItems: 1
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/2
+                                        - kind: map
+                                          mapValues:
+                                            kind: ref
+                                            ref: '#/$defs/simpleSchema'
+                                            provenance:
+                                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                                jsonPointer: /$defs/simpleSchema/oneOf/0/additionalProperties
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/0
+                                        - kind: scalar
+                                          scalar: string
+                                          values:
+                                            - value: boolean
+                                            - value: integer
+                                            - value: "null"
+                                            - value: number
+                                            - value: string
+                                          provenance:
+                                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                            jsonPointer: /$defs/simpleSchema/oneOf/1
+                                    provenance:
+                                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                        jsonPointer: /$defs/simpleSchema
+                                  provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/properties/responseSchema
+                            provenance:
+                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                jsonPointer: /properties/interface/properties/operations/items
+                        constraints:
+                            minItems: 1
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                            jsonPointer: /properties/interface/properties/operations
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                        jsonPointer: /properties/interface/properties/operations
+                    - name: spec
+                      shape:
+                        kind: object
+                        required:
+                            - format
+                            - uri
+                        properties:
+                            - name: format
+                              required: true
+                              shape:
+                                kind: scalar
+                                scalar: string
+                                values:
+                                    - value: openapi
+                                provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/spec/properties/format
+                              provenance:
+                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                jsonPointer: /properties/interface/properties/spec/properties/format
+                            - name: uri
+                              required: true
+                              shape:
+                                kind: scalar
+                                scalar: string
+                                constraints:
+                                    minLength: 1
+                                provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/spec/properties/uri
+                              provenance:
+                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                jsonPointer: /properties/interface/properties/spec/properties/uri
+                            - name: version
+                              shape:
+                                kind: scalar
+                                scalar: string
+                                constraints:
+                                    pattern: ^(?:=?[0-9]+\.[0-9]+\.[0-9]+|[<>]=?[0-9]+\.[0-9]+\.[0-9]+|\^[0-9]+\.[0-9]+\.[0-9]+|~[0-9]+\.[0-9]+\.[0-9]+)$
+                                provenance:
+                                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                    jsonPointer: /properties/interface/properties/spec/properties/version
+                              provenance:
+                                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                                jsonPointer: /properties/interface/properties/spec/properties/version
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                            jsonPointer: /properties/interface/properties/spec
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                        jsonPointer: /properties/interface/properties/spec
+                provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+      definitions:
+        - name: simpleSchema
+          jsonPointer: /$defs/simpleSchema
+          shape:
+            kind: union
+            variants:
+                - kind: array
+                  items:
+                    kind: ref
+                    ref: '#/$defs/simpleSchema'
+                    provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                        jsonPointer: /$defs/simpleSchema/oneOf/2/items
+                  constraints:
+                    maxItems: 1
+                    minItems: 1
+                  provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                    jsonPointer: /$defs/simpleSchema/oneOf/2
+                - kind: map
+                  mapValues:
+                    kind: ref
+                    ref: '#/$defs/simpleSchema'
+                    provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                        jsonPointer: /$defs/simpleSchema/oneOf/0/additionalProperties
+                  provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                    jsonPointer: /$defs/simpleSchema/oneOf/0
+                - kind: scalar
+                  scalar: string
+                  values:
+                    - value: boolean
+                    - value: integer
+                    - value: "null"
+                    - value: number
+                    - value: string
+                  provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                    jsonPointer: /$defs/simpleSchema/oneOf/1
+            provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+                jsonPointer: /$defs/simpleSchema
+          provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+            jsonPointer: /$defs/simpleSchema
+      provenance:
+        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:api-http-interface
+    - coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+      owner: https://runtimeconditions.io/common-integrations:v1alpha1
+      id: cache-key-value-interface
+      kind: cache
+      interfaceType: key_value
+      exact:
+        $schema: https://json-schema.org/draft/2020-12/schema
+        additionalProperties: true
+        properties:
+            interface:
+                additionalProperties: true
+                properties:
+                    engine:
+                        enum:
+                            - memcached
+                            - redis
+                    type:
+                        const: key_value
+                required:
+                    - type
+                type: object
+            kind:
+                const: cache
+        required:
+            - interface
+            - kind
+        type: object
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                properties:
+                    - name: engine
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        values:
+                            - value: memcached
+                            - value: redis
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+                            jsonPointer: /properties/interface/properties/engine
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+                        jsonPointer: /properties/interface/properties/engine
+                provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+      provenance:
+        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:cache-key-value-interface
+    - coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+      owner: https://runtimeconditions.io/common-integrations:v1alpha1
+      id: datastore-document-interface
+      kind: datastore
+      interfaceType: document
+      exact:
+        $schema: https://json-schema.org/draft/2020-12/schema
+        additionalProperties: true
+        properties:
+            interface:
+                additionalProperties: true
+                properties:
+                    engine:
+                        enum:
+                            - couchbase
+                            - mongodb
+                    type:
+                        const: document
+                required:
+                    - type
+                type: object
+            kind:
+                const: datastore
+        required:
+            - interface
+            - kind
+        type: object
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                properties:
+                    - name: engine
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        values:
+                            - value: couchbase
+                            - value: mongodb
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+                            jsonPointer: /properties/interface/properties/engine
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+                        jsonPointer: /properties/interface/properties/engine
+                provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+      provenance:
+        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-document-interface
+    - coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+      owner: https://runtimeconditions.io/common-integrations:v1alpha1
+      id: datastore-relational-interface
+      kind: datastore
+      interfaceType: relational
+      exact:
+        $schema: https://json-schema.org/draft/2020-12/schema
+        additionalProperties: true
+        properties:
+            interface:
+                additionalProperties: true
+                properties:
+                    engine:
+                        enum:
+                            - mariadb
+                            - mysql
+                            - oracle
+                            - postgres
+                            - sqlite
+                            - sqlserver
+                    type:
+                        const: relational
+                required:
+                    - type
+                type: object
+            kind:
+                const: datastore
+        required:
+            - interface
+            - kind
+        type: object
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                properties:
+                    - name: engine
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        values:
+                            - value: mariadb
+                            - value: mysql
+                            - value: oracle
+                            - value: postgres
+                            - value: sqlite
+                            - value: sqlserver
+                        provenance:
+                            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+                            jsonPointer: /properties/interface/properties/engine
+                      provenance:
+                        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+                        jsonPointer: /properties/interface/properties/engine
+                provenance:
+                    owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                    extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                    coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/common-integrations:v1alpha1
+                extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+                coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/common-integrations:v1alpha1
+            extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+            coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
+      provenance:
+        owner: https://runtimeconditions.io/common-integrations:v1alpha1
+        extensionSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+        coordinate: https://runtimeconditions.io/common-integrations:v1alpha1#schema:datastore-relational-interface
