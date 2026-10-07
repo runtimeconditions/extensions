@@ -1,9 +1,62 @@
 # Extension binding tooling
 
-This directory contains the implementation governed by `IMPLEMENTATION.md`.
+`IMPLEMENTATION.md` is the protected baseline; later owner-directed scope and
+verification decisions are recorded below.
 The shared Go resolver and normalizer feed native Go and Python emitters.
 The Go orchestrator exposes eight commands through Go's standard `flag` package.
-GitHub promotion and registry publication remain later phases.
+GitHub Actions generates and commits Go bindings to `main`. Python automation,
+package distribution, GitHub promotion, and registry publication remain later work.
+
+## Automatic Go binding generation
+
+`.github/workflows/binding-generate.yml` runs on relevant `main` changes to the
+extension catalog, delivery configuration, schemas, Go generation tooling, and
+the workflow or its helper. The initial automatic targets are the verified Phase 5
+pair, `common-integrations:go,env-configuration:go`. The repository variable
+`BINDING_GENERATION_TARGETS` replaces that default with a comma-separated list of
+`package-key:go` targets, or `all` to select every configured Go target. Manual
+dispatch on `main` accepts the same values; an empty `targets` input uses the
+automatic selection. Python targets are deliberately disabled until the separate
+Python profiler build is fixed.
+
+The initial pair completes generation and verification. An all-catalog rehearsal
+stops at `aws-s3:go`: the catalog requests a URI/version identity, while its local
+definition still supplies legacy `metadata.id`. Remaining targets must resolve
+and verify before expanding automatic selection. The workflow does not silently
+skip an unresolved selected target or commit a partial failed generation.
+
+The workflow checks out current `main`, selects its exact catalog Go compiler,
+installs the checksummed Go profiler release and core schema artifact, tests the
+shared Go tooling, and builds workspace `rc`. It runs `rc bindings update`, which
+generates and verifies candidates before synchronizing their source directories.
+Only changes beneath the selected `bindings/<package-key>/go` directories are
+staged and committed by `github-actions[bot]`. Unchanged output creates no commit.
+
+Runs are serialized. The commit helper checks that `main` still points to the
+generation input commit and uses an ordinary fast-forward push. If another
+commit wins the race, this run fails and must be rerun against current `main`;
+it never rebases or forces generated output over newer inputs. Workflow summaries
+record selected targets and the generated commit, and verification YAML is in
+the step log. Temporary tools and intermediate archives stay outside the checkout.
+
+The workflow uses the repository `GITHUB_TOKEN` with `contents: write` in its
+generation job. Repository branch rules must permit that bot to push to `main`.
+GitHub does not start another push workflow for a commit made with `GITHUB_TOKEN`,
+so the generated commit does not recursively run this automation. See
+[GitHub's workflow triggering documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow).
+
+This is development generation with actual workspace tool identities. It does
+not create package tags, publish releases, or contact a registry. The pinned core
+schema snapshot supplies version 0.2.0 while the default website URL is unavailable;
+both it and the independently released Go profiler archive are checked before use.
+The Python helper runtime is separate from generated Python bindings and does
+not install or build the Python profiler.
+
+On 2026-10-07, the repository owner explicitly directed Phase 6 to generate and
+commit bindings to `main`, replacing the manual generation and review-PR path.
+That direction supersedes the relevant delivery steps in `IMPLEMENTATION.md`;
+the protected document and its checksum guard remain unchanged. Phase 5's shared
+conformance verification decision remains in effect.
 
 ## `rc bindings`
 

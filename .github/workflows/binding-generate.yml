@@ -1,0 +1,112 @@
+name: Generate and commit Go bindings
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/binding-generate.yml'
+      - 'catalog/**'
+      - 'bindings/**/go/**'
+      - 'tooling/extension-bindings/packages.yaml'
+      - 'tooling/extension-bindings/toolchain.lock.yaml'
+      - 'tooling/extension-bindings/model/**'
+      - 'tooling/extension-bindings/normalizer/**'
+      - 'tooling/extension-bindings/emitters/go/**'
+      - 'tooling/extension-bindings/orchestrator/**'
+      - 'tooling/extension-bindings/ci/**'
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Comma-separated package-key:go targets, or all; empty uses automatic targets'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: binding-generation-main
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    env:
+      INPUT_TARGETS: ${{ inputs.targets || vars.BINDING_GENERATION_TARGETS || 'common-integrations:go,env-configuration:go' }}
+      GOTOOLCHAIN: local
+      # Development generation uses workspace tooling and independently installed artifacts.
+      GO_PROFILER_URL: https://github.com/runtimeconditions/go-rc-profiler/releases/download/v0.0.3/go-rc-profiler_v0.0.3_linux_amd64.tar.gz
+      GO_PROFILER_SHA256: 68575f896973cc914a62eee0ced62e69b95e071cf80b8bc73111c4e01781b222
+      CORE_SCHEMA_URL: https://raw.githubusercontent.com/runtimeconditions/spec/65d43a6b97c060f62a3bcc87c98d1707b79cb60b/schema/runtimeconditions.profile.schema.yaml
+      CORE_SCHEMA_SHA256: 342bf20bce479f5012b9fc2c6238dc1fb0935e327ecb0fbca6e647362563c73c
+    steps:
+      - name: Check out current main
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: main
+          persist-credentials: true
+
+      - name: Set up helper Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12.10'
+
+      - name: Install helper dependency
+        run: |
+          printf 'PYTHONPYCACHEPREFIX=%s\n' "$RUNNER_TEMP/python-bytecode" >> "$GITHUB_ENV"
+          printf 'RC_BINDINGS_TEST_CORE_SCHEMA=%s\n' "$RUNNER_TEMP/binding-tools/core-schema.yaml" >> "$GITHUB_ENV"
+          python -m pip install --disable-pip-version-check PyYAML==6.0.3
+
+      - name: Select Go targets and exact compiler
+        id: configure
+        run: python tooling/extension-bindings/ci/generate.py configure --targets "$INPUT_TARGETS"
+
+      - name: Set up catalog Go version
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: ${{ steps.configure.outputs.go-version }}
+          cache-dependency-path: |
+            tooling/extension-bindings/normalizer/go.sum
+            tooling/extension-bindings/emitters/go/go.sum
+            tooling/extension-bindings/orchestrator/go.sum
+
+      - name: Install checksummed generation prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/binding-tools"
+          curl --fail --silent --show-error --location --retry 3 --max-time 120 \
+            "$GO_PROFILER_URL" -o "$RUNNER_TEMP/binding-tools/go-profiler.tar.gz"
+          curl --fail --silent --show-error --location --retry 3 --max-time 120 \
+            "$CORE_SCHEMA_URL" -o "$RUNNER_TEMP/binding-tools/core-schema.yaml"
+          printf '%s  %s\n' "$GO_PROFILER_SHA256" "$RUNNER_TEMP/binding-tools/go-profiler.tar.gz" \
+            "$CORE_SCHEMA_SHA256" "$RUNNER_TEMP/binding-tools/core-schema.yaml" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/binding-tools/go-profiler.tar.gz" -C "$RUNNER_TEMP/binding-tools"
+          test -x "$RUNNER_TEMP/binding-tools/go-rc-profiler"
+          printf 'RC_GO_PROFILER_BIN=%s\n' "$RUNNER_TEMP/binding-tools/go-rc-profiler" >> "$GITHUB_ENV"
+
+      - name: Test generation helper and Go tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tooling/extension-bindings/ci -p 'test_*.py'
+          go -C tooling/extension-bindings/normalizer test -count=1 ./...
+          go -C tooling/extension-bindings/emitters/go test -count=1 ./...
+          go -C tooling/extension-bindings/orchestrator test -count=1 ./...
+
+      - name: Build workspace rc
+        run: go -C tooling/extension-bindings/orchestrator build -trimpath -buildvcs=false -o "$RUNNER_TEMP/binding-tools/rc" ./cmd/rc
+
+      - name: Generate and verify Go bindings
+        run: |
+          python tooling/extension-bindings/ci/generate.py update --targets "$INPUT_TARGETS" \
+            --rc "$RUNNER_TEMP/binding-tools/rc" --core-schema "$RUNNER_TEMP/binding-tools/core-schema.yaml"
+
+      - name: Commit verified generated source to main
+        env:
+          SOURCE_COMMIT: ${{ steps.configure.outputs.source-commit }}
+        run: python tooling/extension-bindings/ci/generate.py commit --targets "$INPUT_TARGETS" --source-commit "$SOURCE_COMMIT"
