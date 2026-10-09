@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  uri: https://runtimeconditions.io/conformance/source-name-preservation
+  id: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
   version: 1.0.0
 spec:
   kinds:

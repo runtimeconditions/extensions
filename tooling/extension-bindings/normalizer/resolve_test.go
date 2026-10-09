@@ -25,7 +25,7 @@ func fixtureExtension(id string, dependencies []string, specBody string) []byte 
 			dependencyYAML.WriteByte('\n')
 		}
 	}
-	return []byte(fmt.Sprintf("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  uri: %s\n  version: 1.0.0\nspec:\n%s%s", strings.TrimSuffix(id, ":1.0.0"), dependencyYAML.String(), specBody))
+	return []byte(fmt.Sprintf("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  id: %s\n  version: 1.0.0\nspec:\n%s%s", id, dependencyYAML.String(), specBody))
 }
 
 func kindSpec(name string) string {
@@ -65,33 +65,93 @@ func diagnosticCode(t *testing.T, err error) string {
 func closureIDs(closure ResolvedClosure) []string {
 	ids := make([]string, 0, len(closure.Documents))
 	for _, document := range closure.Documents {
-		ids = append(ids, document.Definition.Metadata.URI+":"+document.Definition.Metadata.Version)
+		ids = append(ids, document.Definition.Metadata.ID)
 	}
 	return ids
 }
 
-func TestExtensionDefinitionURL(t *testing.T) {
-	for _, test := range []struct{ id, want string }{
-		{"https://example.test/provider/service:release-2026", "https://example.test/extensions/provider/service/release-2026/runtimeconditions.extension.yaml"},
-		{"https://example.test/service:1.2.3", "https://example.test/extensions/rc/service/1.2.3/runtimeconditions.extension.yaml"},
-		{"https://EXAMPLE.test:8443/Provider/Service:V1+build", "https://EXAMPLE.test:8443/extensions/Provider/Service/V1+build/runtimeconditions.extension.yaml"},
+func TestExtensionIdentifierSchemesAndExactSpelling(t *testing.T) {
+	for _, id := range []string{
+		"https://example.test/arbitrary/nested/path/release.yaml?revision=abc",
+		"https://EXAMPLE.test:8443/CaseSensitive/%73ervice/V1+build",
+		"file:///opt/extensions/release.yaml", "oci://example.test/extensions@sha256:abc",
+		"urn:example:extension:release-2026", "custom+resolver:immutable-release",
 	} {
-		got, err := extensionDefinitionURL(test.id)
-		if err != nil || got != test.want {
-			t.Errorf("extensionDefinitionURL(%q) = %q, %v; want %q", test.id, got, err, test.want)
+		parsed, err := parseExtensionIdentifier(id)
+		if err != nil || parsed.String() != id {
+			t.Errorf("identifier %q changed or was rejected: %v", id, err)
 		}
 	}
-	for _, id := range []string{
-		"", "https://example.test/service", "https://example.test:8443/service", "https://example.test/service:",
-		"http://example.test/service:1", "file:///service:1", "oci://example.test/service:1",
-		"https://user@example.test/service:1", "https://example.test/service?query:1", "https://example.test/service#:1",
-		"https://example.test/:1", "https://example.test/provider//service:1", "https://example.test/a/b/c:1",
-		"https://example.test/../service:1", "https://example.test/service:..", "https://example.test/service:bad/version",
-		"https://example.test/%73ervice:1", "https://example.test/service:%31", "https://example.test/service:bad version",
-	} {
-		if _, err := extensionDefinitionURL(id); err == nil {
+	for _, id := range []string{"", "relative/path", "/absolute/path", "//example.test/path", "1bad:release", "urn:bad version", "https://example.test/%invalid"} {
+		if _, err := parseExtensionIdentifier(id); err == nil {
 			t.Errorf("invalid extension identifier accepted: %q", id)
 		}
+	}
+}
+
+func TestVersionlessIdentifiersResolveFromEveryLocalBackend(t *testing.T) {
+	for _, id := range []string{"urn:example:release-a", "file:///opt/extensions/release.yaml", "oci://registry.example/extensions@sha256:abc", "custom+resolver:release-a"} {
+		t.Run(id, func(t *testing.T) {
+			data := bytes.ReplaceAll(fixtureExtension(id, nil, kindSpec("future.service")), []byte("  version: 1.0.0\n"), nil)
+			directory := t.TempDir()
+			path := writeFixture(t, directory, "definition.yaml", data)
+			cache := t.TempDir()
+			writeFixture(t, cache, SHA256Hex(data)+".yaml", data)
+			for name, config := range map[string]ResolverConfig{
+				"catalog":  {CatalogRoots: []string{directory}},
+				"package":  {PackageRoots: []string{directory}},
+				"cache":    {CacheDir: cache},
+				"override": {Overrides: map[string]string{id: path}},
+			} {
+				t.Run(name, func(t *testing.T) {
+					config.Schemas = testSchemas(t)
+					resolver, err := NewResolver(config)
+					if err != nil {
+						t.Fatal(err)
+					}
+					closure, err := resolver.Resolve(context.Background(), id)
+					if err != nil {
+						t.Fatal(err)
+					}
+					lock := BuildDependencyLock(closure)
+					model, err := Normalize(closure, lock, config.Schemas, testNormalizeConfig())
+					if err != nil {
+						t.Fatal(err)
+					}
+					if model.RootExtension.ID != id || model.RootExtension.Version != "" || lock.Extensions[0].ID != id || lock.Extensions[0].Version != "" {
+						t.Fatal("identifier or omitted version changed in model or lock")
+					}
+					encoded, err := CanonicalModelYAML(model)
+					if err != nil || bytes.Contains(encoded, []byte("version: \"\"")) {
+						t.Fatalf("omitted version was synthesized: %s %v", encoded, err)
+					}
+				})
+			}
+		})
+	}
+}
+
+func TestUnavailableRetrievalDoesNotInvalidateIdentifier(t *testing.T) {
+	for _, id := range []string{"urn:example:release", "oci://example.test/release", "file:///opt/extensions/release.yaml"} {
+		resolver := fixtureResolver(t)
+		_, err := resolver.Resolve(context.Background(), id)
+		if err == nil || diagnosticCode(t, err) != "RCB1207" || !strings.Contains(err.Error(), "automatic retrieval") {
+			t.Fatalf("%s: expected unavailable retrieval diagnostic, got %v", id, err)
+		}
+	}
+}
+
+func TestRequestedIdentifierMustExactlyMatchDefinition(t *testing.T) {
+	id := "urn:example:ReleaseA"
+	path := writeFixture(t, t.TempDir(), "release.yaml", fixtureExtension(id, nil, kindSpec("future.service")))
+	_, err := NewResolver(ResolverConfig{Schemas: testSchemas(t), Overrides: map[string]string{"urn:example:releasea": path}})
+	if err == nil || diagnosticCode(t, err) != "RCB1201" {
+		t.Fatalf("case-sensitive identity mismatch accepted: %v", err)
+	}
+	resolver := fixtureResolver(t)
+	_, err = resolver.finishLoad("urn:example:releasea", fixtureExtension(id, nil, kindSpec("future.service")), "https", "https://example.test/release.yaml")
+	if err == nil || diagnosticCode(t, err) != "RCB1220" {
+		t.Fatalf("retrieved identity mismatch accepted: %v", err)
 	}
 }
 
@@ -288,7 +348,7 @@ func TestResolverBackendsProduceOneSemanticModel(t *testing.T) {
 	writeFixture(t, cache, sourceDigest+".yaml", data)
 	schemas := testSchemas(t)
 
-	httpsLocator := "https://runtimeconditions.io/extensions/test/backends/1.0.0/runtimeconditions.extension.yaml"
+	httpsLocator := id
 
 	configs := map[string]ResolverConfig{
 		"override": {Schemas: schemas, Overrides: map[string]string{id: path}},
@@ -458,7 +518,7 @@ func TestSuppliedLockAppliesToLocalAndCachedDefinitions(t *testing.T) {
 			}
 		})
 	}
-	locator, _ := extensionDefinitionURL(id)
+	locator := id
 	resolver, err := NewResolver(ResolverConfig{Schemas: testSchemas(t), CacheDir: cache, Locks: map[string]LockEntry{id: {SourceSHA256: SHA256Hex(data), SourceBackend: "https", Locator: locator}}})
 	if err != nil {
 		t.Fatal(err)
@@ -483,9 +543,9 @@ func TestLockedHTTPSClosureOverTLS(t *testing.T) {
 		_, _ = w.Write(data)
 	}))
 	defer server.Close()
-	rootID, dependencyID := server.URL+"/future/root:1.0.0", server.URL+"/future/base:1.0.0"
-	definitions["/extensions/future/root/1.0.0/runtimeconditions.extension.yaml"] = fixtureExtension(rootID, []string{dependencyID}, kindSpec("future.root"))
-	definitions["/extensions/future/base/1.0.0/runtimeconditions.extension.yaml"] = fixtureExtension(dependencyID, nil, kindSpec("future.base"))
+	rootID, dependencyID := server.URL+"/future/releases/root.yaml", server.URL+"/independent/base.yaml"
+	definitions["/future/releases/root.yaml"] = fixtureExtension(rootID, []string{dependencyID}, kindSpec("future.root"))
+	definitions["/independent/base.yaml"] = fixtureExtension(dependencyID, nil, kindSpec("future.base"))
 	config := ResolverConfig{Schemas: testSchemas(t), Network: true, RecordNetworkLocks: true, HTTPClient: server.Client()}
 	resolver, err := NewResolver(config)
 	if err != nil {
@@ -509,7 +569,7 @@ func TestLockedHTTPSClosureOverTLS(t *testing.T) {
 	if err = ValidateDependencyLock(locked, lock); err != nil {
 		t.Fatal(err)
 	}
-	definitions["/extensions/future/root/1.0.0/runtimeconditions.extension.yaml"] = append(definitions["/extensions/future/root/1.0.0/runtimeconditions.extension.yaml"], '\n')
+	definitions["/future/releases/root.yaml"] = append(definitions["/future/releases/root.yaml"], '\n')
 	resolver, _ = NewResolver(config)
 	if _, err = resolver.Resolve(context.Background(), rootID); err == nil {
 		t.Fatal("locked HTTPS accepted changed response bytes")
@@ -562,8 +622,8 @@ func TestResolverRejectsAnchorsAndNonPointerReferences(t *testing.T) {
 
 func TestSemanticAndSourceDigestOrdering(t *testing.T) {
 	id := "https://runtimeconditions.io/test/digest-ordering:1.0.0"
-	first := []byte("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  uri: https://runtimeconditions.io/test/digest-ordering\n  version: 1.0.0\nspec:\n  kinds:\n    - name: beta\n    - name: alpha\n")
-	second := []byte("kind: RuntimeConditionsExtensionDefinition\napiVersion: runtimeconditions.io/v1alpha1\nmetadata: {version: '1.0.0', uri: https://runtimeconditions.io/test/digest-ordering}\nspec:\n  kinds: [{name: alpha}, {name: beta}]\n")
+	first := []byte("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  id: https://runtimeconditions.io/test/digest-ordering:1.0.0\n  version: 1.0.0\nspec:\n  kinds:\n    - name: beta\n    - name: alpha\n")
+	second := []byte("kind: RuntimeConditionsExtensionDefinition\napiVersion: runtimeconditions.io/v1alpha1\nmetadata: {version: '1.0.0', id: https://runtimeconditions.io/test/digest-ordering:1.0.0}\nspec:\n  kinds: [{name: alpha}, {name: beta}]\n")
 	firstModel, firstLock := normalizeSingleSource(t, id, first)
 	secondModel, secondLock := normalizeSingleSource(t, id, second)
 	if firstLock.Extensions[0].SourceSHA256 == secondLock.Extensions[0].SourceSHA256 {
@@ -576,7 +636,7 @@ func TestSemanticAndSourceDigestOrdering(t *testing.T) {
 		t.Fatal("presentation and set ordering changes changed model bytes")
 	}
 
-	sourceFirst := []byte("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  uri: https://runtimeconditions.io/test/digest-ordering\n  version: 1.0.0\nspec:\n  kinds: [{name: alpha}]\n  schemas:\n    - id: examples\n      description: Ordered examples\n      schema:\n        type: string\n        examples: [first, second]\n")
+	sourceFirst := []byte("apiVersion: runtimeconditions.io/v1alpha1\nkind: RuntimeConditionsExtensionDefinition\nmetadata:\n  id: https://runtimeconditions.io/test/digest-ordering:1.0.0\n  version: 1.0.0\nspec:\n  kinds: [{name: alpha}]\n  schemas:\n    - id: examples\n      description: Ordered examples\n      schema:\n        type: string\n        examples: [first, second]\n")
 	sourceSecond := []byte(strings.Replace(string(sourceFirst), "examples: [first, second]", "examples: [second, first]", 1))
 	firstModel, firstLock = normalizeSingleSource(t, id, sourceFirst)
 	secondModel, secondLock = normalizeSingleSource(t, id, sourceSecond)

@@ -59,7 +59,9 @@ func TestPackageCatalogContract(t *testing.T) {
 		{"runtime includes patch", "languageVersion: 4.5.6", "languageVersion: '4.5'", false},
 		{"relative generated location", "bindings/future-extension/future-language", "../bindings/future-extension/future-language", false},
 		{"package version is semver", "1.2.3-beta.1+build.7", "01.2.3", false},
-		{"root is canonical HTTPS", "https://example.test/unseen-extension:2.3.0", "urn:future-extension:2.3.0", false},
+		{"root permits opaque scheme", "https://example.test/unseen-extension:2.3.0", "urn:future-extension:2.3.0", true},
+		{"root permits direct document URL", "https://example.test/unseen-extension:2.3.0", "https://example.test/releases/unseen/2.3.0/definition.yaml", true},
+		{"root requires absolute identifier", "https://example.test/unseen-extension:2.3.0", "releases/definition.yaml", false},
 		{"package keys are slugs", "future-extension:", "Future-Extension:", false},
 	}
 	for _, test := range cases {

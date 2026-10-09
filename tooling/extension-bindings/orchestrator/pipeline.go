@@ -414,7 +414,7 @@ func (p *Pipeline) Resolve(plan BuildPlan) ([]*Document, error) {
 		lock := normalizer.BuildDependencyLock(closure)
 		if p.Options.DependencyLock != "" {
 			for i, document := range closure.Documents {
-				id := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
+				id := document.Definition.Metadata.ID
 				entry, ok := lockedEntries[id]
 				if !ok {
 					return nil, fmt.Errorf("dependency lock is missing extension %s", id)
@@ -552,7 +552,7 @@ func (p *Pipeline) Normalize(doc *Document) error {
 	// The resolver has already verified transport bytes. The selected executable
 	// receives those exact bytes without resolving or fetching them again.
 	for _, source := range doc.Closure.Documents {
-		id := source.Definition.Metadata.URI + ":" + source.Definition.Metadata.Version
+		id := source.Definition.Metadata.ID
 		path := filepath.Join(directory, normalizer.SHA256Hex([]byte(id))+".yaml")
 		if err = os.WriteFile(path, source.Bytes, 0644); err != nil {
 			return err
@@ -765,7 +765,7 @@ func (p *Pipeline) assemble(bt *BuiltTarget, build *Build) error {
 	}
 	var root normalizer.ResolvedDocument
 	for _, doc := range bt.Document.Closure.Documents {
-		if doc.Definition.Metadata.URI+":"+doc.Definition.Metadata.Version == bt.Target.Set.RootExtension {
+		if doc.Definition.Metadata.ID == bt.Target.Set.RootExtension {
 			root = doc
 			break
 		}

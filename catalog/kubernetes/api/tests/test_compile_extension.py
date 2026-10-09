@@ -27,6 +27,8 @@ class KubernetesExtensionCompilationTest(unittest.TestCase):
         self.assertEqual(self.mapping["metadata"]["resourceCount"], 95)
         self.assertEqual(len(self.mapping["resources"]), 95)
         self.assertEqual(self.mapping["extension"]["semanticSha256"], self.extension["metadata"]["semanticSha256"])
+        self.assertEqual(self.extension, read_document(ROOT / "releases/0.1.0/runtimeconditions.extension.yaml"))
+        self.assertEqual(self.mapping, read_document(ROOT / "model/generated/kubernetes-service-mapping.yaml"))
 
     def test_discovery_catalog_maps_one_gvk_to_one_built_in_resource(self):
         config_map = next(item for item in self.mapping["resources"] if item["apiGroup"] == "" and item["apiVersion"] == "v1" and item["kind"] == "ConfigMap")

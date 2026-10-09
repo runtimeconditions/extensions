@@ -34,7 +34,8 @@ $defs:
     properties:
       rootExtension:
         type: string
-        pattern: '^https://[^/?#@\s]+/[^/:?#%\s]+(?:/[^/:?#%\s]+)?:[^/:?#%\s]+$'
+        format: uri
+        pattern: '^[A-Za-z][A-Za-z0-9+.-]*:'
       coreProfileSchemaVersion: {$ref: '#/$defs/semver'}
       languages:
         type: object

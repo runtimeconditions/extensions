@@ -51,7 +51,7 @@ func Normalize(closure ResolvedClosure, lock DependencyLock, schemas *Schemas, c
 	for _, document := range closure.Documents {
 		dependencies := append([]string(nil), document.Definition.Spec.Dependencies...)
 		sort.Strings(dependencies)
-		id := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
+		id := document.Definition.Metadata.ID
 		model.Extensions = append(model.Extensions, ResolvedExtension{
 			ID: id, Version: document.Definition.Metadata.Version,
 			SemanticSHA256: document.SemanticSHA256, Dependencies: dependencies,
@@ -84,7 +84,7 @@ func Normalize(closure ResolvedClosure, lock DependencyLock, schemas *Schemas, c
 }
 
 func appendVocabulary(model *BindingModel, document ResolvedDocument, interfaces map[string][]string, root bool) {
-	owner := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
+	owner := document.Definition.Metadata.ID
 	provenance := func(coordinate, pointer string) Provenance {
 		return Provenance{Owner: owner, ExtensionSHA256: document.SemanticSHA256, Coordinate: coordinate, JSONPointer: pointer}
 	}
@@ -185,7 +185,7 @@ func normalizeValues(values []any) []NormalizedValue {
 }
 
 func normalizeSchemas(document ResolvedDocument) ([]NormalizedSchema, error) {
-	owner := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
+	owner := document.Definition.Metadata.ID
 	result := make([]NormalizedSchema, 0, len(document.Definition.Spec.Schemas))
 	for _, schema := range document.Definition.Spec.Schemas {
 		coordinate := owner + "#schema:" + schema.ID

@@ -125,7 +125,8 @@ allOf:
 $defs:
   extensionIdentifier:
     type: string
-    pattern: '^https://[^/?#@\s]+/[^/:?#%\s]+(?:/[^/:?#%\s]+)?:[^/:?#%\s]+$'
+    format: uri
+    pattern: '^[A-Za-z][A-Za-z0-9+.-]*:'
   sha256:
     type: string
     pattern: '^[0-9a-f]{64}$'

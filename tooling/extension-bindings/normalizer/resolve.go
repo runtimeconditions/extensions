@@ -112,7 +112,7 @@ func BuildDependencyLock(closure ResolvedClosure) DependencyLock {
 		dependencies := append([]string(nil), document.Definition.Spec.Dependencies...)
 		sort.Strings(dependencies)
 		lock.Extensions = append(lock.Extensions, DependencyLockEntry{
-			ID:             document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version,
+			ID:             document.Definition.Metadata.ID,
 			Version:        document.Definition.Metadata.Version,
 			SourceSHA256:   document.SourceSHA256,
 			SemanticSHA256: document.SemanticSHA256,
@@ -127,7 +127,7 @@ func BuildDependencyLock(closure ResolvedClosure) DependencyLock {
 func ValidateDependencyLock(closure ResolvedClosure, lock DependencyLock) error {
 	expected := make(map[string]ResolvedDocument, len(closure.Documents))
 	for _, document := range closure.Documents {
-		expected[document.Definition.Metadata.URI+":"+document.Definition.Metadata.Version] = document
+		expected[document.Definition.Metadata.ID] = document
 	}
 	actual := make(map[string]DependencyLockEntry, len(lock.Extensions))
 	for _, entry := range lock.Extensions {
@@ -206,7 +206,7 @@ func (r *Resolver) indexRoot(root, backend string) error {
 			// Non-extension YAML in a catalog is not a resolver candidate.
 			return nil
 		}
-		if definition.Kind != ExtensionKind || definition.Metadata.URI == "" || definition.Metadata.Version == "" {
+		if definition.Kind != ExtensionKind || definition.Metadata.ID == "" {
 			return nil
 		}
 		relative, err := filepath.Rel(root, path)
@@ -214,7 +214,7 @@ func (r *Resolver) indexRoot(root, backend string) error {
 			return err
 		}
 		locator := backend + ":" + filepath.ToSlash(relative)
-		id := definition.Metadata.URI + ":" + definition.Metadata.Version
+		id := definition.Metadata.ID
 		r.candidates[id] = append(r.candidates[id], sourceCandidate{
 			path: path, backend: backend, locator: locator,
 		})
@@ -246,10 +246,10 @@ func (r *Resolver) indexCache(root string) error {
 		if err != nil {
 			return err
 		}
-		if definition.Kind != ExtensionKind || definition.Metadata.URI == "" || definition.Metadata.Version == "" {
+		if definition.Kind != ExtensionKind || definition.Metadata.ID == "" {
 			return diagnostic("structural", "RCB1237", "cache:sha256:"+digest, "", "cached content is not an extension definition")
 		}
-		id := definition.Metadata.URI + ":" + definition.Metadata.Version
+		id := definition.Metadata.ID
 		r.candidates[id] = append(r.candidates[id], sourceCandidate{
 			path: path, backend: "cache", locator: "cache:sha256:" + digest,
 		})
@@ -280,8 +280,8 @@ func (r *Resolver) addFileCandidate(id, path, backend, locator string) error {
 	if err != nil {
 		return err
 	}
-	if definition.Metadata.URI+":"+definition.Metadata.Version != id {
-		return diagnostic("unknown-extension", "RCB1201", id, "/metadata/uri", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.URI+":"+definition.Metadata.Version))
+	if definition.Metadata.ID != id {
+		return diagnostic("unknown-extension", "RCB1201", id, "/metadata/id", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.ID))
 	}
 	r.candidates[id] = append(r.candidates[id], sourceCandidate{path: path, backend: backend, locator: locator})
 	return nil
@@ -339,7 +339,7 @@ func backendRank(backend string) int {
 }
 
 func (r *Resolver) Resolve(ctx context.Context, rootID string) (ResolvedClosure, error) {
-	if _, err := extensionDefinitionURL(rootID); err != nil {
+	if _, err := parseExtensionIdentifier(rootID); err != nil {
 		return ResolvedClosure{}, diagnostic("unknown-extension", "RCB1203", rootID, "", err.Error())
 	}
 	state := visitState{activeIndex: map[string]int{}, complete: map[string]bool{}}
@@ -354,7 +354,7 @@ func (r *Resolver) Resolve(ctx context.Context, rootID string) (ResolvedClosure,
 		Root: rootID, Documents: ordered, ByID: map[string]ResolvedDocument{}, Edges: state.edges,
 	}
 	for _, document := range state.ordered {
-		closure.ByID[document.Definition.Metadata.URI+":"+document.Definition.Metadata.Version] = document
+		closure.ByID[document.Definition.Metadata.ID] = document
 	}
 	sort.Slice(closure.Edges, func(i, j int) bool {
 		if closure.Edges[i].From != closure.Edges[j].From {
@@ -376,7 +376,7 @@ func topologicalDocuments(documents []ResolvedDocument, edges []DependencyEdge) 
 	indegree := make(map[string]int, len(documents))
 	dependents := make(map[string][]string, len(documents))
 	for _, document := range documents {
-		id := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
+		id := document.Definition.Metadata.ID
 		byID[id] = document
 		indegree[id] = 0
 	}
@@ -451,7 +451,7 @@ func (r *Resolver) visit(ctx context.Context, id string, state *visitState) erro
 }
 
 func (r *Resolver) load(ctx context.Context, id string) (ResolvedDocument, error) {
-	locator, err := extensionDefinitionURL(id)
+	parsed, err := parseExtensionIdentifier(id)
 	if err != nil {
 		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1207", id, "", err.Error())
 	}
@@ -466,40 +466,26 @@ func (r *Resolver) load(ctx context.Context, id string) (ResolvedDocument, error
 		}
 		return r.finishLoad(id, data, candidate.backend, candidate.locator)
 	}
-	return r.loadHTTPS(ctx, id, locator)
+	if strings.EqualFold(parsed.Scheme, "https") {
+		if parsed.Hostname() == "" || parsed.User != nil {
+			return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1207", id, "", "HTTPS retrieval requires a host and forbids credentials")
+		}
+		return r.loadHTTPS(ctx, id, id)
+	}
+	return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1207", id, "", fmt.Sprintf("automatic retrieval for scheme %q is unavailable; supply the exact identifier through a catalog, package, cache, or override", parsed.Scheme))
 }
 
-// extensionDefinitionURL implements the normalizer's retrieval contract in
-// IMPLEMENTATION.md section 6. Semantic identity remains the declared URI and
-// version; the retrieval-only /extensions prefix and default provider rc never
-// enter models or dependency identifiers.
-func extensionDefinitionURL(id string) (string, error) {
-	separator := strings.LastIndex(id, ":")
-	if separator <= strings.LastIndex(id, "/") || separator == len(id)-1 {
-		return "", fmt.Errorf("extension identifier must contain an HTTPS URI and a non-empty version separated by the final colon")
+// parseExtensionIdentifier validates identity without selecting a retrieval
+// backend or imposing a provider/service/version layout. The exact spelling is
+// retained throughout resolution, model provenance, and dependency locks.
+func parseExtensionIdentifier(id string) (*url.URL, error) {
+	parsed, err := url.Parse(id)
+	if err != nil || !parsed.IsAbs() || strings.ContainsFunc(id, func(r rune) bool {
+		return unicode.IsSpace(r) || r < 0x20 || r == 0x7f
+	}) {
+		return nil, fmt.Errorf("extension identifier must be a non-empty absolute URI with a scheme")
 	}
-	uri, version := id[:separator], id[separator+1:]
-	parsed, err := url.Parse(uri)
-	if err != nil || !strings.HasPrefix(uri, "https://") || parsed.Hostname() == "" || parsed.User != nil ||
-		strings.ContainsAny(uri, "?#") || strings.Contains(parsed.RawPath, "%") || !strings.HasPrefix(parsed.Path, "/") {
-		return "", fmt.Errorf("extension URI must be absolute HTTPS without credentials, query, fragment, or escaped path aliases")
-	}
-	segments := strings.Split(strings.TrimPrefix(parsed.Path, "/"), "/")
-	if len(segments) != 1 && len(segments) != 2 {
-		return "", fmt.Errorf("extension URI path must be /<service> or /<provider>/<service>")
-	}
-	for _, segment := range append(segments, version) {
-		if segment == "" || segment == "." || segment == ".." || strings.ContainsAny(segment, ":/?#%\\") ||
-			strings.ContainsFunc(segment, func(r rune) bool { return unicode.IsSpace(r) || r < 0x20 || r == 0x7f }) {
-			return "", fmt.Errorf("extension provider, service, and version must be non-empty safe path segments")
-		}
-	}
-	provider, service := "rc", segments[0]
-	if len(segments) == 2 {
-		provider, service = segments[0], segments[1]
-	}
-	authority, _, _ := strings.Cut(strings.TrimPrefix(uri, "https://"), "/")
-	return "https://" + authority + "/extensions/" + provider + "/" + service + "/" + version + "/runtimeconditions.extension.yaml", nil
+	return parsed, nil
 }
 
 func (r *Resolver) loadHTTPS(ctx context.Context, id, locator string) (ResolvedDocument, error) {
@@ -596,8 +582,8 @@ func (r *Resolver) finishLoad(requestedID string, data []byte, backend, locator 
 	if err != nil {
 		return ResolvedDocument{}, err
 	}
-	if definition.Metadata.URI+":"+definition.Metadata.Version != requestedID {
-		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1220", requestedID, "/metadata/uri", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.URI+":"+definition.Metadata.Version))
+	if definition.Metadata.ID != requestedID {
+		return ResolvedDocument{}, diagnostic("unknown-extension", "RCB1220", requestedID, "/metadata/id", fmt.Sprintf("resolved definition identifies %q", definition.Metadata.ID))
 	}
 	if err := r.config.Schemas.ValidateExtension(mapping, definition); err != nil {
 		return ResolvedDocument{}, err
@@ -635,9 +621,9 @@ func validateVocabularyConflicts(documents []ResolvedDocument) error {
 		sort.Strings(coordinates)
 		for _, coordinate := range coordinates {
 			if previous, exists := owners[coordinate]; exists {
-				return diagnostic("vocabulary-conflict", "RCB1221", coordinate, "", fmt.Sprintf("defined by both %q and %q", previous, definition.Metadata.URI+":"+definition.Metadata.Version))
+				return diagnostic("vocabulary-conflict", "RCB1221", coordinate, "", fmt.Sprintf("defined by both %q and %q", previous, definition.Metadata.ID))
 			}
-			owners[coordinate] = definition.Metadata.URI + ":" + definition.Metadata.Version
+			owners[coordinate] = definition.Metadata.ID
 		}
 	}
 	return nil
@@ -705,7 +691,7 @@ func validateVocabularyReferences(documents []ResolvedDocument) error {
 		}
 	}
 	for _, document := range documents {
-		owner := document.Definition.Metadata.URI + ":" + document.Definition.Metadata.Version
+		owner := document.Definition.Metadata.ID
 		for _, interfaceType := range document.Definition.Spec.InterfaceTypes {
 			if !kinds[interfaceType.TargetKind] {
 				return diagnostic("unknown-extension", "RCB1227", owner, "", fmt.Sprintf("interface type %q targets unknown kind %q", interfaceType.Name, interfaceType.TargetKind))

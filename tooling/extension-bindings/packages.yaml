@@ -4,7 +4,7 @@ kind: RuntimeConditionsPackageCatalog
 repositoryUrl: https://github.com/runtimeconditions/extensions
 packages:
   aws-s3:
-    rootExtension: https://runtimeconditions.io/aws/aws-s3:0.2.0
+    rootExtension: https://runtimeconditions.io/extensions/aws/s3/0.2.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
@@ -23,7 +23,7 @@ packages:
         publicationMode: registry
         registryId: pypi
   common-integrations:
-    rootExtension: https://runtimeconditions.io/common-integrations:v1alpha1
+    rootExtension: https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
@@ -42,7 +42,7 @@ packages:
         publicationMode: registry
         registryId: pypi
   env-configuration:
-    rootExtension: https://runtimeconditions.io/env-configuration:v1alpha1
+    rootExtension: https://runtimeconditions.io/extensions/env-configuration/v1alpha1/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
@@ -61,7 +61,7 @@ packages:
         publicationMode: registry
         registryId: pypi
   google-analytics:
-    rootExtension: https://runtimeconditions.io/google/google-analytics:0.1.0
+    rootExtension: https://runtimeconditions.io/extensions/google/analytics/0.1.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
@@ -80,7 +80,7 @@ packages:
         publicationMode: registry
         registryId: pypi
   kubernetes-api:
-    rootExtension: https://runtimeconditions.io/kubernetes/kubernetes-api:0.1.0
+    rootExtension: https://runtimeconditions.io/extensions/kubernetes/api/0.1.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
@@ -99,7 +99,7 @@ packages:
         publicationMode: registry
         registryId: pypi
   nats-service:
-    rootExtension: https://runtimeconditions.io/nats/nats-service:0.1.0
+    rootExtension: https://runtimeconditions.io/extensions/nats/service/0.1.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
@@ -118,7 +118,7 @@ packages:
         publicationMode: registry
         registryId: pypi
   source-control:
-    rootExtension: https://runtimeconditions.io/source-control:0.1.0
+    rootExtension: https://runtimeconditions.io/extensions/rc/source-control/0.1.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:

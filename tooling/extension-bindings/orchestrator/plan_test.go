@@ -32,7 +32,7 @@ func testProject(t *testing.T, language string) (*Project, Options) {
 	extension := `apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  uri: https://new.example.test/provider/future-channel
+  id: https://new.example.test/provider/future-channel:0.7.0
   version: 0.7.0
 spec:
   kinds: [{name: future.channel}]

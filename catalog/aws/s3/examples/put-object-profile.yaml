@@ -8,7 +8,7 @@ workload:
   uri: urn:runtimeconditions:sdk-fixture:s3-python-direct-client
 
 extensions:
-  - https://runtimeconditions.io/aws/aws-s3:0.1.0
+  - https://runtimeconditions.io/extensions/aws/s3/0.1.0/runtimeconditions.extension.yaml:0.1.0
 
 conditions:
   - name: s3-client

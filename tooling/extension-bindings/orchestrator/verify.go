@@ -185,7 +185,7 @@ func (p *Pipeline) verifyIdentities(bt *BuiltTarget, build *Build) error {
 		if err != nil {
 			return err
 		}
-		if definition.Metadata.URI+":"+definition.Metadata.Version != extension.ID {
+		if definition.Metadata.ID != extension.ID {
 			return fmt.Errorf("extension source identity differs")
 		}
 		if err = p.Project.Schemas.ValidateExtension(mapping, definition); err != nil {

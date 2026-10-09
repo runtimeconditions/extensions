@@ -192,7 +192,7 @@ func assembleOwnedGoFixture(t *testing.T, output, profiler string) PackageTarget
 			"minimumGoVersion": target.MinimumGoVersion, "publicationMode": target.PublicationMode,
 		},
 		"model":               map[string]any{"apiVersion": model.APIVersion, "semanticSha256": model.Metadata.SemanticSHA256},
-		"rootExtension":       map[string]any{"id": root.Definition.Metadata.URI + ":" + root.Definition.Metadata.Version, "version": root.Definition.Metadata.Version, "semanticSha256": root.SemanticSHA256},
+		"rootExtension":       map[string]any{"id": root.Definition.Metadata.ID, "version": root.Definition.Metadata.Version, "semanticSha256": root.SemanticSHA256},
 		"dependencyLock":      lock,
 		"packageDependencies": []any{},
 		"provenance": map[string]any{

@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 3caedb4884b122e8d37c1e9c10e708b8b730f22b33ad2a63758886a8d5585a60
+    semanticSha256: 046649bdb375877a877a7f2ca85b0710211f3fd635c22e48147dfe87c73eb4d3
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -13,11 +13,11 @@ coreProfileSchema:
 rootExtension:
     id: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
     version: 1.0.0
-    semanticSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+    semanticSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
 extensions:
     - id: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
       version: 1.0.0
-      semanticSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+      semanticSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
 vocabulary:
     owners:
         - coordinate: condition-field:class:http_server2_url:api_url
@@ -53,7 +53,7 @@ vocabulary:
           kind: class
           provenance:
             owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-            extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+            extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
             coordinate: kind:class
     interfaces:
         - coordinate: interface:class:http_server2_url
@@ -62,7 +62,7 @@ vocabulary:
           type: http_server2_url
           provenance:
             owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-            extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+            extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
             coordinate: interface:class:http_server2_url
     conditionFields:
         - coordinate: condition-field:class:http_server2_url:api_url
@@ -74,7 +74,7 @@ vocabulary:
             - name: api_url
           provenance:
             owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-            extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+            extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
             coordinate: condition-field:class:http_server2_url:api_url
         - coordinate: condition-field:class:http_server2_url:café
           owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
@@ -85,7 +85,7 @@ vocabulary:
             - name: café
           provenance:
             owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-            extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+            extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
             coordinate: condition-field:class:http_server2_url:café
         - coordinate: condition-field:class:http_server2_url:patch9
           owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
@@ -96,7 +96,7 @@ vocabulary:
             - name: patch9
           provenance:
             owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-            extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+            extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
             coordinate: condition-field:class:http_server2_url:patch9
 scopes:
     - coordinate: class:http_server2_url
@@ -115,12 +115,12 @@ scopes:
                 scalar: string
                 provenance:
                     owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                    extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                    extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                     coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                     jsonPointer: /properties/api_url
               provenance:
                 owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                 coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                 jsonPointer: /properties/api_url
             - name: café
@@ -129,12 +129,12 @@ scopes:
                 scalar: string
                 provenance:
                     owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                    extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                    extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                     coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                     jsonPointer: /properties/café
               provenance:
                 owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                 coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                 jsonPointer: /properties/café
             - name: interface
@@ -143,12 +143,12 @@ scopes:
                 kind: object
                 provenance:
                     owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                    extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                    extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                     coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                     jsonPointer: /properties/interface
               provenance:
                 owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                 coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                 jsonPointer: /properties/interface
             - name: patch9
@@ -157,17 +157,17 @@ scopes:
                 scalar: string
                 provenance:
                     owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                    extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                    extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                     coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                     jsonPointer: /properties/patch9
               provenance:
                 owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                 coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                 jsonPointer: /properties/patch9
         provenance:
             owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-            extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+            extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
             coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
 schemas:
     - coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
@@ -209,12 +209,12 @@ schemas:
                 scalar: string
                 provenance:
                     owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                    extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                    extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                     coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                     jsonPointer: /properties/api_url
               provenance:
                 owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                 coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                 jsonPointer: /properties/api_url
             - name: café
@@ -223,12 +223,12 @@ schemas:
                 scalar: string
                 provenance:
                     owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                    extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                    extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                     coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                     jsonPointer: /properties/café
               provenance:
                 owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                 coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                 jsonPointer: /properties/café
             - name: interface
@@ -237,12 +237,12 @@ schemas:
                 kind: object
                 provenance:
                     owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                    extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                    extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                     coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                     jsonPointer: /properties/interface
               provenance:
                 owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                 coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                 jsonPointer: /properties/interface
             - name: patch9
@@ -251,19 +251,19 @@ schemas:
                 scalar: string
                 provenance:
                     owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                    extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                    extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                     coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                     jsonPointer: /properties/patch9
               provenance:
                 owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-                extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+                extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
                 coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
                 jsonPointer: /properties/patch9
         provenance:
             owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-            extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+            extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
             coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
       provenance:
         owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
-        extensionSha256: 71c961fff4914a722e02b143912ee6e6f8c7edb702064bee04128cade10dbf21
+        extensionSha256: 5c458d8c91d8bfcf002980295de6b1ebd27531a807a5c9f843c4ad22a011d0a8
         coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names

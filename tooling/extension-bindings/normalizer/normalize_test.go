@@ -3,6 +3,7 @@ package normalizer
 import (
 	"bytes"
 	"context"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -112,6 +113,30 @@ func TestNormalizeEveryCatalogExtension(t *testing.T) {
 				if positions[edge.To] >= positions[edge.From] {
 					t.Fatalf("dependency %s does not precede dependent %s", edge.To, edge.From)
 				}
+			}
+		})
+	}
+}
+
+func TestEveryConfiguredPackageRootResolvesWithoutNetwork(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "packages.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := ParseYAMLData(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resolver := fixtureResolver(t, filepath.Join("..", "..", "..", "catalog"))
+	for name, value := range catalog["packages"].(map[string]any) {
+		t.Run(name, func(t *testing.T) {
+			id := value.(map[string]any)["rootExtension"].(string)
+			closure, err := resolver.Resolve(context.Background(), id)
+			if err != nil {
+				t.Fatalf("configured root is not locally resolvable: %v", err)
+			}
+			if closure.ByID[id].Definition.Metadata.ID != id {
+				t.Fatal("configured root did not match the exact definition ID")
 			}
 		})
 	}

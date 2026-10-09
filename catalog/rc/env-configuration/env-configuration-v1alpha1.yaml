@@ -2,12 +2,12 @@ apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 
 metadata:
-  uri: https://runtimeconditions.io/env-configuration
+  id: https://runtimeconditions.io/extensions/env-configuration/v1alpha1/runtimeconditions.extension.yaml
   version: v1alpha1
 
 spec:
   dependencies:
-    - https://runtimeconditions.io/common-integrations:v1alpha1
+    - https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
 
   conditionFields:
     - name: configuration

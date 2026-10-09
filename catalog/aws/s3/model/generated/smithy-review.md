@@ -15,7 +15,7 @@ The authoritative Smithy operation inventory matches the reviewed Service Operat
 
 ## Generated semantic release
 
-- Extension: `https://runtimeconditions.io/aws/aws-s3:0.1.0`
+- Extension: `https://runtimeconditions.io/extensions/aws/s3/0.1.0/runtimeconditions.extension.yaml`
 - Extension version: `0.1.0`
 - Extension semantic SHA-256: `1a505b63d55893c26f3ffe6cf3cd9f90f0b5bd7975fabe47ff444a3ed1e13c72`
 - Service-mapping semantic SHA-256: `54a92a0dc07c238ac56b125ca74f5bdcafa2741a45afd2440d91723dc865763d`

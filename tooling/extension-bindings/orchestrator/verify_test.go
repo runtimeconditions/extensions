@@ -269,7 +269,7 @@ func TestFutureThreeLevelPackagesWithInstalledProfilers(t *testing.T) {
 				}
 				extension := map[string]any{
 					"apiVersion": "runtimeconditions.io/v1alpha1", "kind": "RuntimeConditionsExtensionDefinition",
-					"metadata": map[string]any{"uri": "https://new.example.test/provider/future-" + name, "version": "0.7.0"},
+					"metadata": map[string]any{"id": "https://new.example.test/provider/future-" + name + ":0.7.0", "version": "0.7.0"},
 					"spec": map[string]any{
 						"dependencies":    []string{previous},
 						"conditionFields": []any{map[string]any{"name": field, "appliesToKinds": []string{"future.channel"}}},
@@ -444,6 +444,62 @@ func TestFutureExtensionInstalledPipeline(t *testing.T) {
 				t.Fatal("final artifact manifest absent")
 			}
 		})
+	}
+}
+
+func TestVersionlessExtensionNativePackage(t *testing.T) {
+	project, options := testProject(t, "go")
+	id := "urn:example:immutable-future-channel"
+	path := filepath.Join(project.Root, "catalog", extensionName)
+	definition, err := readMapping(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	metadata := mapValue(definition["metadata"])
+	metadata["id"] = id
+	delete(metadata, "version")
+	data, err := yaml.Marshal(definition)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(path, data, 0644); err != nil {
+		t.Fatal(err)
+	}
+	set := project.Catalog.Packages["new-channel"]
+	set.RootExtension = id
+	project.Catalog.Packages["new-channel"] = set
+	pipeline, err := NewPipeline(context.Background(), project, options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pipeline.Close()
+	plan, err := project.SelectTargets(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	build, err := pipeline.Generate(plan)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = pipeline.Verify(build); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{extensionName, "runtimeconditions.binding-model.yaml", "runtimeconditions.binding-release.yaml"} {
+		resource, err := readMapping(filepath.Join(build.Targets[0].Directory, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		key := "rootExtension"
+		if name == extensionName {
+			key = "metadata"
+		}
+		identity := mapValue(resource[key])
+		if identity["id"] != id {
+			t.Fatalf("%s changed the exact ID", name)
+		}
+		if _, exists := identity["version"]; exists {
+			t.Fatalf("%s invented an extension version", name)
+		}
 	}
 }
 

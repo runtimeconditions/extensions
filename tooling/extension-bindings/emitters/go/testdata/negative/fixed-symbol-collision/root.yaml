@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  uri: https://runtimeconditions.io/conformance/go-fixed-symbol-collision
+  id: https://runtimeconditions.io/conformance/go-fixed-symbol-collision:1.0.0
   version: 1.0.0
 spec:
   kinds:

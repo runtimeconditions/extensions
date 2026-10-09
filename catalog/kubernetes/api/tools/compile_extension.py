@@ -10,6 +10,7 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from jsonschema import Draft202012Validator
 
@@ -274,8 +275,8 @@ def build_outputs(source_projection: dict[str, Any], bridge: dict[str, Any]) -> 
     extension_config = bridge.get("extension", {})
     extension_id = require_string(extension_config.get("id"), "extension.id")
     version = require_string(extension_config.get("version"), "extension.version")
-    if not SEMVER.fullmatch(version) or not extension_id.endswith(":" + version):
-        raise ValueError("extension id and semantic version do not identify the same release")
+    if not SEMVER.fullmatch(version) or not urlsplit(extension_id).scheme:
+        raise ValueError("extension requires an absolute URI identifier and a semantic release version")
     spec = build_spec(bridge)
     mapping_operations = validate_source_projection(source_projection, bridge, spec)
     resources = discovery_resources(source_projection, mapping_operations)
@@ -284,7 +285,7 @@ def build_outputs(source_projection: dict[str, Any], bridge: dict[str, Any]) -> 
     extension = {
         "apiVersion": EXTENSION_API_VERSION,
         "kind": "RuntimeConditionsExtensionDefinition",
-        "metadata": {"uri": extension_id.rsplit(":", 1)[0], "version": version, "semanticSha256": spec_digest},
+        "metadata": {"id": extension_id, "version": version, "semanticSha256": spec_digest},
         "spec": spec,
     }
     service_mapping = {
@@ -325,7 +326,7 @@ def review_markdown(extension: dict[str, Any], mapping: dict[str, Any]) -> str:
         "",
         "## Release",
         "",
-        f"- Extension: `{extension['metadata']['uri'] + ':' + extension['metadata']['version']}`",
+        f"- Extension: `{extension['metadata']['id']}`",
         f"- Version: `{extension['metadata']['version']}`",
         f"- Extension semantic SHA-256: `{extension['metadata']['semanticSha256']}`",
         f"- Service-mapping semantic SHA-256: `{mapping['metadata']['semanticSha256']}`",
@@ -369,7 +370,7 @@ def main() -> int:
     args.review_output.parent.mkdir(parents=True, exist_ok=True)
     args.review_output.write_text(review_markdown(extension, mapping), encoding="utf-8")
     print("classification: accepted")
-    print(f"extension: {extension['metadata']['uri'] + ':' + extension['metadata']['version']}")
+    print(f"extension: {extension['metadata']['id']}")
     print(f"operations: {mapping['metadata']['operationCount']}")
     print(f"extension semantic sha256: {extension['metadata']['semanticSha256']}")
     return 0

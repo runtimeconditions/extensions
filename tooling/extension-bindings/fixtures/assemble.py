@@ -125,7 +125,7 @@ def build_go_binary(source: Path, destination: Path, env: dict[str, str]) -> Non
 def extension_source(case: str, extension_id: str) -> Path:
     matches = [
         path for path in sorted((CASES / case).glob("*.yaml"))
-        if (read_yaml(path).get("metadata", {}).get("uri", "") + ":" + read_yaml(path).get("metadata", {}).get("version", "")) == extension_id
+        if read_yaml(path).get("metadata", {}).get("id", "") == extension_id
     ]
     if len(matches) != 1:
         fail(f"{case}: expected one source for {extension_id}, found {len(matches)}")
@@ -174,7 +174,7 @@ def normalize(
             fail(f"{target['packageKey']}: source digest differs for {extension_id}")
         if item["semanticSha256"] != model_extensions[extension_id]["semanticSha256"]:
             fail(f"{target['packageKey']}: semantic digest differs for {extension_id}")
-        if item["version"] != model_extensions[extension_id]["version"] or (
+        if item.get("version") != model_extensions[extension_id].get("version") or (
             set(item.get("dependencies", [])) !=
             set(model_extensions[extension_id].get("dependencies", []))
         ):
@@ -183,7 +183,7 @@ def normalize(
             fail(f"{target['packageKey']}: unexpected resolver backend for {extension_id}")
     if normalized["rootExtension"] != {
         "id": target["rootExtension"],
-        "version": locked[target["rootExtension"]]["version"],
+        **({"version": locked[target["rootExtension"]]["version"]} if "version" in locked[target["rootExtension"]] else {}),
         "semanticSha256": locked[target["rootExtension"]]["semanticSha256"],
     }:
         fail(f"{target['packageKey']}: root identity differs from the lock")

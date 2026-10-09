@@ -5,7 +5,7 @@ metadata:
 workload:
   uri: https://github.com/runtimeconditions/sdk-authorship-discovery/tree/main/kubernetes/python/configmap-reader
 extensions:
-- https://runtimeconditions.io/kubernetes/kubernetes-api:0.1.0
+- https://runtimeconditions.io/extensions/kubernetes/api/0.1.0/runtimeconditions.extension.yaml:0.1.0
 conditions:
 - kind: kubernetes.api
   interface:

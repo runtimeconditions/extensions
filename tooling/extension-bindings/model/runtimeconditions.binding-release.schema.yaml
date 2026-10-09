@@ -90,7 +90,8 @@ allOf:
 $defs:
   extensionIdentifier:
     type: string
-    pattern: '^https://[^/?#@\s]+/[^/:?#%\s]+(?:/[^/:?#%\s]+)?:[^/:?#%\s]+$'
+    format: uri
+    pattern: '^[A-Za-z][A-Za-z0-9+.-]*:'
   sha256:
     type: string
     pattern: '^[0-9a-f]{64}$'
@@ -164,7 +165,7 @@ $defs:
   extensionIdentity:
     type: object
     additionalProperties: false
-    required: [id, version, semanticSha256]
+    required: [id, semanticSha256]
     properties:
       id: {$ref: '#/$defs/extensionIdentifier'}
       version: {$ref: '#/$defs/nonEmptyString'}
@@ -189,7 +190,6 @@ $defs:
     additionalProperties: false
     required:
       - id
-      - version
       - sourceSha256
       - semanticSha256
       - sourceBackend

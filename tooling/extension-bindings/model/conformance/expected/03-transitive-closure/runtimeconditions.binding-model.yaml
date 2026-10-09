@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 864b0f82357df0d52c2fe2be9236ebf464607bc44e7aeec10c96a484880ecd37
+    semanticSha256: 7f898e0da4bf9e5941450da50ce54ddc5701ab1bf5f23ddb7ed4e132c512f1cf
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -13,19 +13,19 @@ coreProfileSchema:
 rootExtension:
     id: https://runtimeconditions.io/conformance/transitive-root:1.0.0
     version: 1.0.0
-    semanticSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+    semanticSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
 extensions:
     - id: https://runtimeconditions.io/conformance/transitive-leaf:1.0.0
       version: 1.0.0
-      semanticSha256: 73114a4b91adb2f6293f68590446de97d6f659be6c89a6a3ea67cfb26367cbda
+      semanticSha256: bb92905f025afe381aed2e27a555556b32662b2ed957eada086857da87c766bd
     - id: https://runtimeconditions.io/conformance/transitive-middle:1.0.0
       version: 1.0.0
-      semanticSha256: abf9083ddde439672464d7336492424bc7a9c729101bd57e9cda93904d1a3be4
+      semanticSha256: 22f202e8e90af91c88d03f693336bbc3f5e76fda184911d38f753971eafd0699
       dependencies:
         - https://runtimeconditions.io/conformance/transitive-leaf:1.0.0
     - id: https://runtimeconditions.io/conformance/transitive-root:1.0.0
       version: 1.0.0
-      semanticSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+      semanticSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
       dependencies:
         - https://runtimeconditions.io/conformance/transitive-middle:1.0.0
 dependencyEdges:
@@ -56,7 +56,7 @@ vocabulary:
           kind: worker
           provenance:
             owner: https://runtimeconditions.io/conformance/transitive-leaf:1.0.0
-            extensionSha256: 73114a4b91adb2f6293f68590446de97d6f659be6c89a6a3ea67cfb26367cbda
+            extensionSha256: bb92905f025afe381aed2e27a555556b32662b2ed957eada086857da87c766bd
             coordinate: kind:worker
     interfaces:
         - coordinate: interface:worker:process
@@ -65,7 +65,7 @@ vocabulary:
           type: process
           provenance:
             owner: https://runtimeconditions.io/conformance/transitive-middle:1.0.0
-            extensionSha256: abf9083ddde439672464d7336492424bc7a9c729101bd57e9cda93904d1a3be4
+            extensionSha256: 22f202e8e90af91c88d03f693336bbc3f5e76fda184911d38f753971eafd0699
             coordinate: interface:worker:process
     conditionFields:
         - coordinate: condition-field:worker:process:command
@@ -77,7 +77,7 @@ vocabulary:
             - name: command
           provenance:
             owner: https://runtimeconditions.io/conformance/transitive-root:1.0.0
-            extensionSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+            extensionSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
             coordinate: condition-field:worker:process:command
 scopes:
     - coordinate: 'worker:'
@@ -96,17 +96,17 @@ scopes:
                 scalar: string
                 provenance:
                     owner: https://runtimeconditions.io/conformance/transitive-root:1.0.0
-                    extensionSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+                    extensionSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
                     coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
                     jsonPointer: /properties/command
               provenance:
                 owner: https://runtimeconditions.io/conformance/transitive-root:1.0.0
-                extensionSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+                extensionSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
                 coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
                 jsonPointer: /properties/command
         provenance:
             owner: https://runtimeconditions.io/conformance/transitive-root:1.0.0
-            extensionSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+            extensionSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
             coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
 schemas:
     - coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
@@ -129,19 +129,19 @@ schemas:
                 scalar: string
                 provenance:
                     owner: https://runtimeconditions.io/conformance/transitive-root:1.0.0
-                    extensionSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+                    extensionSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
                     coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
                     jsonPointer: /properties/command
               provenance:
                 owner: https://runtimeconditions.io/conformance/transitive-root:1.0.0
-                extensionSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+                extensionSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
                 coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
                 jsonPointer: /properties/command
         provenance:
             owner: https://runtimeconditions.io/conformance/transitive-root:1.0.0
-            extensionSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+            extensionSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
             coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
       provenance:
         owner: https://runtimeconditions.io/conformance/transitive-root:1.0.0
-        extensionSha256: ad5e1d2e8d83dcd0e837006c6231f2194801873fc0ff1aa7c0bbda285a6a6ab6
+        extensionSha256: 7c24f2a5c620cecbb123b0b8da2d9fa876dbc223c27fc0eccbc13afc5fe2f804
         coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process

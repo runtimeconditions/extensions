@@ -24,15 +24,14 @@ $defs:
   metadata:
     type: object
     required:
-      - uri
-      - version
+      - id
     additionalProperties: false
     properties:
-      uri:
+      id:
         type: string
         minLength: 1
         format: uri
-        pattern: '^https://[^/?#@\s]+/[^/:?#%\s]+(?:/[^/:?#%\s]+)?$'
+        pattern: '^[A-Za-z][A-Za-z0-9+.-]*:'
       version:
         type: string
         minLength: 1
@@ -52,7 +51,7 @@ $defs:
           type: string
           minLength: 1
           format: uri
-          pattern: '^https://[^/?#@\s]+/[^/:?#%\s]+(?:/[^/:?#%\s]+)?:[^/:?#%\s]+$'
+          pattern: '^[A-Za-z][A-Za-z0-9+.-]*:'
       kinds:
         type: array
         x-runtimeconditions-ordering: set

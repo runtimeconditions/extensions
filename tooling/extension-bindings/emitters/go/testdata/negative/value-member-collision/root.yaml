@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/v1alpha1
 kind: RuntimeConditionsExtensionDefinition
 metadata:
-  uri: https://runtimeconditions.io/go-fixture/value-member-collision
+  id: https://runtimeconditions.io/go-fixture/value-member-collision:1.0.0
   version: 1.0.0
 spec:
   kinds:

@@ -1,7 +1,7 @@
 apiVersion: runtimeconditions.io/binding-model/v1alpha1
 kind: RuntimeConditionsBindingModel
 metadata:
-    semanticSha256: 1070fe113711d989379370e5c52632788777936f3944be1cb32769bf068ebb73
+    semanticSha256: 7f620d80adb6aaaab5420898f7e116f66e312ceae34d2bfc7dff98b3fddf3479
     normalizer:
         name: rc-binding-model
         version: 0.1.0
@@ -13,11 +13,11 @@ coreProfileSchema:
 rootExtension:
     id: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
     version: 1.0.0
-    semanticSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+    semanticSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
 extensions:
     - id: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
       version: 1.0.0
-      semanticSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+      semanticSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
 vocabulary:
     owners:
         - coordinate: interface:selector:target
@@ -35,7 +35,7 @@ vocabulary:
           kind: selector
           provenance:
             owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-            extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+            extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
             coordinate: kind:selector
     interfaces:
         - coordinate: interface:selector:target
@@ -44,7 +44,7 @@ vocabulary:
           type: target
           provenance:
             owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-            extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+            extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
             coordinate: interface:selector:target
 scopes:
     - coordinate: selector:target
@@ -63,12 +63,12 @@ scopes:
                 kind: object
                 provenance:
                     owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                    extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                    extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                     coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                     jsonPointer: /properties/interface
               provenance:
                 owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                 coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                 jsonPointer: /properties/interface
             - name: target
@@ -86,39 +86,39 @@ scopes:
                             scalar: string
                             provenance:
                                 owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                                extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                                extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                                 coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                                 jsonPointer: /properties/target/oneOf/0/properties/id
                           provenance:
                             owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                            extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                            extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                             coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                             jsonPointer: /properties/target/oneOf/0/properties/id
                       provenance:
                         owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                        extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                        extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                         coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                         jsonPointer: /properties/target/oneOf/0
                     - kind: scalar
                       scalar: string
                       provenance:
                         owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                        extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                        extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                         coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                         jsonPointer: /properties/target/oneOf/1
                 provenance:
                     owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                    extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                    extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                     coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                     jsonPointer: /properties/target
               provenance:
                 owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                 coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                 jsonPointer: /properties/target
         provenance:
             owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-            extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+            extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
             coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
 schemas:
     - coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
@@ -164,12 +164,12 @@ schemas:
                 kind: object
                 provenance:
                     owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                    extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                    extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                     coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                     jsonPointer: /properties/interface
               provenance:
                 owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                 coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                 jsonPointer: /properties/interface
             - name: target
@@ -187,41 +187,41 @@ schemas:
                             scalar: string
                             provenance:
                                 owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                                extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                                extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                                 coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                                 jsonPointer: /properties/target/oneOf/0/properties/id
                           provenance:
                             owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                            extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                            extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                             coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                             jsonPointer: /properties/target/oneOf/0/properties/id
                       provenance:
                         owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                        extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                        extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                         coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                         jsonPointer: /properties/target/oneOf/0
                     - kind: scalar
                       scalar: string
                       provenance:
                         owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                        extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                        extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                         coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                         jsonPointer: /properties/target/oneOf/1
                 provenance:
                     owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                    extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                    extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                     coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                     jsonPointer: /properties/target
               provenance:
                 owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-                extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+                extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
                 coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
                 jsonPointer: /properties/target
         provenance:
             owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-            extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+            extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
             coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
       provenance:
         owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
-        extensionSha256: e667e39f146d1fd0f3805f1cc17171a5a08997b28752b239605af6e07814e16a
+        extensionSha256: 4808cafad951987132ab0515543914147513c6a56c89adb9f493acae10f61a09
         coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target

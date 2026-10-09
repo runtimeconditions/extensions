@@ -280,7 +280,7 @@ def load_packages(
                 "id": root["id"],
                 "semanticSha256": root["semanticSha256"],
             }
-            or extension["metadata"]["uri"] + ":" + extension["metadata"]["version"] != root["id"]
+            or extension["metadata"]["id"] != root["id"]
         ):
             fail(f"{tree.name}: extension identities disagree")
         locked = next(
@@ -416,7 +416,7 @@ def materialize(
 ) -> dict[str, Any]:
     packages = load_packages(fixtures, language, binary)
     definitions = {
-        item["extension"]["metadata"]["uri"] + ":" + item["extension"]["metadata"]["version"]: item["extension"]
+        item["extension"]["metadata"]["id"]: item["extension"]
         for item in packages.values()
     }
     used_calls: set[tuple[str, int]] = set()
@@ -885,7 +885,7 @@ def main() -> None:
                 "command": [
                     str(normalizer_binary),
                     "--root",
-                    read_yaml(inputs / "root.yaml")["metadata"]["uri"] + ":" + read_yaml(inputs / "root.yaml")["metadata"]["version"],
+                    read_yaml(inputs / "root.yaml")["metadata"]["id"],
                     "--extension-root",
                     str(inputs),
                     "--semantic-schema",

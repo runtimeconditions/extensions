@@ -70,6 +70,14 @@ class SmithySemanticBridgeCompilationTest(unittest.TestCase):
         self.assertEqual(mapping["operations"][1]["conditions"][0]["interfaceType"], "service")
         self.assertIn("semanticBridgeSha256", mapping["metadata"])
 
+    def test_direct_extension_id_is_preserved_without_uri_version_derivation(self):
+        bridge = self.bridge()
+        bridge["extension"]["id"] = "https://example.test/releases/service/0.1.0/definition.yaml"
+        extension, mapping, _ = self.compile(self.model(), bridge)
+        self.assertEqual(extension["metadata"]["id"], bridge["extension"]["id"])
+        self.assertEqual(mapping["extension"]["id"], bridge["extension"]["id"])
+        self.assertNotIn("uri", extension["metadata"])
+
     def test_unreviewed_source_operation_stops_generation(self):
         model = self.model()
         model["shapes"]["example#Service"]["operations"].append({"target": "example#NewCall"})
