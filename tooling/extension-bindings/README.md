@@ -26,8 +26,9 @@ and verify before expanding automatic selection. The workflow does not silently
 skip an unresolved selected target or commit a partial failed generation.
 
 The workflow checks out current `main`, selects its exact catalog Go compiler,
-installs the checksummed Go profiler release and core schema artifact, tests the
-shared Go tooling, and builds workspace `rc`. It runs `rc bindings update`, which
+and tests the shared Go tooling without either profiler. It then installs the
+checksummed Go profiler release and core schema artifact for generation and
+builds workspace `rc`. It runs `rc bindings update`, which
 generates and verifies candidates before synchronizing their source directories.
 Only changes beneath the selected `bindings/<package-key>/go` directories are
 staged and committed by `github-actions[bot]`. Unchanged output creates no commit.
@@ -130,8 +131,7 @@ export RC_PYTHON_PROFILER_ARTIFACT=/path/to/runtimeconditions_profiler-version-p
 The Python tooling environment needs the emitter's declared build and analysis
 dependencies. The profiler wheel is checked against its independently installed
 distribution, then installed with generated binding wheels into an isolated
-native consumer. Go uses an isolated module proxy and module cache. The bounded synthetic
-profiler tests receive these installed binding packages and source declarations.
+native consumer. Go uses an isolated module proxy and module cache.
 The generator never imports a profiler source repository, and conformance
 declarations are compiled or parsed without executing application code.
 
@@ -151,10 +151,14 @@ and moves generated-package unit exercises (gate 7) into the shared tooling suit
 
 The generation mechanism is tested against the existing 13 synthetic cases for
 schema shapes, naming, dependencies, unsupported input, and determinism. Native
-API exercises are temporary test consumers. Six authored profiler consumers
-across Go and Python check exact profile extraction and rejection of a constraint
-from a schema-only dependency. Network and previous-release responses are mocked
-or served by test servers. These tests require no real extension catalog.
+API exercises are temporary test consumers. Network and previous-release
+responses are mocked or served by test servers. These tests require no profiler
+binary, profiler wheel, or profiler repository checkout.
+
+Profiler-dependent integration suites and their fixture assembly tooling have
+been removed from this repository. Cross-repository compatibility tests belong
+in a separate integration repository. Generation still records profiler artifact
+identity in release provenance; that requirement is separate from the test suites.
 
 Delivered packages contain native source, package metadata, the four fixed YAML
 resources, and the file manifest. They contain no generated conformance trees,
@@ -202,6 +206,15 @@ deterministic archives, and compares the exported source API with the API
 derived from the normalized model through Go ASTs. It also verifies local
 additive and transitive package composition through the generated exported
 marker contracts.
+
+From `orchestrator/`, run:
+
+```text
+go test -count=1 ./...
+```
+
+These tests cover project discovery, resolution, release planning, file manifests,
+and workspace updates without installing either profiler.
 
 ## Model generation
 
@@ -306,28 +319,3 @@ The API version remains `runtimeconditions.io/bindings/v1alpha2`, with the same
 field structure. The producer schema requires the checksummed identity. Each
 profiler remains an independent installed consumer; these configuration schemas
 are owned by the generation tooling and require no profiler repository changes.
-
-## Installed Go profiler fixture
-
-The Go emitter test `TestInstalledGoProfilerBindingPackage` is a limited Phase
-4 fixture assembler and installed-package check. It emits an owned-declaration
-module, adds the exact normalized model and validated root extension, and
-builds a schema-valid test-only release manifest from the resolver's real
-dependency lock and the actual assembler and profiler binary digests.
-
-Set `RC_GO_PROFILER_BIN` to an absolute path to an installed profiler binary,
-then run from `emitters/go/`:
-
-```text
-RC_GO_PROFILER_BIN=/path/to/go-rc-profiler go test . -run TestInstalledGoProfilerBindingPackage -count=1 -v
-```
-
-The test creates a local Go module proxy outside the profiler repository and
-downloads the assembled module into an isolated workload. It then disables
-`GOPROXY` before invoking the profiler. The profiler receives only the workload
-directory and the binding package resolved by Go. A second case changes the
-installed root extension bytes and requires the release source digest check to
-reject the package.
-
-This is the first owned-declaration fixture. Direct and transitive additive
-packages and the Python fixtures remain for the wider Phase 4 gate.

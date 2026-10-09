@@ -434,7 +434,7 @@ func (p *Pipeline) verifyNative(bt *BuiltTarget, environment *nativeEnvironment)
 	return nil
 }
 
-// Generator unit tests and synthetic profiler cases run in the tooling suite.
+// Generator unit tests run in the tooling suite; profiler integration is external.
 // These gates no longer describe checks performed against each delivered package.
 func packageGateStatus(gate int) string {
 	if gate >= 7 && gate <= 11 {

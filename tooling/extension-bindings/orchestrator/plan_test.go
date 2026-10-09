@@ -84,8 +84,7 @@ spec:
 	if err != nil {
 		t.Fatal(err)
 	}
-	core := envOr("RC_BINDINGS_TEST_CORE_SCHEMA", filepath.Join(tooling, "..", "..", "..", "spec", "schema", "runtimeconditions.profile.schema.yaml"))
-	options := Options{ToolingDir: tooling, Go: envOr("RC_BINDINGS_GO", "go"), Python: envOr("RC_BINDINGS_PYTHON", "python3"), GoProfiler: envOr("RC_GO_PROFILER_BIN", "go-rc-profiler"), PythonProfiler: envOr("RC_PYTHON_PROFILER_BIN", "runtimeconditions-python-profiler"), PythonProfilerArtifact: os.Getenv("RC_PYTHON_PROFILER_ARTIFACT"), CoreSchema: core}
+	options := Options{ToolingDir: tooling, Go: goCommand, Python: envOr("RC_BINDINGS_PYTHON", "python3")}
 	return project, options
 }
 func TestProjectDiscoveryAndStrictMetadata(t *testing.T) {

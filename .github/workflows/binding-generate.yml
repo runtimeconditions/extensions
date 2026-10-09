@@ -39,8 +39,8 @@ jobs:
       INPUT_TARGETS: ${{ inputs.targets || vars.BINDING_GENERATION_TARGETS || 'common-integrations:go,env-configuration:go' }}
       GOTOOLCHAIN: local
       # Development generation uses workspace tooling and independently installed artifacts.
-      GO_PROFILER_URL: https://github.com/runtimeconditions/go-rc-profiler/releases/download/v0.0.3/go-rc-profiler_v0.0.3_linux_amd64.tar.gz
-      GO_PROFILER_SHA256: 68575f896973cc914a62eee0ced62e69b95e071cf80b8bc73111c4e01781b222
+      GO_PROFILER_URL: https://github.com/runtimeconditions/go-rc-profiler/releases/download/v0.4.0/go-rc-profiler_v0.4.0_linux_amd64.tar.gz
+      GO_PROFILER_SHA256: cccb57f37b476d43423a08d4f2cc94068b40f29a1a1a02072d294de6c98ac2c9
       CORE_SCHEMA_URL: https://raw.githubusercontent.com/runtimeconditions/spec/65d43a6b97c060f62a3bcc87c98d1707b79cb60b/schema/runtimeconditions.profile.schema.yaml
       CORE_SCHEMA_SHA256: 342bf20bce479f5012b9fc2c6238dc1fb0935e327ecb0fbca6e647362563c73c
     steps:
@@ -58,7 +58,6 @@ jobs:
       - name: Install helper dependency
         run: |
           printf 'PYTHONPYCACHEPREFIX=%s\n' "$RUNNER_TEMP/python-bytecode" >> "$GITHUB_ENV"
-          printf 'RC_BINDINGS_TEST_CORE_SCHEMA=%s\n' "$RUNNER_TEMP/binding-tools/core-schema.yaml" >> "$GITHUB_ENV"
           python -m pip install --disable-pip-version-check PyYAML==6.0.3
 
       - name: Select Go targets and exact compiler
@@ -74,6 +73,15 @@ jobs:
             tooling/extension-bindings/emitters/go/go.sum
             tooling/extension-bindings/orchestrator/go.sum
 
+      - name: Test generation helper and Go tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tooling/extension-bindings/ci -p 'test_*.py'
+          go -C tooling/extension-bindings/normalizer test -count=1 ./...
+          go -C tooling/extension-bindings/emitters/go test -count=1 ./...
+          go -C tooling/extension-bindings/orchestrator test -count=1 ./...
+
       - name: Install checksummed generation prerequisites
         shell: bash
         run: |
@@ -88,15 +96,6 @@ jobs:
           tar -xzf "$RUNNER_TEMP/binding-tools/go-profiler.tar.gz" -C "$RUNNER_TEMP/binding-tools"
           test -x "$RUNNER_TEMP/binding-tools/go-rc-profiler"
           printf 'RC_GO_PROFILER_BIN=%s\n' "$RUNNER_TEMP/binding-tools/go-rc-profiler" >> "$GITHUB_ENV"
-
-      - name: Test generation helper and Go tooling
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m unittest discover -s tooling/extension-bindings/ci -p 'test_*.py'
-          go -C tooling/extension-bindings/normalizer test -count=1 ./...
-          go -C tooling/extension-bindings/emitters/go test -count=1 ./...
-          go -C tooling/extension-bindings/orchestrator test -count=1 ./...
 
       - name: Build workspace rc
         run: go -C tooling/extension-bindings/orchestrator build -trimpath -buildvcs=false -o "$RUNNER_TEMP/binding-tools/rc" ./cmd/rc
