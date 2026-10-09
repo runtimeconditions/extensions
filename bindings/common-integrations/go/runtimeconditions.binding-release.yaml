@@ -1,16 +1,16 @@
 apiVersion: runtimeconditions.io/binding-release/v1alpha1
 dependencyLock:
     extensions:
-        - id: https://runtimeconditions.io/common-integrations:v1alpha1
+        - id: https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
           version: v1alpha1
-          sourceSha256: 51c3ee571d69ad3d3690080d30f223ba1e8296c9e18aa4974fad367c6a01a2da
-          semanticSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+          sourceSha256: ef0d9e71d0d5d481c367002cecd2d3eef15475a40493f231521d778492a216ed
+          semanticSha256: 0952ff5e52486a87e64808a09e8aa28d124a00efdeb9e174c4153d644879d54c
           sourceBackend: catalog
           sourceLocator: catalog:rc/common-integrations/common-integrations-v1alpha1.yaml
 kind: RuntimeConditionsBindingRelease
 model:
     apiVersion: runtimeconditions.io/binding-model/v1alpha1
-    semanticSha256: fe7747e31ec05f7282de377fc3e2c2bd89f7949048b1d0cefe557307a1f22a66
+    semanticSha256: a12e2b48fa7d88471af4d1e30da55ff290f0868294f9de6f9ffad5d7d3c738e6
 package:
     coordinate: github.com/runtimeconditions/extensions/bindings/common-integrations/go
     language: go
@@ -25,14 +25,14 @@ provenance:
     orchestrator:
         name: rc
         version: 0.1.0
-        sha256: 44185e78ea5931ca244954f09c239107991d6d13b9f9f7162eac62eef52a2156
+        sha256: 51d6ecf0814a42d3ba4dd2c642766ac4738a12d27fae365266f6a8cde6bff656
     profiler:
         name: go-rc-profiler
-        version: v0.0.3
-        sha256: a8b055076876f4a77667f0674caaadf473db7a43fe00745a3dff3aaa29f03f6e
+        version: v0.4.0
+        sha256: bd5a4ea6c28bfea5f6d91742533866b4e13c223edf73a8a71a4edf1de1b6d98e
     sourceDirectory: bindings/common-integrations/go
     targetReleaseTag: bindings/common-integrations/go/v0.1.0
 rootExtension:
-    id: https://runtimeconditions.io/common-integrations:v1alpha1
+    id: https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
     version: v1alpha1
-    semanticSha256: e2fe5d6a0ac52b19cbed8fd5e0bb4b35d01ec9bdff2877255a9cfba8136ab913
+    semanticSha256: 0952ff5e52486a87e64808a09e8aa28d124a00efdeb9e174c4153d644879d54c
