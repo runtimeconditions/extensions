@@ -18,7 +18,7 @@ dependencyLock:
 kind: RuntimeConditionsBindingRelease
 model:
     apiVersion: runtimeconditions.io/binding-model/v1alpha1
-    semanticSha256: aeb7e5f0efa2b481d4b88e06d18567de8015c70e8be33bde9c05c9c22f6c1a05
+    semanticSha256: 8ea51cb5fb6a1234917bbcb7ba915aba59c73b6decc7656b62023937293e7231
 package:
     coordinate: runtimeconditions.io/x/rc/env
     language: go
@@ -30,7 +30,7 @@ package:
 packageDependencies:
     - artifact:
         kind: go-module-zip
-        sha256: cc875f443c3fe9a3d34111ff98beb85338fec28db7fa5ddc48af687d567bc0ce
+        sha256: 55d06010a54a82bb74d14af87febcb373f0d92d831d33017a24460568b4de47f
       compatibleVersionRange:
         minimumInclusive: v0.1.0
         nextBreakingExclusive: v0.2.0
@@ -43,11 +43,11 @@ provenance:
     orchestrator:
         name: rc
         version: 0.1.0
-        sha256: 6cdffc1ee75a3112edadc9ff61c77d5489844791853f8ad7d9cb88f459d8fbcf
+        sha256: 51d6ecf0814a42d3ba4dd2c642766ac4738a12d27fae365266f6a8cde6bff656
     profiler:
         name: go-rc-profiler
         version: v0.4.0
-        sha256: 1a2f761c63a26a75417f5fa487be3504266856004b85fd68cccae80d3e176c60
+        sha256: bd5a4ea6c28bfea5f6d91742533866b4e13c223edf73a8a71a4edf1de1b6d98e
     sourceDirectory: bindings/env-configuration/go
     targetReleaseTag: bindings/env-configuration/go/v0.1.0
 rootExtension:
