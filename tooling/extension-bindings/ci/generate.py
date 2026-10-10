@@ -152,6 +152,7 @@ def main() -> None:
             if output := os.environ.get("GITHUB_OUTPUT"):
                 with Path(output).open("a", encoding="utf-8") as stream:
                     stream.write(f"go-version={targets[0][2]}\n")
+                    stream.write("targets=" + ",".join(target[0] for target in targets) + "\n")
                     stream.write(
                         f"source-commit={git(root, 'rev-parse', 'HEAD').strip()}\n"
                     )

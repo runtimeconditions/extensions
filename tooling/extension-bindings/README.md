@@ -1,11 +1,12 @@
 # Extension binding tooling
 
-`IMPLEMENTATION.md` is the protected baseline; later owner-directed scope and
-verification decisions are recorded below.
+`IMPLEMENTATION.md` is historical design guidance; the repository owner's
+standing overrides govern generation and publication.
 The shared Go resolver and normalizer feed native Go and Python emitters.
 The Go orchestrator exposes eight commands through Go's standard `flag` package.
-GitHub Actions generates and commits Go bindings to `main`. Python automation,
-package distribution, GitHub promotion, and registry publication remain later work.
+GitHub Actions generates and commits Go bindings to `main`, then a separate
+manual workflow publishes verified Go module tags and release assets. Python
+automation and registry publication remain later work.
 
 ## Automatic Go binding generation
 
@@ -25,10 +26,10 @@ definition still supplies legacy `metadata.id`. Remaining targets must resolve
 and verify before expanding automatic selection. The workflow does not silently
 skip an unresolved selected target or commit a partial failed generation.
 
-The workflow checks out current `main`, selects its exact catalog Go compiler,
-and tests the shared Go tooling without either profiler. It then installs the
-checksummed Go profiler release and core schema artifact for generation and
-builds workspace `rc`. It runs `rc bindings update`, which
+The workflow checks out current `main` and uses `.github/actions/binding-tools`
+to select the exact catalog Go compiler, install the checksummed Go profiler
+release and core schema artifact, and build workspace `rc`. The shared Go
+tooling tests remain independent of profiler binaries. It runs `rc bindings update`, which
 generates and verifies candidates before synchronizing their source directories.
 Only changes beneath the selected `bindings/<package-key>/go` directories are
 staged and committed by `github-actions[bot]`. Unchanged output creates no commit.
@@ -51,13 +52,87 @@ not create package tags, publish releases, or contact a registry. The pinned cor
 schema snapshot supplies version 0.2.0 while the default website URL is unavailable;
 both it and the independently released Go profiler archive are checked before use.
 The Python helper runtime is separate from generated Python bindings and does
-not install or build the Python profiler.
+not install or build the Python profiler. After a successful generation run,
+the workflow explicitly dispatches the existing docs build using
+`DOCS_REPO_DISPATCH_TOKEN`, including when no generated commit was needed.
 
 On 2026-10-07, the repository owner explicitly directed Phase 6 to generate and
 commit bindings to `main`, replacing the manual generation and review-PR path.
 That direction supersedes the relevant delivery steps in `IMPLEMENTATION.md`;
 the protected document and its checksum guard remain unchanged. Phase 5's shared
 conformance verification decision remains in effect.
+
+## Go binding publication
+
+Go bindings are public modules, installable without credentials or private-module
+configuration. The package catalog separates the public Go module coordinate from its source
+directory. Current generated modules are `runtimeconditions.io/x/rc/common`
+(package `common`) and `runtimeconditions.io/x/rc/env` (package `env`). The other
+catalog targets also have public coordinates, but get discovery pages only when
+their generated source exists. This does not enable their generation by itself.
+
+The site builder reads the same catalog and writes `/x/<provider>/<extension>/index.html`
+with an early `go-import` meta tag containing the public module prefix, GitHub
+repository URL, and source subdirectory. It also writes a `/x/` package index.
+It rejects stale module/package names and duplicate discovery prefixes. Major
+versions retain discovery at the base prefix and get a versioned page as well.
+The subdirectory metadata requires Go 1.25 or later. The existing docs workflow
+already runs this builder; no docs-repository source changes are needed.
+
+First publication follows this order:
+
+1. Merge these changes into `main` and let **Generate and commit Go bindings**
+   finish. Generation and publication share one concurrency group. The generator
+   records actual workspace-tool identities; production packages are not required
+   to wait for a separate tooling release under the owner's standing override.
+2. Wait for the existing docs deployment to publish the discovery pages. The
+   notification workflow handles catalog/configuration changes; the generation
+   workflow explicitly dispatches it after its bot commit, because `GITHUB_TOKEN`
+   commits do not trigger other push workflows.
+3. Dispatch **Publish Go bindings** (`binding-promote.yml`) on `main`, initially
+   with `dry_run: true`. An empty target selection uses the generation target
+   variable/default. Selecting a dependent package includes its native providers.
+   Selecting `all` requires generated, valid source for every configured Go target.
+4. After the dry run passes, dispatch it with `dry_run: false`.
+
+Publication uses the same tools and pins as generation. A read-only build job
+runs `rc bindings package` and `rc bindings plan-release`. It requires regenerated
+source to match the committed trees, verifies those trees, and checks versions
+against previous releases. A separate publication job downloads those exact
+artifacts and preflights their digests, both archive inventories and bytes, the
+live discovery metadata, current `main`, every module tag, and any existing
+release asset before its first mutation. It does not rebuild packages.
+
+New module tags are pushed atomically. For example, module version `v0.1.0` uses
+`bindings/common-integrations/go/v0.1.0`. Each module tag has a GitHub Release with
+its source archive, Go module archive, four YAML metadata assets, and `SHA256SUMS`.
+Draft releases become public only after all assets are uploaded. The existing
+release planner supports these module-tag releases and uses their source archives
+for subsequent compatibility comparisons.
+
+Published tags and assets are immutable. An existing tag is reusable when its
+complete module tree is unchanged, even if an unrelated commit advanced `main`.
+Different module bytes or asset bytes require a new version and stop publication.
+Interrupted uploads can resume from identical existing tags/assets. A successful
+publication fetches each module into fresh consumer caches through both direct
+retrieval and the default public proxy configuration, with publishing tokens
+removed and public checksum verification enabled, then compiles imports without
+aliases. These consumers need no local `replace` directives.
+
+For local checks:
+
+```sh
+python3 -m unittest discover -s tooling/common -p 'test_*.py'
+python3 -m unittest discover -s tooling/extension-bindings/ci -p 'test_*.py'
+python3 tooling/common/build_extensions_site.py --output /tmp/extension-site
+python3 tooling/extension-bindings/ci/publish.py configure --targets env-configuration:go
+```
+
+`publish.py build` takes `--rc`, `--core-schema`, and a new `--output` directory.
+`publish.py promote --dry-run` validates those packaged artifacts against a clean
+checkout and the live discovery pages. It takes `GH_TOKEN` or `GITHUB_TOKEN` for
+GitHub API access. The Git remote supplies the tag-push credentials; the Actions
+job uses its checkout credential with `contents: write`.
 
 ## `rc bindings`
 
@@ -138,9 +213,9 @@ declarations are compiled or parsed without executing application code.
 The current development catalog uses Go 1.25.0 and Python 3.12.10. Go 1.25
 matches the source analysis supported by the independently released Go profiler.
 The existing
-development toolchain lock remains a development input. Producing the released
-toolchain lock and synchronizing the repository's generated target inventory
-remain separate Phase 5 work.
+development toolchain lock remains a development input. Go publication uses
+verified workspace tools and records their actual identities. A separately
+released tooling lock is optional future work.
 
 ## Phase 5 verification scope
 
@@ -172,10 +247,9 @@ and file digests. YAML reports identify `scope: package-structure` and mark gate
 7–11 `not-applicable`; they do not claim those checks ran for each package.
 
 Real-extension package generation is an explicit use of these commands. The
-verification revision does not add committed packages for the repository catalog.
-Production release pins remain pending actual tooling releases and a separately
-released Python profiler artifact. A checksummed GitHub wheel release is sufficient
-for that artifact; PyPI publication is not required.
+automatic workflow currently commits the Go common/env pair. Python publication
+still needs a separately released Python profiler artifact. A checksummed GitHub
+wheel release is sufficient for that artifact; PyPI publication is not required.
 
 ## Local verification
 

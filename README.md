@@ -33,6 +33,49 @@ Per the [spec](https://github.com/runtimeconditions/spec/blob/main/docs/sixth-dr
   - `common/` the shared Python helpers (e.g. `serialization.py`) every extension's `tools/` imports from, so a fix only has to happen in one place.
   - `smithy-runtime-conditions/` the external compiler used to prove semantic-bridge generation against AWS's public Smithy models before proposing an internal AWS generator integration.
 
+## Go bindings
+
+Generated Go modules are public, use short import paths, and require Go 1.25 or later.
+Consumers install them without GitHub credentials or private-module configuration.
+After the first binding release is published:
+
+```sh
+go get runtimeconditions.io/x/rc/common@v0.1.0
+go get runtimeconditions.io/x/rc/env@v0.1.0
+```
+
+The package names match the public paths, so aliases are optional:
+
+```go
+import (
+    "runtimeconditions.io/x/rc/common"
+    "runtimeconditions.io/x/rc/env"
+)
+
+func cache() common.Declaration {
+    engine := common.KeyValueEngineRedis
+    return common.Cache(
+        common.KeyValue{Engine: &engine},
+        env.KeyValueConfiguration{
+            Env: env.KeyValueConfigurationEnv{
+                {Name: "REDIS_URL", Property: env.KeyValueConfigurationEnvPropertyUrl},
+            },
+        },
+    )
+}
+```
+
+`tooling/extension-bindings/packages.yaml` defines each public module path,
+package name, version, and generated source directory. Future bindings use
+`runtimeconditions.io/x/<provider>/<extension>`, such as
+`runtimeconditions.io/x/aws/s3` with package name `s3`.
+
+The existing docs build invokes `tooling/common/build_extensions_site.py`,
+which publishes Go discovery pages alongside extension definitions. The Go
+source remains in `bindings/<package-key>/go`. Versions are published through
+**Publish Go bindings** in GitHub Actions; see
+[the binding publication workflow](tooling/extension-bindings/README.md#go-binding-publication).
+
 ## Local validation
 
 From a sibling `go-rc-profiler` checkout:

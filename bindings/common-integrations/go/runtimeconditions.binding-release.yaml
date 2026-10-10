@@ -10,12 +10,12 @@ dependencyLock:
 kind: RuntimeConditionsBindingRelease
 model:
     apiVersion: runtimeconditions.io/binding-model/v1alpha1
-    semanticSha256: a12e2b48fa7d88471af4d1e30da55ff290f0868294f9de6f9ffad5d7d3c738e6
+    semanticSha256: d17e868261cd8080095f600634204748ae936ae42870eb7b6d30318ede26f523
 package:
-    coordinate: github.com/runtimeconditions/extensions/bindings/common-integrations/go
+    coordinate: runtimeconditions.io/x/rc/common
     language: go
     minimumGoVersion: "1.25"
-    name: commonintegrations
+    name: common
     packageKey: common-integrations
     publicationMode: github-tag
     version: v0.1.0
@@ -25,11 +25,11 @@ provenance:
     orchestrator:
         name: rc
         version: 0.1.0
-        sha256: 51d6ecf0814a42d3ba4dd2c642766ac4738a12d27fae365266f6a8cde6bff656
+        sha256: 6cdffc1ee75a3112edadc9ff61c77d5489844791853f8ad7d9cb88f459d8fbcf
     profiler:
         name: go-rc-profiler
         version: v0.4.0
-        sha256: bd5a4ea6c28bfea5f6d91742533866b4e13c223edf73a8a71a4edf1de1b6d98e
+        sha256: 1a2f761c63a26a75417f5fa487be3504266856004b85fd68cccae80d3e176c60
     sourceDirectory: bindings/common-integrations/go
     targetReleaseTag: bindings/common-integrations/go/v0.1.0
 rootExtension:

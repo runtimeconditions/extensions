@@ -8,8 +8,8 @@ packages:
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
-        coordinate: github.com/runtimeconditions/extensions/bindings/aws-s3/go
-        name: awss3
+        coordinate: runtimeconditions.io/x/aws/s3
+        name: s3
         version: 0.2.0
         sourceDirectory: bindings/aws-s3/go
         languageVersion: 1.25.0
@@ -27,8 +27,8 @@ packages:
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
-        coordinate: github.com/runtimeconditions/extensions/bindings/common-integrations/go
-        name: commonintegrations
+        coordinate: runtimeconditions.io/x/rc/common
+        name: common
         version: 0.1.0
         sourceDirectory: bindings/common-integrations/go
         languageVersion: 1.25.0
@@ -46,8 +46,8 @@ packages:
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
-        coordinate: github.com/runtimeconditions/extensions/bindings/env-configuration/go
-        name: envconfiguration
+        coordinate: runtimeconditions.io/x/rc/env
+        name: env
         version: 0.1.0
         sourceDirectory: bindings/env-configuration/go
         languageVersion: 1.25.0
@@ -65,8 +65,8 @@ packages:
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
-        coordinate: github.com/runtimeconditions/extensions/bindings/google-analytics/go
-        name: googleanalytics
+        coordinate: runtimeconditions.io/x/google/analytics
+        name: analytics
         version: 0.1.0
         sourceDirectory: bindings/google-analytics/go
         languageVersion: 1.25.0
@@ -84,8 +84,8 @@ packages:
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
-        coordinate: github.com/runtimeconditions/extensions/bindings/kubernetes-api/go
-        name: kubernetesapi
+        coordinate: runtimeconditions.io/x/kubernetes/api
+        name: api
         version: 0.1.0
         sourceDirectory: bindings/kubernetes-api/go
         languageVersion: 1.25.0
@@ -103,8 +103,8 @@ packages:
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
-        coordinate: github.com/runtimeconditions/extensions/bindings/nats-service/go
-        name: natsservice
+        coordinate: runtimeconditions.io/x/nats/service
+        name: service
         version: 0.1.0
         sourceDirectory: bindings/nats-service/go
         languageVersion: 1.25.0
@@ -122,8 +122,8 @@ packages:
     coreProfileSchemaVersion: 0.2.0
     languages:
       go:
-        coordinate: github.com/runtimeconditions/extensions/bindings/source-control/go
-        name: sourcecontrol
+        coordinate: runtimeconditions.io/x/rc/source
+        name: source
         version: 0.1.0
         sourceDirectory: bindings/source-control/go
         languageVersion: 1.25.0

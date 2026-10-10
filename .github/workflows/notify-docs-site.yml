@@ -9,6 +9,9 @@ on:
       - "catalog/rc/**/*.yaml"
       - "tooling/common/build_extensions_site.py"
       - "tooling/common/serialization.py"
+      - "tooling/common/go_bindings.py"
+      - "tooling/extension-bindings/packages.yaml"
+      - "bindings/**/go/**"
 
 jobs:
   dispatch:
