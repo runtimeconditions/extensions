@@ -1,0 +1,103 @@
+name: Publish Go bindings
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Comma-separated package-key:go targets, or all; empty uses generation targets'
+        type: string
+        default: ''
+      dry_run:
+        description: 'Verify publication including live discovery pages without creating tags or releases'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: binding-generation-main
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    outputs:
+      source_commit: ${{ steps.tools.outputs.source-commit }}
+      targets: ${{ steps.tools.outputs.targets }}
+      go_version: ${{ steps.tools.outputs.go-version }}
+    env:
+      GOTOOLCHAIN: local
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: ./.github/actions/binding-tools
+        id: tools
+        with:
+          targets: ${{ inputs.targets || vars.BINDING_GENERATION_TARGETS || 'common-integrations:go,env-configuration:go' }}
+          publication: 'true'
+      - name: Test publication helpers
+        run: |
+          python -m unittest discover -s tooling/extension-bindings/ci -p 'test_*.py'
+          python -m unittest discover -s tooling/common -p 'test_*.py'
+      - name: Verify committed source, package it, and check version compatibility
+        env:
+          TARGETS: ${{ steps.tools.outputs.targets }}
+          RC: ${{ steps.tools.outputs.rc }}
+          CORE_SCHEMA: ${{ steps.tools.outputs.core-schema }}
+        run: |
+          python tooling/extension-bindings/ci/publish.py build --targets "$TARGETS" \
+            --rc "$RC" --core-schema "$CORE_SCHEMA" --output "$RUNNER_TEMP/go-binding-assets"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: go-binding-assets
+          path: ${{ runner.temp }}/go-binding-assets
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGETS: ${{ needs.build.outputs.targets }}
+      DRY_RUN: ${{ inputs.dry_run }}
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ needs.build.outputs.source_commit }}
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12.10'
+      - run: |
+          printf 'PYTHONPYCACHEPREFIX=%s\n' "$RUNNER_TEMP/python-bytecode" >> "$GITHUB_ENV"
+          python -m pip install --disable-pip-version-check PyYAML==6.0.3
+      - uses: actions/download-artifact@v4
+        with:
+          name: go-binding-assets
+          path: ${{ runner.temp }}/go-binding-assets
+      - name: Preflight all targets and publish verified bytes
+        shell: bash
+        run: |
+          args=()
+          if [[ "$DRY_RUN" == true ]]; then args+=(--dry-run); fi
+          python tooling/extension-bindings/ci/publish.py promote --targets "$TARGETS" \
+            --output "$RUNNER_TEMP/go-binding-assets" "${args[@]}"
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        if: ${{ !inputs.dry_run }}
+        with:
+          go-version: ${{ needs.build.outputs.go_version }}
+          cache: false
+      - name: Fetch released modules and compile unaliased consumer imports
+        if: ${{ !inputs.dry_run }}
+        run: python tooling/extension-bindings/ci/publish.py smoke --targets "$TARGETS"

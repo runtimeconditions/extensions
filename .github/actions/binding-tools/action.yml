@@ -1,0 +1,77 @@
+name: Prepare Go binding tools
+description: Select targets, install the exact compiler and prerequisites, and build the shared generator
+inputs:
+  targets:
+    description: Comma-separated package-key:go targets, or all
+    required: true
+  publication:
+    description: Include the committed package dependency closure for publication
+    default: 'false'
+outputs:
+  go-version:
+    description: Exact catalog Go version
+    value: ${{ steps.configure.outputs.go-version }}
+  source-commit:
+    description: Checked-out source commit
+    value: ${{ steps.configure.outputs.source-commit }}
+  targets:
+    description: Selected Go targets
+    value: ${{ steps.configure.outputs.targets }}
+  rc:
+    description: Built generator path
+    value: ${{ runner.temp }}/binding-tools/rc
+  core-schema:
+    description: Checksummed core schema path
+    value: ${{ runner.temp }}/binding-tools/core-schema.yaml
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+      with:
+        python-version: '3.12.10'
+    - name: Install helper dependency
+      shell: bash
+      run: |
+        printf 'PYTHONPYCACHEPREFIX=%s\n' "$RUNNER_TEMP/python-bytecode" >> "$GITHUB_ENV"
+        python -m pip install --disable-pip-version-check PyYAML==6.0.3
+    - name: Select Go targets and exact compiler
+      id: configure
+      shell: bash
+      env:
+        INPUT_TARGETS: ${{ inputs.targets }}
+        PUBLICATION: ${{ inputs.publication }}
+      run: |
+        if [[ "$PUBLICATION" == true ]]; then
+          python tooling/extension-bindings/ci/publish.py configure --targets "$INPUT_TARGETS"
+        else
+          python tooling/extension-bindings/ci/generate.py configure --targets "$INPUT_TARGETS"
+        fi
+    - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+      with:
+        go-version: ${{ steps.configure.outputs.go-version }}
+        cache-dependency-path: |
+          tooling/extension-bindings/normalizer/go.sum
+          tooling/extension-bindings/emitters/go/go.sum
+          tooling/extension-bindings/orchestrator/go.sum
+    - name: Install checksummed generation prerequisites
+      shell: bash
+      env:
+        GO_PROFILER_URL: https://github.com/runtimeconditions/go-rc-profiler/releases/download/v0.4.0/go-rc-profiler_v0.4.0_linux_amd64.tar.gz
+        GO_PROFILER_SHA256: cccb57f37b476d43423a08d4f2cc94068b40f29a1a1a02072d294de6c98ac2c9
+        CORE_SCHEMA_URL: https://raw.githubusercontent.com/runtimeconditions/spec/65d43a6b97c060f62a3bcc87c98d1707b79cb60b/schema/runtimeconditions.profile.schema.yaml
+        CORE_SCHEMA_SHA256: 342bf20bce479f5012b9fc2c6238dc1fb0935e327ecb0fbca6e647362563c73c
+      run: |
+        set -euo pipefail
+        mkdir -p "$RUNNER_TEMP/binding-tools"
+        curl --fail --silent --show-error --location --retry 3 --max-time 120 \
+          "$GO_PROFILER_URL" -o "$RUNNER_TEMP/binding-tools/go-profiler.tar.gz"
+        curl --fail --silent --show-error --location --retry 3 --max-time 120 \
+          "$CORE_SCHEMA_URL" -o "$RUNNER_TEMP/binding-tools/core-schema.yaml"
+        printf '%s  %s\n' "$GO_PROFILER_SHA256" "$RUNNER_TEMP/binding-tools/go-profiler.tar.gz" \
+          "$CORE_SCHEMA_SHA256" "$RUNNER_TEMP/binding-tools/core-schema.yaml" | sha256sum --check
+        tar -xzf "$RUNNER_TEMP/binding-tools/go-profiler.tar.gz" -C "$RUNNER_TEMP/binding-tools"
+        test -x "$RUNNER_TEMP/binding-tools/go-rc-profiler"
+        printf 'RC_GO_PROFILER_BIN=%s\n' "$RUNNER_TEMP/binding-tools/go-rc-profiler" >> "$GITHUB_ENV"
+    - name: Build shared generator
+      shell: bash
+      run: go -C tooling/extension-bindings/orchestrator build -trimpath -buildvcs=false -o "$RUNNER_TEMP/binding-tools/rc" ./cmd/rc
