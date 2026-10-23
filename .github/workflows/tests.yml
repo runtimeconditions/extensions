@@ -1,0 +1,89 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python tooling and extension tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Check out the service operations inventories next to the repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          repository: runtimeconditions/service-operations-inventories
+          ref: 3778830d2e3c025eec90750109e4999d47dad4d2
+          path: service-operations-inventories
+          persist-credentials: false
+
+      - name: Place the inventories where the NATS tests look for them
+        run: ln -s "$PWD/service-operations-inventories" "$(dirname "$PWD")/service-operations-inventories"
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12.10'
+
+      - name: Install the pinned test tooling
+        run: python -m pip install --disable-pip-version-check --no-deps -r tooling/extension-bindings/ci/python-tooling-requirements.txt
+
+      - name: Test the shared helpers and the binding CI scripts
+        run: |
+          python -m unittest discover -s tooling/common -p 'test_*.py'
+          python -m unittest discover -s tooling/extension-bindings/ci -p 'test_*.py'
+
+      - name: Test the Python emitter and structural model
+        run: |
+          PYTHONPATH=tooling/extension-bindings/emitters/python/src \
+            python -m pytest -q -p no:cacheprovider tooling/extension-bindings/emitters/python/tests \
+            --ignore=tooling/extension-bindings/emitters/python/tests/test_packages.py
+          PYTHONPATH=tooling/extension-bindings/structural-model/python \
+            python -m pytest -q -p no:cacheprovider tooling/extension-bindings/structural-model/python/tests
+
+      - name: Test the extension compilers
+        run: |
+          python -m pytest -q -p no:cacheprovider catalog/kubernetes/api/tests
+          python -m pytest -q -p no:cacheprovider catalog/nats/service/tests
+          python -m pytest -q -p no:cacheprovider tooling/smithy-runtime-conditions/tests
+
+  orchestrator:
+    name: Go orchestrator tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: tooling/extension-bindings/orchestrator
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: tooling/extension-bindings/orchestrator/go.mod
+          cache-dependency-path: |
+            tooling/extension-bindings/orchestrator/go.sum
+            tooling/extension-bindings/normalizer/go.sum
+
+      - name: Test the orchestrator
+        run: go test -count=1 ./...
+
+      - name: Vet the orchestrator
+        run: go vet ./...
