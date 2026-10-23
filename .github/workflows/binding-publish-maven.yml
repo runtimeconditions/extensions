@@ -1,0 +1,48 @@
+name: Publish Java bindings (placeholder, publishes nothing)
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Comma-separated package-key:java targets, or all'
+        type: string
+        default: ''
+      dry_run:
+        description: 'Must stay true: the workflow is a placeholder and verifies and publishes nothing'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: binding-publish-maven
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Reject real publication
+        if: ${{ !inputs.dry_run }}
+        run: |
+          echo "::error::Maven publication is not implemented. Run with dry_run enabled; nothing was published."
+          exit 1
+      - name: Record that nothing was verified or published
+        env:
+          TARGETS: ${{ inputs.targets }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          {
+            echo "## Placeholder: nothing was verified or published"
+            echo
+            echo "Maven publication is not implemented. This run did not verify, build, or publish any package."
+            echo
+            echo "- targets: \`${TARGETS:-<none>}\`"
+            echo "- dry_run: \`${DRY_RUN}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::notice::Placeholder only. No package was verified or published."

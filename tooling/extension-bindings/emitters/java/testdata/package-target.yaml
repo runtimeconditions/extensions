@@ -1,0 +1,12 @@
+apiVersion: runtimeconditions.io/java-package-target/v1alpha1
+kind: RuntimeConditionsJavaPackageTarget
+packageKey: conformance-owned-kind-interface
+rootExtension: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+groupId: io.runtimeconditions.bindings
+artifactId: conformance-owned-kind-interface
+javaPackage: io.runtimeconditions.bindings.conformance.ownedkindinterface
+version: 1.0.0
+sourceDirectory: bindings/conformance-owned-kind-interface/java
+minimumJavaVersion: '17'
+publicationMode: github-tag
+repositoryUrl: https://github.com/runtimeconditions/extensions

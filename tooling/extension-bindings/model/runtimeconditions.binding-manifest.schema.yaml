@@ -58,20 +58,22 @@ properties:
       name, and version is the resolved module version. For Python, coordinate
       is the distribution name, name is the import package, and version is the
       installed distribution version. For TypeScript, coordinate and name are
-      the npm package name and version is the installed package version.
-      Consumers must compare all applicable fields to native package-manager
-      metadata.
+      the npm package name and version is the installed package version. For
+      Java, coordinate is the Maven groupId:artifactId, name is the Java
+      package, and version is the installed artifact version. Consumers must
+      compare all applicable fields to native package-manager metadata.
     type: object
     additionalProperties: false
     required: [language, coordinate, name, version]
     properties:
-      language: {enum: [go, python, typescript]}
+      language: {enum: [go, python, typescript, java]}
       coordinate: {type: string, minLength: 1}
       name: {type: string, minLength: 1}
       version: {type: string, minLength: 1}
       minimumGoVersion: {type: string, pattern: '^[0-9]+\.[0-9]+$'}
       minimumPythonVersion: {type: string, pattern: '^[0-9]+\.[0-9]+$'}
       minimumNodeVersion: {type: string, pattern: '^[0-9]+\.[0-9]+$'}
+      minimumJavaVersion: {type: string, pattern: '^[0-9]+$'}
     allOf:
       - if:
           properties:
@@ -84,6 +86,7 @@ properties:
             anyOf:
               - required: [minimumPythonVersion]
               - required: [minimumNodeVersion]
+              - required: [minimumJavaVersion]
       - if:
           properties:
             language: {const: python}
@@ -95,6 +98,7 @@ properties:
             anyOf:
               - required: [minimumGoVersion]
               - required: [minimumNodeVersion]
+              - required: [minimumJavaVersion]
       - if:
           properties:
             language: {const: typescript}
@@ -106,6 +110,19 @@ properties:
             anyOf:
               - required: [minimumGoVersion]
               - required: [minimumPythonVersion]
+              - required: [minimumJavaVersion]
+      - if:
+          properties:
+            language: {const: java}
+        then:
+          required: [minimumJavaVersion]
+          properties:
+            name: {pattern: '^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$'}
+          not:
+            anyOf:
+              - required: [minimumGoVersion]
+              - required: [minimumPythonVersion]
+              - required: [minimumNodeVersion]
   declarations:
     type: array
     items: {$ref: '#/$defs/declaration'}
@@ -170,6 +187,25 @@ allOf:
           items:
             properties:
               file: {const: bindings.ts}
+  - if:
+      properties:
+        package:
+          properties:
+            language: {const: java}
+    then:
+      properties:
+        declarations:
+          items:
+            required: [functionClass]
+            properties:
+              file: {pattern: '^[A-Za-z_][A-Za-z0-9_]*\.java$'}
+        importedMarkerContracts:
+          items:
+            required: [providerPackage]
+        types:
+          items:
+            properties:
+              file: {pattern: '^[A-Za-z_][A-Za-z0-9_]*\.java$'}
 $defs:
   extensionIdentifier:
     type: string
@@ -212,12 +248,14 @@ $defs:
       Exactly one local native type or language builtin. Pointer records Go
       pointer syntax; nullable records a Python annotation accepting None.
       TypeScript records optional properties through the field's required flag.
+      Java builtins are the boxed java.lang names; a nullable value is Void or
+      Object.
       A consumer must resolve every type to exactly one entry in types.
     type: object
     additionalProperties: false
     properties:
       type: {$ref: '#/$defs/nativeIdentifier'}
-      builtin: {enum: [string, bool, int64, float64, 'struct{}', any, str, int, float, 'None', JSONValue, boolean, number, 'null']}
+      builtin: {enum: [string, bool, int64, float64, 'struct{}', any, str, int, float, 'None', JSONValue, boolean, number, 'null', String, Boolean, Long, Double, Void, Object]}
       pointer: {const: true}
       nullable: {const: true}
     not:
@@ -236,7 +274,8 @@ $defs:
       function: {$ref: '#/$defs/nativeIdentifier'}
       markerInterface: {$ref: '#/$defs/nativeIdentifier'}
       markerMethod: {$ref: '#/$defs/nativeIdentifier'}
-      file: {enum: [bindings.go, bindings.py, bindings.ts]}
+      functionClass: {$ref: '#/$defs/nativeIdentifier'}
+      file: {type: string, minLength: 1}
   importedMarkerContract:
     type: object
     additionalProperties: false
@@ -351,7 +390,7 @@ $defs:
       sourceName: {type: string, minLength: 1}
       nativeName: {$ref: '#/$defs/nativeIdentifier'}
       construct: {enum: [scalar, object, collection, map, union, any, wrapper]}
-      file: {enum: [bindings.go, bindings.py, bindings.ts]}
+      file: {type: string, minLength: 1}
       implements:
         type: array
         items: {$ref: '#/$defs/implements'}

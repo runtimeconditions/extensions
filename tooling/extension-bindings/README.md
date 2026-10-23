@@ -2,8 +2,8 @@
 
 `IMPLEMENTATION.md` is historical design guidance; the repository owner's
 standing overrides govern generation and publication.
-The shared Go resolver and normalizer feed native Go and Python emitters. A native TypeScript
-emitter lives under `emitters/typescript/`.
+The shared Go resolver and normalizer feed native Go and Python emitters. Native TypeScript
+and Java emitters live under `emitters/typescript/` and `emitters/java/`.
 The Go orchestrator exposes eight commands through Go's standard `flag` package.
 GitHub Actions generates and commits Go and Python bindings to `main`, then a
 separate manual workflow publishes verified Go module tags and release assets.
@@ -144,8 +144,56 @@ For local checks:
 python3 -m unittest discover -s tooling/common -p 'test_*.py'
 python3 -m unittest discover -s tooling/extension-bindings/ci -p 'test_*.py'
 (cd tooling/extension-bindings/emitters/typescript && npm ci --ignore-scripts && npm test)
+(cd tooling/extension-bindings/emitters/java && gradle test)
 python3 tooling/common/build_extensions_site.py --output /tmp/extension-site
 python3 tooling/extension-bindings/ci/publish.py configure --targets env-configuration:go
+```
+
+## Java emitter quickstart
+
+The Java emitter is a standalone program under `emitters/java/`. It needs JDK 21 and
+Gradle 8.14.2, the version pinned in `toolchain.lock.yaml` and used by CI; install
+both before you start (the build selects its JDK through a Gradle toolchain). The
+orchestrator does not run the Java emitter yet, so the three inputs the orchestrator
+supplies to the other emitters are supplied by hand:
+
+- the normalized binding model, which the shared normalizer writes. The committed
+  conformance models under `model/conformance/expected/` are ready-made examples;
+- a package target, which selects the Maven coordinates and the Java package. Start
+  from `emitters/java/testdata/package-target.yaml`;
+- `emitterSha256`, the SHA-256 of the emitter build, which is recorded in the
+  generated binding manifest. For a local run any digest of your emitter build will
+  do; the orchestrator will supply the pinned one.
+
+```sh
+cd tooling/extension-bindings/emitters/java
+gradle installDist
+EMITTER=build/install/runtimeconditions-binding-emitter-java/bin/runtimeconditions-binding-emitter-java
+SHA=$(sha256sum build/install/runtimeconditions-binding-emitter-java/lib/runtimeconditions-binding-emitter-java-*.jar | cut -d' ' -f1)
+MODEL=../../model/conformance/expected/01-owned-kind-interface/runtimeconditions.binding-model.yaml
+{ cat testdata/package-target.yaml; echo "emitterSha256: $SHA"; } > /tmp/target.yaml
+
+$EMITTER emit   --model $MODEL --package-config /tmp/target.yaml --output /tmp/java-package
+$EMITTER verify --model $MODEL --package-config /tmp/target.yaml --input  /tmp/java-package
+```
+
+`emit` writes a Maven project (`pom.xml`, `src/main/java/...`, and the binding
+manifest under `src/main/resources/runtimeconditions/`) into a new empty directory.
+`verify` checks its API, `pom.xml`, and manifest against the same model and target
+and prints the API surface as JSON. `api --input DIR` prints just that surface. A
+dependency that provides another extension's declarations must be listed in the
+target's `dependencies`, together with the owner of any imported declaration, even
+when that owner is only a transitive dependency.
+
+A consuming project adds the generated package as a Maven dependency and calls the
+generated function with the generated field types:
+
+```java
+import io.runtimeconditions.bindings.conformance.ownedkindinterface.Bindings;
+import io.runtimeconditions.bindings.conformance.ownedkindinterface.Http;
+import io.runtimeconditions.bindings.conformance.ownedkindinterface.Region;
+
+var declaration = Bindings.service(new Http("https://api.example.com"), new Region("eu-west-1"));
 ```
 
 `publish.py build` takes `--rc`, `--core-schema`, and a new `--output` directory.
