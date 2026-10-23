@@ -22,6 +22,14 @@ packages:
         languageVersion: 3.12.10
         publicationMode: registry
         registryId: pypi
+      typescript:
+        coordinate: '@runtimeconditions/aws-s3'
+        name: '@runtimeconditions/aws-s3'
+        version: 0.2.0
+        sourceDirectory: bindings/aws-s3/typescript
+        languageVersion: 20.19.6
+        publicationMode: registry
+        registryId: npm
   common-integrations:
     rootExtension: https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
@@ -95,6 +103,14 @@ packages:
         languageVersion: 3.12.10
         publicationMode: registry
         registryId: pypi
+      typescript:
+        coordinate: '@runtimeconditions/google-analytics'
+        name: '@runtimeconditions/google-analytics'
+        version: 0.1.0
+        sourceDirectory: bindings/google-analytics/typescript
+        languageVersion: 20.19.6
+        publicationMode: registry
+        registryId: npm
   kubernetes-api:
     rootExtension: https://runtimeconditions.io/extensions/kubernetes/api/0.1.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
@@ -114,6 +130,14 @@ packages:
         languageVersion: 3.12.10
         publicationMode: registry
         registryId: pypi
+      typescript:
+        coordinate: '@runtimeconditions/kubernetes-api'
+        name: '@runtimeconditions/kubernetes-api'
+        version: 0.1.0
+        sourceDirectory: bindings/kubernetes-api/typescript
+        languageVersion: 20.19.6
+        publicationMode: registry
+        registryId: npm
   nats-service:
     rootExtension: https://runtimeconditions.io/extensions/nats/service/0.1.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
@@ -133,6 +157,14 @@ packages:
         languageVersion: 3.12.10
         publicationMode: registry
         registryId: pypi
+      typescript:
+        coordinate: '@runtimeconditions/nats-service'
+        name: '@runtimeconditions/nats-service'
+        version: 0.1.0
+        sourceDirectory: bindings/nats-service/typescript
+        languageVersion: 20.19.6
+        publicationMode: registry
+        registryId: npm
   source-control:
     rootExtension: https://runtimeconditions.io/extensions/rc/source-control/0.1.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
@@ -152,3 +184,11 @@ packages:
         languageVersion: 3.12.10
         publicationMode: registry
         registryId: pypi
+      typescript:
+        coordinate: '@runtimeconditions/source-control'
+        name: '@runtimeconditions/source-control'
+        version: 0.1.0
+        sourceDirectory: bindings/source-control/typescript
+        languageVersion: 20.19.6
+        publicationMode: registry
+        registryId: npm
