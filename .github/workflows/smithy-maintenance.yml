@@ -31,12 +31,12 @@ jobs:
 
     steps:
       - name: Check out extension semantics
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           path: extensions
 
       - name: Check out authoritative AWS API models
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           repository: aws/api-models-aws
           path: api-models-aws
@@ -45,7 +45,7 @@ jobs:
           sparse-checkout: models/s3
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
 
@@ -72,7 +72,7 @@ jobs:
 
       - name: Upload maintenance evidence
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: aws-s3-smithy-maintenance-${{ github.run_id }}
           path: maintenance-evidence/aws-s3
@@ -81,7 +81,7 @@ jobs:
 
       - name: Upload historical inventory
         if: github.event_name == 'workflow_dispatch' && inputs.replay_history
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: aws-s3-smithy-history-${{ github.run_id }}
           path: maintenance-evidence/aws-s3-history
