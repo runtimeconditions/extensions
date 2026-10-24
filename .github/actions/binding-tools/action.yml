@@ -2,7 +2,7 @@ name: Prepare binding tools
 description: Select targets, install the exact compilers and prerequisites, and build the shared generator
 inputs:
   targets:
-    description: Comma-separated package-key:go, package-key:python, or package-key:typescript targets, or all
+    description: Comma-separated package-key:go, package-key:python, package-key:typescript, or package-key:rust targets, or all
     required: true
   publication:
     description: Include the committed package dependency closure for publication
@@ -23,6 +23,12 @@ outputs:
   has-typescript:
     description: Whether a TypeScript target is selected
     value: ${{ steps.configure.outputs.has-typescript }}
+  rust-version:
+    description: Exact catalog Rust version, empty when no Rust target is selected
+    value: ${{ steps.configure.outputs.rust-version }}
+  has-rust:
+    description: Whether a Rust target is selected
+    value: ${{ steps.configure.outputs.has-rust }}
   source-commit:
     description: Checked-out source commit
     value: ${{ steps.configure.outputs.source-commit }}
@@ -60,6 +66,7 @@ runs:
           python tooling/extension-bindings/ci/generate-go.py configure --targets "$INPUT_TARGETS"
           python tooling/extension-bindings/ci/generate-python.py configure --targets "$INPUT_TARGETS"
           python tooling/extension-bindings/ci/generate-typescript.py configure --targets "$INPUT_TARGETS"
+          python tooling/extension-bindings/ci/generate-rust.py configure --targets "$INPUT_TARGETS"
         fi
     - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
       with:
@@ -129,6 +136,15 @@ runs:
       shell: bash
       working-directory: tooling/extension-bindings/emitters/typescript
       run: npm ci --ignore-scripts && npm run build
+    - name: Install the pinned Rust toolchain
+      if: steps.configure.outputs.has-rust == 'true'
+      shell: bash
+      env:
+        RUST_VERSION: ${{ steps.configure.outputs.rust-version }}
+      run: |
+        set -euo pipefail
+        rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
+        rustup default "$RUST_VERSION"
     - name: Build shared generator
       shell: bash
       run: go -C tooling/extension-bindings/orchestrator build -trimpath -buildvcs=false -o "$RUNNER_TEMP/binding-tools/rc" ./cmd/rc

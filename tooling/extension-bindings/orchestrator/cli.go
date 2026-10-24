@@ -18,10 +18,10 @@ func (r *repeated) String() string         { return strings.Join(*r, ",") }
 func (r *repeated) Set(value string) error { *r = append(*r, value); return nil }
 
 type Options struct {
-	Packages, ToolchainLock, Cache, WorkDir, ToolingDir                                               string
-	Output, Input, Report, ClosureOutput, DependencyLockOutput, DependencyLock                        string
-	CoreSchema, Go, Python, GoEmitter, Normalizer, GoProfiler, PythonProfiler, PythonProfilerArtifact string
-	Targets, ExtensionRoots, Overrides, CatalogRoots                                                  repeated
+	Packages, ToolchainLock, Cache, WorkDir, ToolingDir                                                                   string
+	Output, Input, Report, ClosureOutput, DependencyLockOutput, DependencyLock                                            string
+	CoreSchema, Go, Python, GoEmitter, Normalizer, GoProfiler, PythonProfiler, PythonProfilerArtifact, Cargo, RustEmitter string
+	Targets, ExtensionRoots, Overrides, CatalogRoots                                                                      repeated
 }
 
 // Run is the reusable command boundary; the rc executable only supplies streams.
@@ -80,6 +80,8 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) error {
 	f.StringVar(&o.CoreSchema, "core-schema", "", "explicit core schema file for local development")
 	f.StringVar(&o.Go, "go", envOr("RC_BINDINGS_GO", "go"), "native Go command")
 	f.StringVar(&o.Python, "python", envOr("RC_BINDINGS_PYTHON", "python3"), "native Python interpreter")
+	f.StringVar(&o.Cargo, "cargo", envOr("RC_BINDINGS_CARGO", "cargo"), "native Cargo command")
+	f.StringVar(&o.RustEmitter, "rust-emitter", os.Getenv("RC_BINDINGS_RUST_EMITTER"), "installed locked Rust emitter; development defaults to workspace build")
 	f.StringVar(&o.Normalizer, "normalizer", os.Getenv("RC_BINDINGS_NORMALIZER"), "installed locked normalizer; development defaults to workspace build")
 	f.StringVar(&o.GoEmitter, "go-emitter", os.Getenv("RC_BINDINGS_GO_EMITTER"), "installed locked Go emitter; development defaults to workspace build")
 	f.StringVar(&o.GoProfiler, "go-profiler", envOr("RC_GO_PROFILER_BIN", "go-rc-profiler"), "independently installed Go profiler CLI")

@@ -38,6 +38,7 @@ type nativeEnvironment struct {
 	Python      string
 	PythonEnv   map[string]string
 	PythonSite  string
+	Coordinates map[string]string
 	Directories map[string]string
 }
 
@@ -112,6 +113,14 @@ func (p *Pipeline) Verify(build *Build) (VerificationSummary, error) {
 				return fail(bt.Target.Key, 16, err)
 			}
 			if _, err = goemitter.VerifyAPI(bt.Document.Model, nativeTarget, bt.Directory); err != nil {
+				return fail(bt.Target.Key, 16, err)
+			}
+		} else if bt.Target.Language == "rust" {
+			tool, _, err := p.tool("rust-emitter")
+			if err == nil {
+				_, err = p.run(p.Project.Root, nil, tool, "verify", "--model", model, "--package-config", target, "--input", bt.Directory)
+			}
+			if err != nil {
 				return fail(bt.Target.Key, 16, err)
 			}
 		} else {
@@ -204,7 +213,11 @@ func (p *Pipeline) verifyIdentities(bt *BuiltTarget, build *Build) error {
 		return err
 	}
 	declared := mapValue(provenance["profiler"])
-	if declared["name"] != profiler.Name || declared["version"] != profiler.Version || declared["sha256"] != profiler.SHA256 {
+	if bt.Target.Language == "rust" {
+		if len(declared) != 0 {
+			return fmt.Errorf("Rust release provenance must not name a profiler")
+		}
+	} else if declared["name"] != profiler.Name || declared["version"] != profiler.Version || declared["sha256"] != profiler.SHA256 {
 		return fmt.Errorf("profiler provenance differs from installed artifact")
 	}
 	_, tool, err := p.tool("normalizer")
@@ -222,9 +235,12 @@ func (p *Pipeline) verifyIdentities(bt *BuiltTarget, build *Build) error {
 	if declared["sha256"] != tool.SHA256 || declared["name"] != tool.Name || declared["version"] != tool.Version {
 		return fmt.Errorf("orchestrator provenance differs from selected artifact")
 	}
-	if bt.Target.Language == "go" {
+	switch bt.Target.Language {
+	case "go":
 		_, tool, err = p.tool("go-emitter")
-	} else {
+	case "rust":
+		_, tool, err = p.tool("rust-emitter")
+	default:
 		tool, err = p.pythonEmitterIdentity()
 	}
 	if err != nil {
@@ -256,7 +272,7 @@ func escapeModule(value string) string {
 	return result.String()
 }
 func (p *Pipeline) installBuild(build *Build) (*nativeEnvironment, error) {
-	environment := &nativeEnvironment{Directories: map[string]string{}}
+	environment := &nativeEnvironment{Directories: map[string]string{}, Coordinates: map[string]string{}}
 	work, err := p.workspace()
 	if err != nil {
 		return nil, err
@@ -371,6 +387,7 @@ copy_dependencies("runtimeconditions-profiler")
 			return nil, err
 		}
 		environment.Directories[bt.Target.Key] = stage
+		environment.Coordinates[bt.Target.Key] = bt.Target.Config.Coordinate
 	}
 	return environment, nil
 }
@@ -405,6 +422,9 @@ func (p *Pipeline) verifyNative(bt *BuiltTarget, environment *nativeEnvironment)
 			}
 		}
 		return nil
+	}
+	if bt.Target.Language == "rust" {
+		return p.verifyRust(bt, environment)
 	}
 	version, err := p.run(directory, environment.PythonEnv, environment.Python, "-c", "import platform;print(platform.python_version())")
 	if err != nil {
@@ -487,4 +507,59 @@ func (p *Pipeline) verifyRegeneration(bt *BuiltTarget, build *Build) error {
 		return err
 	}
 	return compareTrees(regenerated.Directory, bt.Directory)
+}
+
+func withPathDependencies(cargo string, paths map[string]string) string {
+	lines := strings.Split(cargo, "\n")
+	for i, line := range lines {
+		name, requirement, ok := strings.Cut(line, " = ")
+		if path, found := paths[name]; ok && found {
+			lines[i] = fmt.Sprintf("%s = { version = %s, path = %q }", name, requirement, path)
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+func (p *Pipeline) verifyRust(bt *BuiltTarget, environment *nativeEnvironment) error {
+	directory := environment.Directories[bt.Target.Key]
+	version, err := p.run(directory, nil, "rustc", "--version")
+	if err != nil {
+		return err
+	}
+	if !strings.HasPrefix(strings.TrimSpace(string(version)), "rustc "+bt.Target.Config.LanguageVersion+" ") {
+		return fmt.Errorf("gate 5: Rust compiler must be exactly %s", bt.Target.Config.LanguageVersion)
+	}
+	files, err := readTree(directory)
+	if err != nil {
+		return err
+	}
+	for name := range files {
+		if strings.HasPrefix(name, "src/") && strings.HasSuffix(name, ".rs") {
+			if _, err = p.run(directory, nil, "rustfmt", "--check", "--edition", "2021", name); err != nil {
+				return fmt.Errorf("gate 4: %w", err)
+			}
+		}
+	}
+	paths := map[string]string{}
+	for _, key := range bt.Target.Dependencies {
+		if stage, ok := environment.Directories[key]; ok {
+			paths[environment.Coordinates[key]] = stage
+		}
+	}
+	manifest := filepath.Join(directory, "Cargo.toml")
+	data, err := os.ReadFile(manifest)
+	if err != nil {
+		return err
+	}
+	if err = os.WriteFile(manifest, []byte(withPathDependencies(string(data), paths)), 0644); err != nil {
+		return err
+	}
+	target, err := p.workspacePath("native-rust", "target")
+	if err != nil {
+		return err
+	}
+	if _, err = p.run(directory, map[string]string{"CARGO_TARGET_DIR": target}, p.Options.Cargo, "check"); err != nil {
+		return fmt.Errorf("gate 5: %w", err)
+	}
+	return nil
 }

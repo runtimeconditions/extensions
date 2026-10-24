@@ -1,0 +1,11 @@
+apiVersion: runtimeconditions.io/rust-package-target/v1alpha1
+kind: RuntimeConditionsRustPackageTarget
+packageKey: conformance-owned-kind-interface
+rootExtension: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+crateName: runtimeconditions-conformance-owned-kind-interface
+version: 1.0.0
+sourceDirectory: bindings/conformance-owned-kind-interface/rust
+minimumRustVersion: '1.75'
+publicationMode: github-tag
+repositoryUrl: https://github.com/runtimeconditions/extensions
+emitterSha256: '0000000000000000000000000000000000000000000000000000000000000000'

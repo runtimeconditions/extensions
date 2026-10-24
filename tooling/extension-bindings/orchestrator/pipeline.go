@@ -19,6 +19,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const rustEmitterName = "runtimeconditions-binding-emitter-rust"
+
 type Document struct {
 	Closure     normalizer.ResolvedClosure
 	Lock        normalizer.DependencyLock
@@ -184,6 +186,9 @@ func (p *Pipeline) tool(key string) (string, Tool, error) {
 	case "go-emitter":
 		path = p.Options.GoEmitter
 		expected = p.Project.Toolchain.Tools.Emitters["go"]
+	case "rust-emitter":
+		path = p.Options.RustEmitter
+		expected = p.Project.Toolchain.Tools.Emitters["rust"]
 	case "go-profiler":
 		path = p.Options.GoProfiler
 		expected = p.Project.Toolchain.Tools.Profilers["go"]
@@ -204,12 +209,26 @@ func (p *Pipeline) tool(key string) (string, Tool, error) {
 		if err = os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 			return "", Tool{}, err
 		}
-		module, command := "normalizer", "rc-binding-model"
-		if key == "go-emitter" {
-			module, command = "emitters/go", "rc-go-bindings"
-		}
-		if _, err = p.run(filepath.Join(p.Project.ToolingDirectory, module), nil, p.Options.Go, "build", "-trimpath", "-buildvcs=false", "-o", path, "./cmd/"+command); err != nil {
-			return "", Tool{}, err
+		if key == "rust-emitter" {
+			target := path + "-target"
+			if _, err = p.run(filepath.Join(p.Project.ToolingDirectory, "emitters", "rust"), nil, p.Options.Cargo, "build", "--release", "--locked", "--target-dir", target); err != nil {
+				return "", Tool{}, err
+			}
+			binary, err := os.ReadFile(filepath.Join(target, "release", rustEmitterName))
+			if err != nil {
+				return "", Tool{}, err
+			}
+			if err = os.WriteFile(path, binary, 0755); err != nil {
+				return "", Tool{}, err
+			}
+		} else {
+			module, command := "normalizer", "rc-binding-model"
+			if key == "go-emitter" {
+				module, command = "emitters/go", "rc-go-bindings"
+			}
+			if _, err = p.run(filepath.Join(p.Project.ToolingDirectory, module), nil, p.Options.Go, "build", "-trimpath", "-buildvcs=false", "-o", path, "./cmd/"+command); err != nil {
+				return "", Tool{}, err
+			}
 		}
 		p.tools[key] = path
 	} else {
@@ -236,6 +255,17 @@ func (p *Pipeline) tool(key string) (string, Tool, error) {
 	case "go-emitter":
 		identity.Name = goemitter.EmitterName
 		identity.Version = goemitter.EmitterVersion
+	case "rust-emitter":
+		identity.Name = rustEmitterName
+		reported, err := p.run(p.Project.Root, nil, path, "--version")
+		if err != nil {
+			return "", Tool{}, err
+		}
+		identity.Version = strings.TrimSpace(string(reported))
+		identity.SHA256, err = rustEmitterSourceDigest(filepath.Join(p.Project.ToolingDirectory, "emitters", "rust"))
+		if err != nil {
+			return "", Tool{}, err
+		}
 	case "go-profiler":
 		identity.Name = "go-rc-profiler"
 		info, err := buildinfo.ReadFile(path)
@@ -318,6 +348,9 @@ func (p *Pipeline) profiler(language string) (Tool, error) {
 	if language == "go" {
 		_, identity, err := p.tool("go-profiler")
 		return identity, err
+	}
+	if language == "rust" {
+		return Tool{}, nil
 	}
 	if language != "python" {
 		return Tool{}, fmt.Errorf("unsupported native adapter %s", language)
@@ -668,6 +701,8 @@ func (p *Pipeline) nativeConfig(target Target, plan BuildPlan) (map[string]any, 
 		}
 		if target.Language == "go" {
 			dependencies = append(dependencies, map[string]any{"extension": provider.Set.RootExtension, "modulePath": provider.Config.Coordinate, "packageName": provider.Config.Name, "version": "v" + provider.Config.Version})
+		} else if target.Language == "rust" {
+			dependencies = append(dependencies, map[string]any{"extension": provider.Set.RootExtension, "crateName": provider.Config.Coordinate, "version": provider.Config.Version})
 		} else {
 			dependencies = append(dependencies, map[string]any{"extension": provider.Set.RootExtension, "distributionName": provider.Config.Coordinate, "importPackage": provider.Config.Name, "version": provider.Config.Version})
 		}
@@ -686,6 +721,21 @@ func (p *Pipeline) nativeConfig(target Target, plan BuildPlan) (map[string]any, 
 		config["minimumGoVersion"] = majorMinor(target.Config.LanguageVersion)
 		config["version"] = "v" + target.Config.Version
 		config["emitterSha256"] = identity.SHA256
+	case "rust":
+		_, identity, err := p.tool("rust-emitter")
+		if err != nil {
+			return nil, err
+		}
+		config["apiVersion"] = "runtimeconditions.io/rust-package-target/v1alpha1"
+		config["kind"] = "RuntimeConditionsRustPackageTarget"
+		config["crateName"] = target.Config.Coordinate
+		config["minimumRustVersion"] = majorMinor(target.Config.LanguageVersion)
+		config["sourceDirectory"] = target.Config.SourceDirectory
+		config["repositoryUrl"] = p.Project.Catalog.RepositoryURL
+		config["emitterSha256"] = identity.SHA256
+		if target.Config.RegistryID != "" {
+			config["registryId"] = target.Config.RegistryID
+		}
 	case "python":
 		identity, err := p.pythonEmitterIdentity()
 		if err != nil {
@@ -745,12 +795,23 @@ func (p *Pipeline) emit(bt *BuiltTarget) error {
 		_, err = p.run(p.Project.Root, nil, tool, "--model", modelPath, "--package-config", targetPath, "--output", bt.Directory)
 		return err
 	}
+	if bt.Target.Language == "rust" {
+		tool, _, err := p.tool("rust-emitter")
+		if err != nil {
+			return err
+		}
+		_, err = p.run(p.Project.Root, nil, tool, "emit", "--model", modelPath, "--package-config", targetPath, "--output", bt.Directory)
+		return err
+	}
 	_, err = p.python("emit", "--model", modelPath, "--package-config", targetPath, "--output", bt.Directory, "--assembled")
 	return err
 }
 func resourceDir(bt *BuiltTarget) string {
 	if bt.Target.Language == "python" {
 		return filepath.Join(bt.Directory, "src", bt.Target.Config.Name)
+	}
+	if bt.Target.Language == "rust" {
+		return filepath.Join(bt.Directory, "runtimeconditions")
 	}
 	return bt.Directory
 }
@@ -920,4 +981,28 @@ func (p *Pipeline) LoadBuild(plan BuildPlan, input string) (*Build, error) {
 		bt.PackageConfig = config
 	}
 	return build, nil
+}
+
+func rustEmitterSourceDigest(directory string) (string, error) {
+	names := []string{"Cargo.toml", "Cargo.lock", "package-target.schema.yaml"}
+	sources, err := filepath.Glob(filepath.Join(directory, "src", "*.rs"))
+	if err != nil {
+		return "", err
+	}
+	for _, source := range sources {
+		names = append(names, "src/"+filepath.Base(source))
+	}
+	digests := map[string]string{}
+	for _, name := range names {
+		data, err := os.ReadFile(filepath.Join(directory, filepath.FromSlash(name)))
+		if err != nil {
+			return "", err
+		}
+		digests[name] = normalizer.SHA256Hex(data)
+	}
+	encoded, err := json.Marshal(digests)
+	if err != nil {
+		return "", err
+	}
+	return normalizer.SHA256Hex(encoded), nil
 }

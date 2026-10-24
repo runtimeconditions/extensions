@@ -314,6 +314,25 @@ func (p *Pipeline) nativeArchives(bt *BuiltTarget) (map[string]string, error) {
 		}
 		return map[string]string{"go-module-zip": path}, nil
 	}
+	if bt.Target.Language == "rust" {
+		files, err := readTree(bt.Directory)
+		if err != nil {
+			return nil, err
+		}
+		prefix := bt.Target.Config.Coordinate + "-" + bt.Target.Config.Version + "/"
+		data, err := deterministicZip(files, prefix)
+		if err != nil {
+			return nil, err
+		}
+		if err = verifyZip(data, files, prefix); err != nil {
+			return nil, err
+		}
+		path := filepath.Join(output, strings.TrimSuffix(prefix, "/")+".zip")
+		if err = os.WriteFile(path, data, 0644); err != nil {
+			return nil, err
+		}
+		return map[string]string{"rust-source-zip": path}, nil
+	}
 	model, target, err := p.emitterInputs(bt)
 	if err != nil {
 		return nil, err

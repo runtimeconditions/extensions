@@ -1,0 +1,13 @@
+[package]
+name = "runtimeconditions-binding-emitter-rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde_json = { version = "1", features = ["preserve_order"] }
+serde_yaml = "0.9"
+sha2 = "0.10"
+jsonschema = { version = "0.30", default-features = false }
+syn = { version = "2", features = ["full"] }
+quote = "1"
+unicode-normalization = "0.1"

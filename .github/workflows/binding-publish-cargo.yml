@@ -1,0 +1,36 @@
+name: Publish Rust bindings
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Comma-separated package-key:rust targets, or all'
+        type: string
+        default: ''
+      dry_run:
+        description: 'Verify publication without pushing to crates.io'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: binding-publish-cargo
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Publish to crates.io (placeholder)
+        env:
+          TARGETS: ${{ inputs.targets }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          echo "crates.io publication is not implemented; no package was published."
+          echo "targets=${TARGETS:-<none>} dry_run=${DRY_RUN}"
