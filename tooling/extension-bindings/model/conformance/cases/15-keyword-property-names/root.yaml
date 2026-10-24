@@ -1,0 +1,44 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+  version: 1.0.0
+spec:
+  kinds:
+    - name: runner
+  interfaceTypes:
+    - name: process
+      targetKind: runner
+  schemas:
+    - id: runner-process
+      description: Property names that are reserved words in common languages.
+      appliesToKind: runner
+      appliesToInterfaceType: process
+      schema:
+        type: object
+        required: [kind, interface]
+        properties:
+          kind:
+            const: runner
+          interface:
+            type: object
+            required: [type]
+            properties:
+              type:
+                const: process
+            additionalProperties: false
+          options:
+            type: object
+            properties:
+              class: {type: string}
+              default: {type: string}
+              import: {type: integer}
+              match: {type: boolean}
+              new: {type: string}
+              return: {type: string}
+              self: {type: string}
+              type: {type: string}
+              async: {type: string}
+              fn: {type: string}
+            additionalProperties: false
+        additionalProperties: false

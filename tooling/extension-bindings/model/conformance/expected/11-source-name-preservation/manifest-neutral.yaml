@@ -1,0 +1,59 @@
+declarations:
+- modelRef:
+    coordinate: kind:class
+  owner: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0
+  sourceName: class
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:class
+  fixedInterfaceType: http_server2_url
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
+  scope:
+    interfaceType: http_server2_url
+    kind: class
+  sourceName: http_server2_url
+- declarationCoordinate: kind:class
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
+    jsonPointer: /properties/api_url
+  path:
+  - name: api_url
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
+  scope:
+    interfaceType: http_server2_url
+    kind: class
+  sourceName: api_url
+  vocabularyCoordinate: condition-field:class:http_server2_url:api_url
+- declarationCoordinate: kind:class
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
+    jsonPointer: "/properties/caf\xE9"
+  path:
+  - name: "caf\xE9"
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
+  scope:
+    interfaceType: http_server2_url
+    kind: class
+  sourceName: "caf\xE9"
+  vocabularyCoordinate: "condition-field:class:http_server2_url:caf\xE9"
+- declarationCoordinate: kind:class
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
+    jsonPointer: /properties/patch9
+  path:
+  - name: patch9
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/source-name-preservation:1.0.0#schema:source-names
+  scope:
+    interfaceType: http_server2_url
+    kind: class
+  sourceName: patch9
+  vocabularyCoordinate: condition-field:class:http_server2_url:patch9

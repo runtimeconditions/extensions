@@ -1,0 +1,33 @@
+declarations:
+- modelRef:
+    coordinate: kind:service
+  owner: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0
+  sourceName: service
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:service
+  fixedInterfaceType: http
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
+  scope:
+    interfaceType: http
+    kind: service
+  sourceName: http
+- declarationCoordinate: kind:service
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
+    jsonPointer: /properties/region
+  path:
+  - name: region
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http
+  scope:
+    interfaceType: http
+    kind: service
+  sourceName: region
+  vocabularyCoordinate: condition-field:service:http:region

@@ -1,0 +1,55 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsExtensionDefinition
+metadata:
+  id: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+  version: 1.0.0
+spec:
+  kinds:
+    - name: setting
+  interfaceTypes:
+    - name: file
+      targetKind: setting
+  conditionFields:
+    - name: label
+      appliesToKinds: [setting]
+      appliesToInterfaceTypes: [file]
+  schemas:
+    - id: setting-file
+      description: Properties that reference scalar, any, enum, and chained definitions.
+      appliesToKind: setting
+      appliesToInterfaceType: file
+      schema:
+        type: object
+        required: [kind, interface, label]
+        properties:
+          kind:
+            const: setting
+          interface:
+            type: object
+            required: [type]
+            properties:
+              type:
+                const: file
+            additionalProperties: false
+          label:
+            $ref: '#/$defs/label'
+          alias:
+            $ref: '#/$defs/alias'
+          payload:
+            $ref: '#/$defs/payload'
+          mode:
+            $ref: '#/$defs/mode'
+          tags:
+            type: array
+            items:
+              $ref: '#/$defs/alias'
+        $defs:
+          label:
+            type: string
+          alias:
+            $ref: '#/$defs/label'
+          payload: {}
+          mode:
+            type: string
+            enum: [fast, safe]
+        additionalProperties: false

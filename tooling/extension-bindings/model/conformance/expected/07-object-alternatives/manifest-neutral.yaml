@@ -1,0 +1,32 @@
+declarations:
+- modelRef:
+    coordinate: kind:deployment
+  owner: https://runtimeconditions.io/conformance/object-alternatives:1.0.0
+  sourceName: deployment
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:deployment
+  fixedInterfaceType: process
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
+  scope:
+    interfaceType: process
+    kind: deployment
+  sourceName: process
+- declarationCoordinate: kind:deployment
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
+    jsonPointer: /properties/configuration
+  path:
+  - name: configuration
+  role: schema-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/object-alternatives:1.0.0#schema:object-alternatives
+  scope:
+    interfaceType: process
+    kind: deployment
+  sourceName: configuration

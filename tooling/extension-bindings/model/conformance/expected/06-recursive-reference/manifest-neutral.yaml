@@ -1,0 +1,32 @@
+declarations:
+- modelRef:
+    coordinate: kind:tree
+  owner: https://runtimeconditions.io/conformance/recursive-reference:1.0.0
+  sourceName: tree
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:tree
+  fixedInterfaceType: node
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/recursive-reference:1.0.0#schema:recursive-tree
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/recursive-reference:1.0.0#schema:recursive-tree
+  scope:
+    interfaceType: node
+    kind: tree
+  sourceName: node
+- declarationCoordinate: kind:tree
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/recursive-reference:1.0.0#schema:recursive-tree
+    jsonPointer: /properties/root
+  path:
+  - name: root
+  role: schema-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/recursive-reference:1.0.0#schema:recursive-tree
+  scope:
+    interfaceType: node
+    kind: tree
+  sourceName: root

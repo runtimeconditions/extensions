@@ -1,0 +1,72 @@
+declarations:
+- modelRef:
+    coordinate: kind:service
+  owner: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0
+  sourceName: service
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:service
+  fixedInterfaceType: grpc
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-grpc
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-grpc
+  scope:
+    interfaceType: grpc
+    kind: service
+  sourceName: grpc
+- declarationCoordinate: kind:service
+  fixedInterfaceType: http
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-http
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-http
+  scope:
+    interfaceType: http
+    kind: service
+  sourceName: http
+- declarationCoordinate: kind:service
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-grpc
+    jsonPointer: /properties/mode
+  path:
+  - name: mode
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-grpc
+  scope:
+    interfaceType: grpc
+    kind: service
+  sourceName: mode
+  vocabularyCoordinate: condition-field:service:grpc:mode
+- declarationCoordinate: kind:service
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-http
+    jsonPointer: /properties/base_url
+  path:
+  - name: base_url
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-http
+  scope:
+    interfaceType: http
+    kind: service
+  sourceName: base_url
+  vocabularyCoordinate: condition-field:service:http:base_url
+- declarationCoordinate: kind:service
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-http
+    jsonPointer: /properties/mode
+  path:
+  - name: mode
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-http
+  scope:
+    interfaceType: http
+    kind: service
+  sourceName: mode
+  vocabularyCoordinate: condition-field:service:http:mode

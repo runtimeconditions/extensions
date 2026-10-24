@@ -1,0 +1,20 @@
+declarations: []
+importedMarkerContracts:
+- modelRef:
+    coordinate: kind:service
+  owner: https://runtimeconditions.io/conformance/additive-field-base:1.0.0
+  sourceName: service
+rootBindings:
+- declarationCoordinate: kind:service
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/additive-field:1.0.0#schema:additive-credential
+    jsonPointer: /properties/credential
+  path:
+  - name: credential
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/additive-field:1.0.0#schema:additive-credential
+  scope:
+    interfaceType: http
+    kind: service
+  sourceName: credential
+  vocabularyCoordinate: condition-field:service:http:credential

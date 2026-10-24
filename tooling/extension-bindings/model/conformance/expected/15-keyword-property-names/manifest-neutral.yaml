@@ -1,0 +1,32 @@
+declarations:
+- modelRef:
+    coordinate: kind:runner
+  owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+  sourceName: runner
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:runner
+  fixedInterfaceType: process
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+  scope:
+    interfaceType: process
+    kind: runner
+  sourceName: process
+- declarationCoordinate: kind:runner
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+    jsonPointer: /properties/options
+  path:
+  - name: options
+  role: schema-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+  scope:
+    interfaceType: process
+    kind: runner
+  sourceName: options

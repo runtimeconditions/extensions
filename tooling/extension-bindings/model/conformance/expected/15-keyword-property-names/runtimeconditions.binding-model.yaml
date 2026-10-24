@@ -1,0 +1,459 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: 6989623a7891c78af3e183a3957358f5177913fad291d8fbe0617b2fe89ba898
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: https://runtimeconditions.io/schemas/profile/0.2.0/runtimeconditions.profile.schema.yaml
+    version: 0.2.0
+    semanticSha256: a090a8016d045f9c3fa872a67f8df293b77ca2809a1bea5ae9fa31a27a06109a
+rootExtension:
+    id: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+    version: 1.0.0
+    semanticSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+extensions:
+    - id: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+      version: 1.0.0
+      semanticSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+vocabulary:
+    owners:
+        - coordinate: interface:runner:process
+          category: interface
+          owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+          kind: runner
+          interfaceType: process
+        - coordinate: kind:runner
+          category: kind
+          owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+          kind: runner
+    ownedDeclarations:
+        - coordinate: kind:runner
+          owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+          kind: runner
+          provenance:
+            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+            coordinate: kind:runner
+    interfaces:
+        - coordinate: interface:runner:process
+          owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+          kind: runner
+          type: process
+          provenance:
+            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+            coordinate: interface:runner:process
+scopes:
+    - coordinate: runner:process
+      kind: runner
+      interfaceType: process
+      applicableSchemas:
+        - https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                    extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                    coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                jsonPointer: /properties/interface
+            - name: options
+              shape:
+                kind: object
+                properties:
+                    - name: async
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/async
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/async
+                    - name: class
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/class
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/class
+                    - name: default
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/default
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/default
+                    - name: fn
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/fn
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/fn
+                    - name: import
+                      shape:
+                        kind: scalar
+                        scalar: integer
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/import
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/import
+                    - name: match
+                      shape:
+                        kind: scalar
+                        scalar: boolean
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/match
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/match
+                    - name: new
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/new
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/new
+                    - name: return
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/return
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/return
+                    - name: self
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/self
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/self
+                    - name: type
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/type
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/type
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                    extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                    coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                    jsonPointer: /properties/options
+              provenance:
+                owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                jsonPointer: /properties/options
+        provenance:
+            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+schemas:
+    - coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+      owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+      id: runner-process
+      kind: runner
+      interfaceType: process
+      exact:
+        additionalProperties: false
+        properties:
+            interface:
+                additionalProperties: false
+                properties:
+                    type:
+                        const: process
+                required:
+                    - type
+                type: object
+            kind:
+                const: runner
+            options:
+                additionalProperties: false
+                properties:
+                    async:
+                        type: string
+                    class:
+                        type: string
+                    default:
+                        type: string
+                    fn:
+                        type: string
+                    import:
+                        type: integer
+                    match:
+                        type: boolean
+                    new:
+                        type: string
+                    return:
+                        type: string
+                    self:
+                        type: string
+                    type:
+                        type: string
+                type: object
+        required:
+            - interface
+            - kind
+        type: object
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                    extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                    coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                jsonPointer: /properties/interface
+            - name: options
+              shape:
+                kind: object
+                properties:
+                    - name: async
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/async
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/async
+                    - name: class
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/class
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/class
+                    - name: default
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/default
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/default
+                    - name: fn
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/fn
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/fn
+                    - name: import
+                      shape:
+                        kind: scalar
+                        scalar: integer
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/import
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/import
+                    - name: match
+                      shape:
+                        kind: scalar
+                        scalar: boolean
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/match
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/match
+                    - name: new
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/new
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/new
+                    - name: return
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/return
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/return
+                    - name: self
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/self
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/self
+                    - name: type
+                      shape:
+                        kind: scalar
+                        scalar: string
+                        provenance:
+                            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                            jsonPointer: /properties/options/properties/type
+                      provenance:
+                        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                        jsonPointer: /properties/options/properties/type
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                    extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                    coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                    jsonPointer: /properties/options
+              provenance:
+                owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+                extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+                coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+                jsonPointer: /properties/options
+        provenance:
+            owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+            extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+            coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
+      provenance:
+        owner: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0
+        extensionSha256: a88df1387aa8a264b163b4d45b5c6f26f568bda700dac0d66583c6834b2242ad
+        coordinate: https://runtimeconditions.io/conformance/keyword-property-names:1.0.0#schema:runner-process
