@@ -42,7 +42,7 @@ jobs:
     permissions:
       contents: write
     env:
-      INPUT_TARGETS: ${{ inputs.targets || vars.BINDING_GENERATION_TARGETS || 'common-integrations:go,env-configuration:go,common-integrations:python,env-configuration:python,common-integrations:typescript,env-configuration:typescript' }}
+      INPUT_TARGETS: ${{ inputs.targets || vars.BINDING_GENERATION_TARGETS || 'common-integrations:go,env-configuration:go,common-integrations:python,env-configuration:python,common-integrations:typescript,env-configuration:typescript,aws-s3:typescript,google-analytics:typescript,kubernetes-api:typescript,nats-service:typescript,source-control:typescript' }}
       GOTOOLCHAIN: local
     steps:
       - name: Check out current main
