@@ -49,6 +49,13 @@ packages:
         languageVersion: 20.19.6
         publicationMode: registry
         registryId: npm
+      rust:
+        coordinate: runtimeconditions-common-integrations
+        name: runtimeconditions_common_integrations
+        version: 0.1.0
+        sourceDirectory: bindings/common-integrations/rust
+        languageVersion: 1.92.0
+        publicationMode: github-tag
   env-configuration:
     rootExtension: https://runtimeconditions.io/extensions/env-configuration/v1alpha1/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0
@@ -76,6 +83,13 @@ packages:
         languageVersion: 20.19.6
         publicationMode: registry
         registryId: npm
+      rust:
+        coordinate: runtimeconditions-env-configuration
+        name: runtimeconditions_env_configuration
+        version: 0.1.0
+        sourceDirectory: bindings/env-configuration/rust
+        languageVersion: 1.92.0
+        publicationMode: github-tag
   google-analytics:
     rootExtension: https://runtimeconditions.io/extensions/google/analytics/0.1.0/runtimeconditions.extension.yaml
     coreProfileSchemaVersion: 0.2.0

@@ -2,8 +2,9 @@
 
 `IMPLEMENTATION.md` is historical design guidance; the repository owner's
 standing overrides govern generation and publication.
-The shared Go resolver and normalizer feed native Go and Python emitters. Native TypeScript
-and Java emitters live under `emitters/typescript/` and `emitters/java/`.
+The shared Go resolver and normalizer feed native Go and Python emitters. Native TypeScript,
+Java, and Rust emitters live under `emitters/typescript/`, `emitters/java/`, and
+`emitters/rust/`; the Rust contract is in `CONTRACT.md`.
 The Go orchestrator exposes eight commands through Go's standard `flag` package.
 GitHub Actions generates and commits Go and Python bindings to `main`, then a
 separate manual workflow publishes verified Go module tags and release assets.
@@ -284,6 +285,34 @@ The existing
 development toolchain lock remains a development input. Go publication uses
 verified workspace tools and records their actual identities. A separately
 released tooling lock is optional future work.
+
+## Rust quickstart
+
+`emitters/rust/rust-toolchain.toml` pins Rust 1.92.0 with rustfmt and clippy, matching
+`toolchain.lock.yaml`. From `emitters/rust/`, emit and verify a package from a committed
+normalized model and package target:
+
+```sh
+M=../../model/conformance/expected/01-owned-kind-interface/runtimeconditions.binding-model.yaml
+cargo run --locked -- emit --model $M --package-config testdata/package-target.yaml --output /tmp/rust-pkg
+cargo run --locked -- verify --model $M --package-config testdata/package-target.yaml --input /tmp/rust-pkg
+```
+
+Add `--json` to get structured errors. A consumer adds the generated crate as a path
+dependency, for example `runtimeconditions-conformance-owned-kind-interface = { path = "/tmp/rust-pkg" }`.
+
+Real models come from `rc bindings normalize`, and the package target is generated
+from `packages.yaml`. The orchestrator computes `emitterSha256` from the emitter
+sources (`Cargo.toml`, `Cargo.lock`, `package-target.schema.yaml`, `src/*.rs`); the standalone
+emitter only requires a 64-character hex digest. To generate, verify, and package every Rust
+target from the repository root:
+
+```sh
+/tmp/rc bindings update --target common-integrations:rust --target env-configuration:rust
+/tmp/rc bindings check --target common-integrations:rust --target env-configuration:rust
+```
+
+`cargo test --locked` runs the conformance suite, which compiles and runs the generated crates.
 
 ## Phase 5 verification scope
 

@@ -178,7 +178,7 @@ func DiscoverProject(cwd, packagesPath, toolchainPath, toolingDirectory string) 
 				return nil, fmt.Errorf("%s:%s: name is required by the %s native emitter", key, language, language)
 			}
 			if p.Toolchain.Status == "released" {
-				if p.Toolchain.Tools.Emitters[language].SHA256 == "" || p.Toolchain.Tools.Profilers[language].SHA256 == "" {
+				if p.Toolchain.Tools.Emitters[language].SHA256 == "" || (language != "rust" && p.Toolchain.Tools.Profilers[language].SHA256 == "") {
 					return nil, fmt.Errorf("%s: released lock lacks emitter or profiler", language)
 				}
 				native, ok := p.Toolchain.Languages[language]

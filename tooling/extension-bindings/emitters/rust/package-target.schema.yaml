@@ -1,0 +1,70 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://runtimeconditions.io/schemas/rust-package-target/v1alpha1
+title: Runtime Conditions Rust package target
+type: object
+additionalProperties: false
+required: [apiVersion, kind, packageKey, rootExtension, crateName, version, sourceDirectory, minimumRustVersion, publicationMode, repositoryUrl]
+properties:
+  apiVersion:
+    const: runtimeconditions.io/rust-package-target/v1alpha1
+  kind:
+    const: RuntimeConditionsRustPackageTarget
+  packageKey:
+    type: string
+    pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+  rootExtension:
+    type: string
+    minLength: 1
+  crateName:
+    description: The Cargo package name. It is never inferred from extension vocabulary.
+    type: string
+    maxLength: 64
+    pattern: '^[a-z][a-z0-9_-]*$'
+  version:
+    type: string
+    pattern: '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\.(0|[1-9][0-9]*))?$'
+  sourceDirectory:
+    type: string
+    pattern: '^bindings/[a-z0-9]+(?:-[a-z0-9]+)*/rust$'
+  minimumRustVersion:
+    type: string
+    pattern: '^[0-9]+\.[0-9]+$'
+  publicationMode:
+    enum: [github-tag, registry]
+  registryId:
+    type: string
+    minLength: 1
+  repositoryUrl:
+    type: string
+    pattern: '^https://[^\s]+$'
+  emitterSha256:
+    description: Required when emitting package resources; supplied by the tooling caller.
+    type: string
+    pattern: '^[0-9a-f]{64}$'
+  dependencies:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [extension, crateName, version]
+      properties:
+        extension:
+          type: string
+          minLength: 1
+        crateName:
+          type: string
+          maxLength: 64
+          pattern: '^[a-z][a-z0-9_-]*$'
+        version:
+          type: string
+          pattern: '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\.(0|[1-9][0-9]*))?$'
+allOf:
+  - if:
+      properties:
+        publicationMode:
+          const: registry
+    then:
+      required: [registryId]
+    else:
+      not:
+        required: [registryId]
