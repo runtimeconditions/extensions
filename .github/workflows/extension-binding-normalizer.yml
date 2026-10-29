@@ -9,6 +9,8 @@ on:
       - "tooling/extension-bindings/README.md"
       - "tooling/extension-bindings/emitters/go/**"
       - "tooling/extension-bindings/emitters/typescript/**"
+      - "tooling/extension-bindings/emitters/python/**"
+      - "tooling/extension-bindings/ci/emitter_conformance.py"
       - "tooling/extension-bindings/model/**"
       - "tooling/extension-bindings/normalizer/**"
   push:
@@ -20,6 +22,8 @@ on:
       - "tooling/extension-bindings/README.md"
       - "tooling/extension-bindings/emitters/go/**"
       - "tooling/extension-bindings/emitters/typescript/**"
+      - "tooling/extension-bindings/emitters/python/**"
+      - "tooling/extension-bindings/ci/emitter_conformance.py"
       - "tooling/extension-bindings/model/**"
       - "tooling/extension-bindings/normalizer/**"
   workflow_dispatch:
@@ -111,3 +115,41 @@ jobs:
 
       - name: Test the TypeScript emitter and generated conformance packages
         run: npm test
+
+  verify-emitter-conformance:
+    name: Verify emitters agree on the shared fixtures
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12.10'
+
+      - name: Install the pinned Python tooling
+        run: python -m pip install --disable-pip-version-check --no-deps -r tooling/extension-bindings/ci/python-tooling-requirements.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 20.19.6
+          cache: npm
+          cache-dependency-path: tooling/extension-bindings/emitters/typescript/package-lock.json
+
+      - name: Build the TypeScript emitter
+        working-directory: tooling/extension-bindings/emitters/typescript
+        run: npm ci --ignore-scripts && npm run build
+
+      - name: Test the fixture checker
+        working-directory: tooling/extension-bindings/ci
+        run: python -m unittest test_emitter_conformance
+
+      - name: Compare each emitter's manifest with the shared fixtures
+        working-directory: tooling/extension-bindings/ci
+        run: python emitter_conformance.py --emitters python,typescript

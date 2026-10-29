@@ -27,6 +27,8 @@ var conformanceCases = []string{
 	"11-source-name-preservation",
 	"12-unsupported-structural-keyword",
 	"13-dependency-schema-only",
+	"14-scalar-definition-references",
+	"15-keyword-property-names",
 }
 
 var negativeConformanceCases = map[string]bool{

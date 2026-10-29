@@ -1,0 +1,33 @@
+declarations:
+- modelRef:
+    coordinate: kind:job
+  owner: https://runtimeconditions.io/conformance/dependency-schema-only-root:1.0.0
+  sourceName: job
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:job
+  fixedInterfaceType: process
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/dependency-schema-only-root:1.0.0#schema:job-process
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/dependency-schema-only-root:1.0.0#schema:job-process
+  scope:
+    interfaceType: process
+    kind: job
+  sourceName: process
+- declarationCoordinate: kind:job
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/dependency-schema-only-root:1.0.0#schema:job-process
+    jsonPointer: /properties/command
+  path:
+  - name: command
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/dependency-schema-only-root:1.0.0#schema:job-process
+  scope:
+    interfaceType: process
+    kind: job
+  sourceName: command
+  vocabularyCoordinate: condition-field:job:process:command

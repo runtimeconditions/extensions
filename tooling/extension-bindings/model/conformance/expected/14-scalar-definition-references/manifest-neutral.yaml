@@ -1,0 +1,81 @@
+declarations:
+- modelRef:
+    coordinate: kind:setting
+  owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+  sourceName: setting
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:setting
+  fixedInterfaceType: file
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+  scope:
+    interfaceType: file
+    kind: setting
+  sourceName: file
+- declarationCoordinate: kind:setting
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+    jsonPointer: /properties/alias
+  path:
+  - name: alias
+  role: schema-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+  scope:
+    interfaceType: file
+    kind: setting
+  sourceName: alias
+- declarationCoordinate: kind:setting
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+    jsonPointer: /properties/label
+  path:
+  - name: label
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+  scope:
+    interfaceType: file
+    kind: setting
+  sourceName: label
+  vocabularyCoordinate: condition-field:setting:file:label
+- declarationCoordinate: kind:setting
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+    jsonPointer: /properties/mode
+  path:
+  - name: mode
+  role: schema-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+  scope:
+    interfaceType: file
+    kind: setting
+  sourceName: mode
+- declarationCoordinate: kind:setting
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+    jsonPointer: /properties/payload
+  path:
+  - name: payload
+  role: schema-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+  scope:
+    interfaceType: file
+    kind: setting
+  sourceName: payload
+- declarationCoordinate: kind:setting
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+    jsonPointer: /properties/tags
+  path:
+  - name: tags
+  role: schema-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+  scope:
+    interfaceType: file
+    kind: setting
+  sourceName: tags

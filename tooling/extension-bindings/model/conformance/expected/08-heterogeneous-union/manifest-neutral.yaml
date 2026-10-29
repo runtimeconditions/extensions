@@ -1,0 +1,32 @@
+declarations:
+- modelRef:
+    coordinate: kind:selector
+  owner: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0
+  sourceName: selector
+importedMarkerContracts: []
+rootBindings:
+- declarationCoordinate: kind:selector
+  fixedInterfaceType: target
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
+    jsonPointer: /properties/interface
+  path:
+  - name: interface
+  role: interface
+  schemaCoordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
+  scope:
+    interfaceType: target
+    kind: selector
+  sourceName: target
+- declarationCoordinate: kind:selector
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
+    jsonPointer: /properties/target
+  path:
+  - name: target
+  role: schema-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/heterogeneous-union:1.0.0#schema:heterogeneous-target
+  scope:
+    interfaceType: target
+    kind: selector
+  sourceName: target

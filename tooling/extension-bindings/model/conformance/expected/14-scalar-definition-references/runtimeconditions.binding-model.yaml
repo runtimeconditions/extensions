@@ -1,0 +1,394 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: f9d9f7e5999718ab1e22e1f94fcd2cee231f990953c4ad101edf6559185457c3
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+coreProfileSchema:
+    id: https://runtimeconditions.io/schemas/profile/0.2.0/runtimeconditions.profile.schema.yaml
+    version: 0.2.0
+    semanticSha256: a090a8016d045f9c3fa872a67f8df293b77ca2809a1bea5ae9fa31a27a06109a
+rootExtension:
+    id: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+    version: 1.0.0
+    semanticSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+extensions:
+    - id: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+      version: 1.0.0
+      semanticSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+vocabulary:
+    owners:
+        - coordinate: condition-field:setting:file:label
+          category: condition-field
+          owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+          kind: setting
+          interfaceType: file
+          path: label
+        - coordinate: interface:setting:file
+          category: interface
+          owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+          kind: setting
+          interfaceType: file
+        - coordinate: kind:setting
+          category: kind
+          owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+          kind: setting
+    ownedDeclarations:
+        - coordinate: kind:setting
+          owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+          kind: setting
+          provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: kind:setting
+    interfaces:
+        - coordinate: interface:setting:file
+          owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+          kind: setting
+          type: file
+          provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: interface:setting:file
+    conditionFields:
+        - coordinate: condition-field:setting:file:label
+          owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+          kind: setting
+          interfaceType: file
+          path: label
+          segments:
+            - name: label
+          provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: condition-field:setting:file:label
+scopes:
+    - coordinate: setting:file
+      kind: setting
+      interfaceType: file
+      applicableSchemas:
+        - https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+      projection:
+        kind: object
+        required:
+            - interface
+            - label
+        properties:
+            - name: alias
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /$defs/label
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/alias
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/interface
+            - name: label
+              required: true
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /$defs/label
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/label
+            - name: mode
+              shape:
+                kind: scalar
+                scalar: string
+                values:
+                    - value: fast
+                    - value: safe
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /$defs/mode
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/mode
+            - name: payload
+              shape:
+                kind: any
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /$defs/payload
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/payload
+            - name: tags
+              shape:
+                kind: array
+                items:
+                    kind: scalar
+                    scalar: string
+                    provenance:
+                        owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                        extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                        coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                        jsonPointer: /$defs/label
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /properties/tags
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/tags
+        provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+schemas:
+    - coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+      owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+      id: setting-file
+      kind: setting
+      interfaceType: file
+      exact:
+        $defs:
+            alias:
+                $ref: '#/$defs/label'
+            label:
+                type: string
+            mode:
+                enum:
+                    - fast
+                    - safe
+                type: string
+            payload: {}
+        additionalProperties: false
+        properties:
+            alias:
+                $ref: '#/$defs/alias'
+            interface:
+                additionalProperties: false
+                properties:
+                    type:
+                        const: file
+                required:
+                    - type
+                type: object
+            kind:
+                const: setting
+            label:
+                $ref: '#/$defs/label'
+            mode:
+                $ref: '#/$defs/mode'
+            payload:
+                $ref: '#/$defs/payload'
+            tags:
+                items:
+                    $ref: '#/$defs/alias'
+                type: array
+        required:
+            - interface
+            - kind
+            - label
+        type: object
+      projection:
+        kind: object
+        required:
+            - interface
+            - label
+        properties:
+            - name: alias
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /$defs/label
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/alias
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/interface
+            - name: label
+              required: true
+              shape:
+                kind: scalar
+                scalar: string
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /$defs/label
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/label
+            - name: mode
+              shape:
+                kind: scalar
+                scalar: string
+                values:
+                    - value: fast
+                    - value: safe
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /$defs/mode
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/mode
+            - name: payload
+              shape:
+                kind: any
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /$defs/payload
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/payload
+            - name: tags
+              shape:
+                kind: array
+                items:
+                    kind: scalar
+                    scalar: string
+                    provenance:
+                        owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                        extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                        coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                        jsonPointer: /$defs/label
+                provenance:
+                    owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                    extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                    coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                    jsonPointer: /properties/tags
+              provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /properties/tags
+        provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+      definitions:
+        - name: alias
+          jsonPointer: /$defs/alias
+          shape:
+            kind: ref
+            ref: '#/$defs/label'
+            provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /$defs/alias
+          provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+            jsonPointer: /$defs/alias
+        - name: label
+          jsonPointer: /$defs/label
+          shape:
+            kind: scalar
+            scalar: string
+            provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /$defs/label
+          provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+            jsonPointer: /$defs/label
+        - name: mode
+          jsonPointer: /$defs/mode
+          shape:
+            kind: scalar
+            scalar: string
+            values:
+                - value: fast
+                - value: safe
+            provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /$defs/mode
+          provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+            jsonPointer: /$defs/mode
+        - name: payload
+          jsonPointer: /$defs/payload
+          shape:
+            kind: any
+            provenance:
+                owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+                extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+                coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+                jsonPointer: /$defs/payload
+          provenance:
+            owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+            extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+            coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file
+            jsonPointer: /$defs/payload
+      provenance:
+        owner: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0
+        extensionSha256: a12a21ea51036bcabef09c40b566261addae2d1b6f70b82dd801fc16977577b2
+        coordinate: https://runtimeconditions.io/conformance/scalar-definition-references:1.0.0#schema:setting-file

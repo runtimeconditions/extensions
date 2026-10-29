@@ -1,0 +1,20 @@
+declarations: []
+importedMarkerContracts:
+- modelRef:
+    coordinate: kind:worker
+  owner: https://runtimeconditions.io/conformance/transitive-leaf:1.0.0
+  sourceName: worker
+rootBindings:
+- declarationCoordinate: kind:worker
+  modelRef:
+    coordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
+    jsonPointer: /properties/command
+  path:
+  - name: command
+  role: condition-field
+  schemaCoordinate: https://runtimeconditions.io/conformance/transitive-root:1.0.0#schema:worker-process
+  scope:
+    interfaceType: process
+    kind: worker
+  sourceName: command
+  vocabularyCoordinate: condition-field:worker:process:command
