@@ -188,6 +188,15 @@ func (p *Pipeline) tool(key string) (string, Tool, error) {
 		path = p.Options.GoProfiler
 		expected = p.Project.Toolchain.Tools.Profilers["go"]
 	case "orchestrator":
+		if p.Options.Hooks.ProfilerIdentity != nil {
+			if identity, err := ModuleIdentity(modulePath, "rc"); err == nil {
+				if err = p.checkLinked(key, identity, p.Project.Toolchain.Tools.Orchestrator); err != nil {
+					return "", Tool{}, err
+				}
+				p.identities[key] = identity
+				return "", identity, nil
+			}
+		}
 		path, _ = os.Executable()
 		expected = p.Project.Toolchain.Tools.Orchestrator
 	default:
@@ -258,6 +267,19 @@ func (p *Pipeline) tool(key string) (string, Tool, error) {
 	p.identities[key] = identity
 	return path, identity, nil
 }
+
+// checkLinked compares a tool linked into the host executable with the toolchain lock. A development
+// build has no version or checksum, so it matches only a lock that is not released.
+func (p *Pipeline) checkLinked(key string, identity, expected Tool) error {
+	released := p.Project.Toolchain.Status == "released"
+	if identity.Version == "(devel)" && !released {
+		return nil
+	}
+	if expected.SHA256 != "" && (expected.SHA256 != identity.SHA256 || expected.Version != identity.Version) {
+		return fmt.Errorf("%s identity differs from toolchain lock", key)
+	}
+	return nil
+}
 func (p *Pipeline) pythonEmitterIdentity() (Tool, error) {
 	if identity, ok := p.identities["python-emitter"]; ok {
 		return identity, nil
@@ -315,6 +337,18 @@ func (p *Pipeline) pythonEmitterIdentity() (Tool, error) {
 	return identity, nil
 }
 func (p *Pipeline) profiler(language string) (Tool, error) {
+	if language == "go" && p.Options.BuiltinGoProfiler {
+		identity, ok, err := p.Options.Hooks.ProfilerIdentity(language)
+		if err != nil {
+			return Tool{}, err
+		}
+		if ok {
+			if err = p.checkLinked("go-profiler", identity, p.Project.Toolchain.Tools.Profilers["go"]); err != nil {
+				return Tool{}, err
+			}
+			return identity, nil
+		}
+	}
 	if language == "go" {
 		_, identity, err := p.tool("go-profiler")
 		return identity, err

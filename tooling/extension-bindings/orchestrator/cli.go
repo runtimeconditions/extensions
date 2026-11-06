@@ -22,10 +22,22 @@ type Options struct {
 	Output, Input, Report, ClosureOutput, DependencyLockOutput, DependencyLock                        string
 	CoreSchema, Go, Python, GoEmitter, Normalizer, GoProfiler, PythonProfiler, PythonProfilerArtifact string
 	Targets, ExtensionRoots, Overrides, CatalogRoots                                                  repeated
+	Hooks                                                                                             Hooks
+	BuiltinGoProfiler                                                                                 bool
+}
+
+// Hooks lets a host executable supply tools that are linked into it instead of installed beside it.
+type Hooks struct {
+	ProfilerIdentity func(language string) (Tool, bool, error)
 }
 
 // Run is the reusable command boundary; the rc executable only supplies streams.
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) error {
+	return RunWith(ctx, args, stdout, stderr, Hooks{})
+}
+
+// RunWith accepts the arguments with or without the leading "bindings".
+func RunWith(ctx context.Context, args []string, stdout, stderr io.Writer, h Hooks) error {
 	if len(args) == 0 || args[0] == "--help" || args[0] == "-h" {
 		fmt.Fprintln(stdout, "Usage: rc bindings <resolve|normalize|generate|verify|package|plan-release|check|update> [flags]")
 		return nil
@@ -34,10 +46,13 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) error {
 		fmt.Fprintln(stdout, "rc", Version)
 		return nil
 	}
-	if args[0] != "bindings" || len(args) < 2 {
+	if args[0] == "bindings" {
+		args = args[1:]
+	}
+	if len(args) == 0 {
 		return fmt.Errorf("usage: rc bindings <command> [flags]")
 	}
-	name := args[1]
+	name := args[0]
 	supported := map[string]bool{"resolve": true, "normalize": true, "generate": true, "verify": true, "package": true, "plan-release": true, "check": true, "update": true}
 	if name == "--help" || name == "-h" {
 		fmt.Fprintln(stdout, "Commands: resolve normalize generate verify package plan-release check update")
@@ -46,7 +61,7 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) error {
 	if !supported[name] {
 		return fmt.Errorf("unknown bindings command %q", name)
 	}
-	var o Options
+	o := Options{Hooks: h}
 	f := flag.NewFlagSet("rc bindings "+name, flag.ContinueOnError)
 	f.SetOutput(stderr)
 	f.StringVar(&o.Packages, "packages", "", "package catalog path")
@@ -85,12 +100,15 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) error {
 	f.StringVar(&o.GoProfiler, "go-profiler", envOr("RC_GO_PROFILER_BIN", "go-rc-profiler"), "independently installed Go profiler CLI")
 	f.StringVar(&o.PythonProfiler, "python-profiler", envOr("RC_PYTHON_PROFILER_BIN", "runtimeconditions-python-profiler"), "independently installed Python profiler CLI")
 	f.StringVar(&o.PythonProfilerArtifact, "python-profiler-artifact", os.Getenv("RC_PYTHON_PROFILER_ARTIFACT"), "installed Python profiler wheel for artifact identity verification")
-	if err := f.Parse(args[2:]); err != nil {
+	if err := f.Parse(args[1:]); err != nil {
 		if err == flag.ErrHelp {
 			return nil
 		}
 		return err
 	}
+	explicit := false
+	f.Visit(func(fl *flag.Flag) { explicit = explicit || fl.Name == "go-profiler" })
+	o.BuiltinGoProfiler = o.Hooks.ProfilerIdentity != nil && !explicit && os.Getenv("RC_GO_PROFILER_BIN") == ""
 	if f.NArg() != 0 {
 		return fmt.Errorf("unexpected positional arguments: %s", strings.Join(f.Args(), " "))
 	}

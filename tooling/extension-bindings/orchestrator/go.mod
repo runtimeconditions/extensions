@@ -3,8 +3,8 @@ module github.com/runtimeconditions/extensions/tooling/extension-bindings/orches
 go 1.22
 
 require (
- github.com/runtimeconditions/extensions/tooling/extension-bindings/normalizer v0.0.0
- github.com/runtimeconditions/extensions/tooling/extension-bindings/emitters/go v0.0.0
+ github.com/runtimeconditions/extensions/tooling/extension-bindings/normalizer v0.1.0
+ github.com/runtimeconditions/extensions/tooling/extension-bindings/emitters/go v0.1.0
  github.com/santhosh-tekuri/jsonschema/v6 v6.0.3
  gopkg.in/yaml.v3 v3.0.1
 )
