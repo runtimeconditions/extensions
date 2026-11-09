@@ -84,6 +84,12 @@ func (p *Pipeline) releaseManifest(bt *BuiltTarget, build *Build) (map[string]an
 			minimum = version
 			next = nextBreaking(version)
 		}
+		if bt.Target.Language == "rust" {
+			kind = "rust-source-zip"
+			version = dependency.Target.Config.Version
+			minimum = version
+			next = nextBreaking(version)
+		}
 		artifact := dependency.Artifacts[kind]
 		data, err := os.ReadFile(artifact)
 		if err != nil {
@@ -93,6 +99,9 @@ func (p *Pipeline) releaseManifest(bt *BuiltTarget, build *Build) (map[string]an
 	}
 	identity := bt.Document.Model.RootExtension
 	result := map[string]any{"apiVersion": "runtimeconditions.io/binding-release/v1alpha1", "kind": "RuntimeConditionsBindingRelease", "package": packageIdentity, "model": map[string]any{"apiVersion": bt.Document.Model.APIVersion, "semanticSha256": bt.Document.Model.Metadata.SemanticSHA256}, "rootExtension": identity, "dependencyLock": bt.Document.Lock, "packageDependencies": dependencies, "provenance": map[string]any{"mode": "production", "orchestrator": orchestrator, "profiler": profiler, "sourceDirectory": bt.Target.Config.SourceDirectory, "targetReleaseTag": bt.Target.Config.SourceDirectory + "/v" + bt.Target.Config.Version}}
+	if profiler.SHA256 == "" {
+		delete(mapValue(result["provenance"]), "profiler")
+	}
 	schema, err := readMapping(filepath.Join(p.Project.ToolingDirectory, "model", "runtimeconditions.binding-release.schema.yaml"))
 	if err != nil {
 		return nil, err
@@ -455,7 +464,16 @@ func (p *Pipeline) nativeAPI(bt *BuiltTarget) ([]string, error) {
 	if bt.Target.Language == "go" {
 		return goemitter.SourceAPISurface(filepath.Join(bt.Directory, "bindings.go"))
 	}
-	data, err := p.python("api", "--input", resourceDir(bt))
+	var data []byte
+	var err error
+	if bt.Target.Language == "rust" {
+		var tool string
+		if tool, _, err = p.tool("rust-emitter"); err == nil {
+			data, err = p.run(p.Project.Root, nil, tool, "api", "--input", bt.Directory)
+		}
+	} else {
+		data, err = p.python("api", "--input", resourceDir(bt))
+	}
 	if err != nil {
 		return nil, err
 	}

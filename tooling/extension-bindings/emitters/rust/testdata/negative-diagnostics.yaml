@@ -1,0 +1,12 @@
+- case: reserved-global
+  positiveCase: 01-owned-kind-interface
+  message: "RCR2001 01-owned-kind-interface: symbol 'Option' conflicts: https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http/properties/region"
+- case: fixed-function-collision
+  positiveCase: 01-owned-kind-interface
+  message: "RCR2001 01-owned-kind-interface: symbol 'ServiceField' conflicts: kind:Service and kind:service"
+- case: enum-member-collision
+  positiveCase: 10-scoped-domains-collisions
+  message: "RCR2001 10-scoped-domains-collisions: symbol 'streaming' conflicts after full path: https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-grpc/properties/mode#value:STREAMING and https://runtimeconditions.io/conformance/scoped-domains-collisions:1.0.0#schema:service-grpc/properties/mode#value:streaming"
+- case: unnameable-field
+  positiveCase: 01-owned-kind-interface
+  message: "RCR2000 https://runtimeconditions.io/conformance/owned-kind-interface:1.0.0#schema:service-http /properties/region: invalid Rust identifier \"💥\""

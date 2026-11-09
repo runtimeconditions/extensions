@@ -56,11 +56,17 @@ allOf:
                 properties:
                   kind: {const: go-module-zip}
         provenance:
+          required: [profiler]
           properties:
             profiler:
               properties:
                 name: {const: go-rc-profiler}
-    else:
+  - if:
+      properties:
+        package:
+          properties:
+            language: {const: python}
+    then:
       properties:
         packageDependencies:
           items:
@@ -69,10 +75,27 @@ allOf:
                 properties:
                   kind: {const: python-wheel}
         provenance:
+          required: [profiler]
           properties:
             profiler:
               properties:
                 name: {const: python-rc-profiler}
+  - if:
+      properties:
+        package:
+          properties:
+            language: {const: rust}
+    then:
+      properties:
+        packageDependencies:
+          items:
+            properties:
+              artifact:
+                properties:
+                  kind: {const: rust-source-zip}
+        provenance:
+          not:
+            required: [profiler]
   - if:
       properties:
         provenance:
@@ -121,7 +144,7 @@ $defs:
       packageKey:
         type: string
         pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
-      language: {enum: [go, python]}
+      language: {enum: [go, python, rust]}
       coordinate: {$ref: '#/$defs/nonEmptyString'}
       name:
         type: string
@@ -133,6 +156,9 @@ $defs:
       minimumPythonVersion:
         type: string
         pattern: '^[0-9]+\.[0-9]+$'
+      minimumRustVersion:
+        type: string
+        pattern: '^[0-9]+\.[0-9]+$'
       publicationMode: {enum: [github-tag, registry]}
       registryId: {$ref: '#/$defs/nonEmptyString'}
     allOf:
@@ -142,11 +168,27 @@ $defs:
         then:
           required: [minimumGoVersion]
           not:
-            required: [minimumPythonVersion]
-        else:
+            anyOf:
+              - required: [minimumPythonVersion]
+              - required: [minimumRustVersion]
+      - if:
+          properties:
+            language: {const: python}
+        then:
           required: [minimumPythonVersion]
           not:
-            required: [minimumGoVersion]
+            anyOf:
+              - required: [minimumGoVersion]
+              - required: [minimumRustVersion]
+      - if:
+          properties:
+            language: {const: rust}
+        then:
+          required: [minimumRustVersion]
+          not:
+            anyOf:
+              - required: [minimumGoVersion]
+              - required: [minimumPythonVersion]
       - if:
           properties:
             publicationMode: {const: registry}
@@ -244,7 +286,7 @@ $defs:
         additionalProperties: false
         required: [kind, sha256]
         properties:
-          kind: {enum: [go-module-zip, python-wheel]}
+          kind: {enum: [go-module-zip, python-wheel, rust-source-zip]}
           sha256: {$ref: '#/$defs/sha256'}
   fixtureProvenance:
     description: >-
@@ -264,14 +306,14 @@ $defs:
       must enforce these cross-field equalities.
     type: object
     additionalProperties: false
-    required: [mode, orchestrator, profiler, sourceDirectory, targetReleaseTag]
+    required: [mode, orchestrator, sourceDirectory, targetReleaseTag]
     properties:
       mode: {const: production}
       orchestrator: {$ref: '#/$defs/toolIdentity'}
       profiler: {$ref: '#/$defs/toolIdentity'}
       sourceDirectory:
         type: string
-        pattern: '^bindings/[a-z0-9]+(?:-[a-z0-9]+)*/(go|python)$'
+        pattern: '^bindings/[a-z0-9]+(?:-[a-z0-9]+)*/(go|python|rust)$'
       targetReleaseTag:
         type: string
-        pattern: '^bindings/[a-z0-9]+(?:-[a-z0-9]+)*/(go|python)/v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'
+        pattern: '^bindings/[a-z0-9]+(?:-[a-z0-9]+)*/(go|python|rust)/v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'

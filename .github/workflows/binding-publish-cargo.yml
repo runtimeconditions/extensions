@@ -1,0 +1,43 @@
+name: Publish Rust bindings (placeholder, publishes nothing)
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Comma-separated package-key:rust targets, or all'
+        type: string
+        default: ''
+      dry_run:
+        description: 'Must stay true until crates.io publication is implemented'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: binding-publish-cargo
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Report placeholder status
+        env:
+          TARGETS: ${{ inputs.targets }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          if [ "${DRY_RUN}" != "true" ]; then
+            echo "::error::crates.io publication is not implemented; rerun with dry_run enabled."
+            exit 1
+          fi
+          {
+            echo "### Placeholder: nothing was verified or published"
+            echo "crates.io publication is not implemented. No package was verified, built, or pushed."
+            echo "targets: \`${TARGETS:-none}\`"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -10,7 +10,7 @@ from pathlib import Path
 
 import yaml
 
-LANGUAGES = {"go": "Go", "python": "Python", "typescript": "TypeScript"}
+LANGUAGES = {"go": "Go", "python": "Python", "typescript": "TypeScript", "rust": "Rust"}
 
 Target = tuple[str, str, str]
 
