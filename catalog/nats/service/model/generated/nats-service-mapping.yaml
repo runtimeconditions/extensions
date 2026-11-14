@@ -5,12 +5,12 @@ metadata:
   service: nats
   operationCount: 26
   sourceInventorySemanticSha256: 0f6fb3a7c5f1f3c8c780724057ef96ca22a7b2d0c2766f493e22d5f444c88ee8
-  semanticBridgeSha256: 18af2b80c4e5de810168973053f7e2ff94d11e63dd7f01357d1eee3e9ee07d7f
+  semanticBridgeSha256: 746005b88bc88a1a51b00c842e23d1a667a381466091d73efc4781c37a0f359b
   semanticSha256: cb1090244704b4bba63ce1390578f200db29ab297d9e2f25efab061a188d606c
 extension:
-  id: https://runtimeconditions.io/extensions/nats/service/0.1.0/runtimeconditions.extension.yaml
-  version: 0.1.0
-  semanticSha256: aef0e170f79d739a505a0ab1a257000a9cc2b5fc85cec537fdcfb69e556aceab
+  id: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+  version: 0.2.0
+  semanticSha256: 9861a18b83aa2a448238ebc09435d0262770f4b7acd1d249a489b1059ac53afc
 fields:
   subject:
     schema:

@@ -179,7 +179,11 @@ class NATSServiceExtensionCompilationTest(unittest.TestCase):
         )
         extension, mapping = build(self.inventory, bridge)
         self.assertEqual(extension, read_document(ROOT / "releases/0.1.0/runtimeconditions.extension.yaml"))
-        self.assertEqual(mapping, read_document(ROOT / "model/generated/nats-service-mapping.yaml"))
+        self.assertEqual(mapping["metadata"]["operationCount"], self.service_mapping["metadata"]["operationCount"])
+        self.assertEqual(mapping["operations"], self.service_mapping["operations"])
+
+    def test_committed_service_mapping_matches_the_compiler_output(self):
+        self.assertEqual(self.service_mapping, read_document(ROOT / "model/generated/nats-service-mapping.yaml"))
 
 
 if __name__ == "__main__":

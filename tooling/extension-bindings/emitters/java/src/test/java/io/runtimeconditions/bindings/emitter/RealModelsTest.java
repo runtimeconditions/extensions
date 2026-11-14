@@ -20,8 +20,6 @@ import org.junit.jupiter.api.Test;
 class RealModelsTest {
     private static final Path COMMON = TOOLING.resolve("../../bindings/common-integrations/go/runtimeconditions.binding-model.yaml").normalize();
     private static final Path ENV = TOOLING.resolve("../../bindings/env-configuration/go/runtimeconditions.binding-model.yaml").normalize();
-    private static final String COMMON_ID =
-            "https://runtimeconditions.io/extensions/rc/common-integrations/v1alpha1/runtimeconditions.extension.yaml";
 
     private static PackageTarget target(String key, String javaPackage, ObjectNode model, List<Dependency> dependencies) {
         PackageTarget base = developmentTarget();
@@ -63,7 +61,7 @@ class RealModelsTest {
                                     "env-configuration",
                                     "io.runtimeconditions.envconfiguration",
                                     env,
-                                    List.of(new Dependency(COMMON_ID, "io.runtimeconditions", "common-integrations", "io.runtimeconditions.commonintegrations", "0.1.0"))));
+                                    List.of(new Dependency(common.path("rootExtension").path("id").asText(), "io.runtimeconditions", "common-integrations", "io.runtimeconditions.commonintegrations", "0.1.0"))));
             Path envDirectory = workspace.resolve("env");
             Source.emitPackage(envPlan, env, envDirectory);
             Verification.verifyPackage(envPlan, envDirectory, env);

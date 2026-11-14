@@ -18,9 +18,6 @@ const ENV = join(
   TOOLING,
   "../../bindings/env-configuration/go/runtimeconditions.binding-model.yaml",
 );
-const COMMON_ID =
-  "https://runtimeconditions.io/extensions/rc/common-integrations/v1alpha1/runtimeconditions.extension.yaml";
-
 test(
   "the committed first-party models emit packages that compile, including recursive maps",
   { skip: !existsSync(COMMON) || !existsSync(ENV) },
@@ -59,7 +56,7 @@ test(
         rootExtension: env["rootExtension"].id,
         dependencies: [
           {
-            extension: COMMON_ID,
+            extension: common["rootExtension"].id,
             packageName: "@runtimeconditions/common-integrations",
             version: "0.1.0",
           },

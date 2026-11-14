@@ -22,7 +22,7 @@ extensions:
 
 This extension defines the Condition field `configuration`.
 
-This release depends on common-integrations `v1alpha2` and NATS service `0.1.0`. Immutable definition URIs identify those dependencies in the definition and binding metadata; generated profiles use the namespaced `<location>:<version>` references above. Regenerated binding packages therefore depend on both providers' native packages.
+This release depends on common-integrations `v1alpha2`. Immutable definition URIs identify that dependency in the definition and binding metadata; generated profiles use the namespaced `<location>:<version>` references above.
 
 This extension owns the unqualified Condition field name `configuration` only
 within the common integration scopes listed in this document. Other extensions
