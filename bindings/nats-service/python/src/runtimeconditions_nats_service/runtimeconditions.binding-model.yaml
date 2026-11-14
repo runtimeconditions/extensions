@@ -1,0 +1,2210 @@
+apiVersion: runtimeconditions.io/binding-model/v1alpha1
+kind: RuntimeConditionsBindingModel
+metadata:
+    semanticSha256: 1c28f480025bb1bdfd443688790354e3da60f615707da0b78000eeb129dd43ff
+    normalizer:
+        name: rc-binding-model
+        version: 0.1.0
+        sha256: 0b6a631f55ae70522b11a814326bc7c346118a1b47aa464c6904565d59085ac3
+coreProfileSchema:
+    id: https://runtimeconditions.io/schemas/profile/0.4.0/runtimeconditions.profile.schema.yaml
+    version: 0.4.0
+    semanticSha256: ed447dccefd7507d905b0b6177b1386d8ee96a1d053b731939a9a7ae973d5af1
+rootExtension:
+    id: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+    version: 0.2.0
+    semanticSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+extensions:
+    - id: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+      version: 0.2.0
+      semanticSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+vocabulary:
+    owners:
+        - coordinate: condition-field:nats.service:service:configuration
+          category: condition-field
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"consumer"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: consumer
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"hostname"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: hostname
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"password"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: password
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"port"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: port
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"stream"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: stream
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"subject"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: subject
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"tls"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: tls
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"token"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: token
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"url"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: url
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property:"username"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          value: username
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"consumer"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: consumer
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"hostname"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: hostname
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"password"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: password
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"port"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: port
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"stream"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: stream
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"subject"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: subject
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"tls"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: tls
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"token"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: token
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"url"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: url
+        - coordinate: field-domain:nats.service:service:configuration.env[].property:"username"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          value: username
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"connect"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: connect
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"consume"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: consume
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"create"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: create
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"delete"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: delete
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"inspect"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: inspect
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"publish"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: publish
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"read"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: read
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"request"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: request
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"subscribe"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: subscribe
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"update"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: update
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"watch"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: watch
+        - coordinate: field-domain:nats.service:service:interface.operations[].action:"write"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          value: write
+        - coordinate: field-domain:nats.service:service:interface.operations[].resource:"connection"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].resource
+          value: connection
+        - coordinate: field-domain:nats.service:service:interface.operations[].resource:"consumer"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].resource
+          value: consumer
+        - coordinate: field-domain:nats.service:service:interface.operations[].resource:"key_value"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].resource
+          value: key_value
+        - coordinate: field-domain:nats.service:service:interface.operations[].resource:"object_store"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].resource
+          value: object_store
+        - coordinate: field-domain:nats.service:service:interface.operations[].resource:"stream"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].resource
+          value: stream
+        - coordinate: field-domain:nats.service:service:interface.operations[].resource:"subject"
+          category: field-value
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].resource
+          value: subject
+        - coordinate: interface-field:nats.service:service:operations
+          category: interface-field
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations
+        - coordinate: interface:nats.service:service
+          category: interface
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+        - coordinate: kind:nats.service
+          category: kind
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+    ownedDeclarations:
+        - coordinate: kind:nats.service
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: kind:nats.service
+    interfaces:
+        - coordinate: interface:nats.service:service
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          type: service
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: interface:nats.service:service
+    conditionFields:
+        - coordinate: condition-field:nats.service:service:configuration
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration
+          segments:
+            - name: configuration
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: condition-field:nats.service:service:configuration
+    interfaceFields:
+        - coordinate: interface-field:nats.service:service:operations
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations
+          segments:
+            - name: interface
+            - name: operations
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: interface-field:nats.service:service:operations
+    valueDomains:
+        - coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.alternatives[].env[].property
+          segments:
+            - name: configuration
+            - name: alternatives
+              array: true
+            - name: env
+              array: true
+            - name: property
+          values:
+            - value: consumer
+            - value: hostname
+            - value: password
+            - value: port
+            - value: stream
+            - value: subject
+            - value: tls
+            - value: token
+            - value: url
+            - value: username
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: field-domain:nats.service:service:configuration.alternatives[].env[].property
+        - coordinate: field-domain:nats.service:service:configuration.env[].property
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: configuration.env[].property
+          segments:
+            - name: configuration
+            - name: env
+              array: true
+            - name: property
+          values:
+            - value: consumer
+            - value: hostname
+            - value: password
+            - value: port
+            - value: stream
+            - value: subject
+            - value: tls
+            - value: token
+            - value: url
+            - value: username
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: field-domain:nats.service:service:configuration.env[].property
+        - coordinate: field-domain:nats.service:service:interface.operations[].action
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].action
+          segments:
+            - name: interface
+            - name: operations
+              array: true
+            - name: action
+          values:
+            - value: connect
+            - value: consume
+            - value: create
+            - value: delete
+            - value: inspect
+            - value: publish
+            - value: read
+            - value: request
+            - value: subscribe
+            - value: update
+            - value: watch
+            - value: write
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: field-domain:nats.service:service:interface.operations[].action
+        - coordinate: field-domain:nats.service:service:interface.operations[].resource
+          owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          kind: nats.service
+          interfaceType: service
+          path: interface.operations[].resource
+          segments:
+            - name: interface
+            - name: operations
+              array: true
+            - name: resource
+          values:
+            - value: connection
+            - value: consumer
+            - value: key_value
+            - value: object_store
+            - value: stream
+            - value: subject
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: field-domain:nats.service:service:interface.operations[].resource
+scopes:
+    - coordinate: nats.service:service
+      kind: nats.service
+      interfaceType: service
+      applicableSchemas:
+        - https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+        - https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: configuration
+              shape:
+                kind: object
+                properties:
+                    - name: alternatives
+                      shape:
+                        kind: array
+                        items:
+                            kind: object
+                            required:
+                                - env
+                            properties:
+                                - name: env
+                                  required: true
+                                  shape:
+                                    kind: array
+                                    items:
+                                        kind: object
+                                        required:
+                                            - name
+                                            - property
+                                        properties:
+                                            - name: name
+                                              required: true
+                                              shape:
+                                                kind: scalar
+                                                scalar: string
+                                                constraints:
+                                                    pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+                                                provenance:
+                                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                    jsonPointer: /$defs/envInput/properties/name
+                                              provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/name
+                                            - name: property
+                                              required: true
+                                              shape:
+                                                kind: scalar
+                                                scalar: string
+                                                values:
+                                                    - value: consumer
+                                                    - value: hostname
+                                                    - value: password
+                                                    - value: port
+                                                    - value: stream
+                                                    - value: subject
+                                                    - value: tls
+                                                    - value: token
+                                                    - value: url
+                                                    - value: username
+                                                provenance:
+                                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                    jsonPointer: /$defs/envInput/properties/property
+                                              provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/property
+                                            - name: required
+                                              shape:
+                                                kind: scalar
+                                                scalar: boolean
+                                                provenance:
+                                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                    jsonPointer: /$defs/envInput/properties/required
+                                              provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/required
+                                            - name: sensitive
+                                              shape:
+                                                kind: scalar
+                                                scalar: boolean
+                                                provenance:
+                                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                    jsonPointer: /$defs/envInput/properties/sensitive
+                                              provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/sensitive
+                                        provenance:
+                                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                            jsonPointer: /$defs/envInput
+                                    constraints:
+                                        minItems: 1
+                                        uniqueItems: true
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envList
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives/items/properties/env
+                            provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives/items
+                        constraints:
+                            minItems: 2
+                        provenance:
+                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                            jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives
+                      provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives
+                    - name: env
+                      shape:
+                        kind: array
+                        items:
+                            kind: object
+                            required:
+                                - name
+                                - property
+                            properties:
+                                - name: name
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput/properties/name
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/name
+                                - name: property
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    values:
+                                        - value: consumer
+                                        - value: hostname
+                                        - value: password
+                                        - value: port
+                                        - value: stream
+                                        - value: subject
+                                        - value: tls
+                                        - value: token
+                                        - value: url
+                                        - value: username
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput/properties/property
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/property
+                                - name: required
+                                  shape:
+                                    kind: scalar
+                                    scalar: boolean
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput/properties/required
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/required
+                                - name: sensitive
+                                  shape:
+                                    kind: scalar
+                                    scalar: boolean
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput/properties/sensitive
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/sensitive
+                            provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/envInput
+                        constraints:
+                            minItems: 1
+                            uniqueItems: true
+                        provenance:
+                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                            jsonPointer: /$defs/envList
+                      provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/configuration/oneOf/1/properties/env
+                provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/configuration
+              provenance:
+                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                jsonPointer: /properties/configuration
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                required:
+                    - operations
+                properties:
+                    - name: operations
+                      required: true
+                      shape:
+                        kind: array
+                        items:
+                            kind: object
+                            required:
+                                - action
+                                - resource
+                            properties:
+                                - name: action
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    values:
+                                        - value: connect
+                                        - value: consume
+                                        - value: create
+                                        - value: delete
+                                        - value: inspect
+                                        - value: publish
+                                        - value: read
+                                        - value: request
+                                        - value: subscribe
+                                        - value: update
+                                        - value: watch
+                                        - value: write
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/0/properties/action
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/0/properties/action
+                                - name: bucket
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/25/properties/bucket
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/2/properties/bucket
+                                - name: name
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/21/properties/name
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/1/properties/name
+                                - name: resource
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    values:
+                                        - value: connection
+                                        - value: consumer
+                                        - value: key_value
+                                        - value: object_store
+                                        - value: stream
+                                        - value: subject
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/0/properties/resource
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/0/properties/resource
+                                - name: stream
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/20/properties/stream
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/1/properties/stream
+                                - name: subject
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                        pattern: ^[^\s]+$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/19/properties/subject
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/14/properties/subject
+                                - name: subjects
+                                  shape:
+                                    kind: array
+                                    items:
+                                        kind: scalar
+                                        scalar: string
+                                        constraints:
+                                            minLength: 1
+                                            pattern: ^[^\s]+$
+                                        provenance:
+                                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                            jsonPointer: /properties/interface/properties/operations/items/oneOf/5/properties/subjects/items
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/21/properties/subjects
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/5/properties/subjects
+                            provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                jsonPointer: /properties/interface/properties/operations/items
+                        constraints:
+                            minItems: 1
+                            uniqueItems: true
+                        provenance:
+                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                            jsonPointer: /properties/interface/properties/operations
+                      provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                        jsonPointer: /properties/interface/properties/operations
+                provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+schemas:
+    - coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+      owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+      id: nats-service-configuration
+      kind: nats.service
+      interfaceType: service
+      exact:
+        $defs:
+            configuration:
+                oneOf:
+                    - additionalProperties: false
+                      properties:
+                        alternatives:
+                            items:
+                                additionalProperties: false
+                                properties:
+                                    env:
+                                        $ref: '#/$defs/envList'
+                                required:
+                                    - env
+                                type: object
+                            minItems: 2
+                            type: array
+                      required:
+                        - alternatives
+                    - additionalProperties: false
+                      properties:
+                        env:
+                            $ref: '#/$defs/envList'
+                      required:
+                        - env
+                type: object
+            envInput:
+                additionalProperties: false
+                properties:
+                    name:
+                        pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+                        type: string
+                    property:
+                        enum:
+                            - consumer
+                            - hostname
+                            - password
+                            - port
+                            - stream
+                            - subject
+                            - tls
+                            - token
+                            - url
+                            - username
+                    required:
+                        type: boolean
+                    sensitive:
+                        type: boolean
+                required:
+                    - name
+                    - property
+                type: object
+            envList:
+                items:
+                    $ref: '#/$defs/envInput'
+                minItems: 1
+                type: array
+                uniqueItems: true
+        $schema: https://json-schema.org/draft/2020-12/schema
+        properties:
+            configuration:
+                $ref: '#/$defs/configuration'
+        type: object
+      projection:
+        kind: object
+        properties:
+            - name: configuration
+              shape:
+                kind: object
+                properties:
+                    - name: alternatives
+                      shape:
+                        kind: array
+                        items:
+                            kind: object
+                            required:
+                                - env
+                            properties:
+                                - name: env
+                                  required: true
+                                  shape:
+                                    kind: array
+                                    items:
+                                        kind: object
+                                        required:
+                                            - name
+                                            - property
+                                        properties:
+                                            - name: name
+                                              required: true
+                                              shape:
+                                                kind: scalar
+                                                scalar: string
+                                                constraints:
+                                                    pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+                                                provenance:
+                                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                    jsonPointer: /$defs/envInput/properties/name
+                                              provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/name
+                                            - name: property
+                                              required: true
+                                              shape:
+                                                kind: scalar
+                                                scalar: string
+                                                values:
+                                                    - value: consumer
+                                                    - value: hostname
+                                                    - value: password
+                                                    - value: port
+                                                    - value: stream
+                                                    - value: subject
+                                                    - value: tls
+                                                    - value: token
+                                                    - value: url
+                                                    - value: username
+                                                provenance:
+                                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                    jsonPointer: /$defs/envInput/properties/property
+                                              provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/property
+                                            - name: required
+                                              shape:
+                                                kind: scalar
+                                                scalar: boolean
+                                                provenance:
+                                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                    jsonPointer: /$defs/envInput/properties/required
+                                              provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/required
+                                            - name: sensitive
+                                              shape:
+                                                kind: scalar
+                                                scalar: boolean
+                                                provenance:
+                                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                    jsonPointer: /$defs/envInput/properties/sensitive
+                                              provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/sensitive
+                                        provenance:
+                                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                            jsonPointer: /$defs/envInput
+                                    constraints:
+                                        minItems: 1
+                                        uniqueItems: true
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envList
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives/items/properties/env
+                            provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives/items
+                        constraints:
+                            minItems: 2
+                        provenance:
+                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                            jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives
+                      provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives
+                    - name: env
+                      shape:
+                        kind: array
+                        items:
+                            kind: object
+                            required:
+                                - name
+                                - property
+                            properties:
+                                - name: name
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput/properties/name
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/name
+                                - name: property
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    values:
+                                        - value: consumer
+                                        - value: hostname
+                                        - value: password
+                                        - value: port
+                                        - value: stream
+                                        - value: subject
+                                        - value: tls
+                                        - value: token
+                                        - value: url
+                                        - value: username
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput/properties/property
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/property
+                                - name: required
+                                  shape:
+                                    kind: scalar
+                                    scalar: boolean
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput/properties/required
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/required
+                                - name: sensitive
+                                  shape:
+                                    kind: scalar
+                                    scalar: boolean
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput/properties/sensitive
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/sensitive
+                            provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/envInput
+                        constraints:
+                            minItems: 1
+                            uniqueItems: true
+                        provenance:
+                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                            jsonPointer: /$defs/envList
+                      provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/configuration/oneOf/1/properties/env
+                provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/configuration
+              provenance:
+                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                jsonPointer: /properties/configuration
+        provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+      definitions:
+        - name: configuration
+          jsonPointer: /$defs/configuration
+          shape:
+            kind: object
+            properties:
+                - name: alternatives
+                  shape:
+                    kind: array
+                    items:
+                        kind: object
+                        required:
+                            - env
+                        properties:
+                            - name: env
+                              required: true
+                              shape:
+                                kind: array
+                                items:
+                                    kind: object
+                                    required:
+                                        - name
+                                        - property
+                                    properties:
+                                        - name: name
+                                          required: true
+                                          shape:
+                                            kind: scalar
+                                            scalar: string
+                                            constraints:
+                                                pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+                                            provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/name
+                                          provenance:
+                                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                            jsonPointer: /$defs/envInput/properties/name
+                                        - name: property
+                                          required: true
+                                          shape:
+                                            kind: scalar
+                                            scalar: string
+                                            values:
+                                                - value: consumer
+                                                - value: hostname
+                                                - value: password
+                                                - value: port
+                                                - value: stream
+                                                - value: subject
+                                                - value: tls
+                                                - value: token
+                                                - value: url
+                                                - value: username
+                                            provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/property
+                                          provenance:
+                                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                            jsonPointer: /$defs/envInput/properties/property
+                                        - name: required
+                                          shape:
+                                            kind: scalar
+                                            scalar: boolean
+                                            provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/required
+                                          provenance:
+                                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                            jsonPointer: /$defs/envInput/properties/required
+                                        - name: sensitive
+                                          shape:
+                                            kind: scalar
+                                            scalar: boolean
+                                            provenance:
+                                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                                jsonPointer: /$defs/envInput/properties/sensitive
+                                          provenance:
+                                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                            jsonPointer: /$defs/envInput/properties/sensitive
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                        jsonPointer: /$defs/envInput
+                                constraints:
+                                    minItems: 1
+                                    uniqueItems: true
+                                provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envList
+                              provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives/items/properties/env
+                        provenance:
+                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                            jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives/items
+                    constraints:
+                        minItems: 2
+                    provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives
+                  provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/configuration/oneOf/0/properties/alternatives
+                - name: env
+                  shape:
+                    kind: array
+                    items:
+                        kind: object
+                        required:
+                            - name
+                            - property
+                        properties:
+                            - name: name
+                              required: true
+                              shape:
+                                kind: scalar
+                                scalar: string
+                                constraints:
+                                    pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+                                provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/name
+                              provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/envInput/properties/name
+                            - name: property
+                              required: true
+                              shape:
+                                kind: scalar
+                                scalar: string
+                                values:
+                                    - value: consumer
+                                    - value: hostname
+                                    - value: password
+                                    - value: port
+                                    - value: stream
+                                    - value: subject
+                                    - value: tls
+                                    - value: token
+                                    - value: url
+                                    - value: username
+                                provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/property
+                              provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/envInput/properties/property
+                            - name: required
+                              shape:
+                                kind: scalar
+                                scalar: boolean
+                                provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/required
+                              provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/envInput/properties/required
+                            - name: sensitive
+                              shape:
+                                kind: scalar
+                                scalar: boolean
+                                provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                    jsonPointer: /$defs/envInput/properties/sensitive
+                              provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                                jsonPointer: /$defs/envInput/properties/sensitive
+                        provenance:
+                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                            jsonPointer: /$defs/envInput
+                    constraints:
+                        minItems: 1
+                        uniqueItems: true
+                    provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/envList
+                  provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/configuration/oneOf/1/properties/env
+            provenance:
+                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                jsonPointer: /$defs/configuration
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+            jsonPointer: /$defs/configuration
+        - name: envInput
+          jsonPointer: /$defs/envInput
+          shape:
+            kind: object
+            required:
+                - name
+                - property
+            properties:
+                - name: name
+                  required: true
+                  shape:
+                    kind: scalar
+                    scalar: string
+                    constraints:
+                        pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+                    provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/envInput/properties/name
+                  provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/envInput/properties/name
+                - name: property
+                  required: true
+                  shape:
+                    kind: scalar
+                    scalar: string
+                    values:
+                        - value: consumer
+                        - value: hostname
+                        - value: password
+                        - value: port
+                        - value: stream
+                        - value: subject
+                        - value: tls
+                        - value: token
+                        - value: url
+                        - value: username
+                    provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/envInput/properties/property
+                  provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/envInput/properties/property
+                - name: required
+                  shape:
+                    kind: scalar
+                    scalar: boolean
+                    provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/envInput/properties/required
+                  provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/envInput/properties/required
+                - name: sensitive
+                  shape:
+                    kind: scalar
+                    scalar: boolean
+                    provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                        jsonPointer: /$defs/envInput/properties/sensitive
+                  provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/envInput/properties/sensitive
+            provenance:
+                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                jsonPointer: /$defs/envInput
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+            jsonPointer: /$defs/envInput
+        - name: envList
+          jsonPointer: /$defs/envList
+          shape:
+            kind: array
+            items:
+                kind: ref
+                ref: '#/$defs/envInput'
+                provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                    jsonPointer: /$defs/envList/items
+            constraints:
+                minItems: 1
+                uniqueItems: true
+            provenance:
+                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+                jsonPointer: /$defs/envList
+          provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+            jsonPointer: /$defs/envList
+      provenance:
+        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-configuration
+    - coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+      owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+      id: nats-service-interface
+      kind: nats.service
+      interfaceType: service
+      exact:
+        $schema: https://json-schema.org/draft/2020-12/schema
+        additionalProperties: true
+        properties:
+            interface:
+                additionalProperties: false
+                properties:
+                    operations:
+                        items:
+                            oneOf:
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: connect
+                                    resource:
+                                        const: connection
+                                  required:
+                                    - action
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: consume
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: consumer
+                                    stream:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - stream
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: create
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: key_value
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: create
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: object_store
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: create
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: consumer
+                                    stream:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - stream
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: create
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: stream
+                                    subjects:
+                                        items:
+                                            minLength: 1
+                                            pattern: ^[^\s]+$
+                                            type: string
+                                        minItems: 1
+                                        type: array
+                                        uniqueItems: true
+                                  required:
+                                    - action
+                                    - name
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: delete
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: key_value
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: delete
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: object_store
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: delete
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: consumer
+                                    stream:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - stream
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: delete
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: stream
+                                  required:
+                                    - action
+                                    - name
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: inspect
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: key_value
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: inspect
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: object_store
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: inspect
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: consumer
+                                    stream:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - stream
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: inspect
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: stream
+                                  required:
+                                    - action
+                                    - name
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: publish
+                                    resource:
+                                        const: stream
+                                    subject:
+                                        minLength: 1
+                                        pattern: ^[^\s]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - subject
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: publish
+                                    resource:
+                                        const: subject
+                                    subject:
+                                        minLength: 1
+                                        pattern: ^[^\s]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - subject
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: read
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: key_value
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: read
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: object_store
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: request
+                                    resource:
+                                        const: subject
+                                    subject:
+                                        minLength: 1
+                                        pattern: ^[^\s]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - subject
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: subscribe
+                                    resource:
+                                        const: subject
+                                    subject:
+                                        minLength: 1
+                                        pattern: ^[^\s]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - subject
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: update
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: consumer
+                                    stream:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                  required:
+                                    - action
+                                    - resource
+                                    - stream
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: update
+                                    name:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: stream
+                                    subjects:
+                                        items:
+                                            minLength: 1
+                                            pattern: ^[^\s]+$
+                                            type: string
+                                        minItems: 1
+                                        type: array
+                                        uniqueItems: true
+                                  required:
+                                    - action
+                                    - name
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: watch
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: key_value
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: watch
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: object_store
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: write
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: key_value
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                                - additionalProperties: false
+                                  properties:
+                                    action:
+                                        const: write
+                                    bucket:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                        type: string
+                                    resource:
+                                        const: object_store
+                                  required:
+                                    - action
+                                    - bucket
+                                    - resource
+                                  type: object
+                        minItems: 1
+                        type: array
+                        uniqueItems: true
+                    type:
+                        const: service
+                required:
+                    - operations
+                    - type
+                type: object
+            kind:
+                const: nats.service
+        required:
+            - interface
+            - kind
+        type: object
+      projection:
+        kind: object
+        required:
+            - interface
+        properties:
+            - name: interface
+              required: true
+              shape:
+                kind: object
+                required:
+                    - operations
+                properties:
+                    - name: operations
+                      required: true
+                      shape:
+                        kind: array
+                        items:
+                            kind: object
+                            required:
+                                - action
+                                - resource
+                            properties:
+                                - name: action
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    values:
+                                        - value: connect
+                                        - value: consume
+                                        - value: create
+                                        - value: delete
+                                        - value: inspect
+                                        - value: publish
+                                        - value: read
+                                        - value: request
+                                        - value: subscribe
+                                        - value: update
+                                        - value: watch
+                                        - value: write
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/0/properties/action
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/0/properties/action
+                                - name: bucket
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/25/properties/bucket
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/2/properties/bucket
+                                - name: name
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/21/properties/name
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/1/properties/name
+                                - name: resource
+                                  required: true
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    values:
+                                        - value: connection
+                                        - value: consumer
+                                        - value: key_value
+                                        - value: object_store
+                                        - value: stream
+                                        - value: subject
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/0/properties/resource
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/0/properties/resource
+                                - name: stream
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                        pattern: ^[^\s.*>]+$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/20/properties/stream
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/1/properties/stream
+                                - name: subject
+                                  shape:
+                                    kind: scalar
+                                    scalar: string
+                                    constraints:
+                                        minLength: 1
+                                        pattern: ^[^\s]+$
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/19/properties/subject
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/14/properties/subject
+                                - name: subjects
+                                  shape:
+                                    kind: array
+                                    items:
+                                        kind: scalar
+                                        scalar: string
+                                        constraints:
+                                            minLength: 1
+                                            pattern: ^[^\s]+$
+                                        provenance:
+                                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                            jsonPointer: /properties/interface/properties/operations/items/oneOf/5/properties/subjects/items
+                                    provenance:
+                                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                        jsonPointer: /properties/interface/properties/operations/items/oneOf/21/properties/subjects
+                                  provenance:
+                                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                    jsonPointer: /properties/interface/properties/operations/items/oneOf/5/properties/subjects
+                            provenance:
+                                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                                jsonPointer: /properties/interface/properties/operations/items
+                        constraints:
+                            minItems: 1
+                            uniqueItems: true
+                        provenance:
+                            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                            jsonPointer: /properties/interface/properties/operations
+                      provenance:
+                        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                        jsonPointer: /properties/interface/properties/operations
+                provenance:
+                    owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                    extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                    coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                    jsonPointer: /properties/interface
+              provenance:
+                owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+                extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+                coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+                jsonPointer: /properties/interface
+        provenance:
+            owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+            extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+            coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface
+      provenance:
+        owner: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+        extensionSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+        coordinate: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml#schema:nats-service-interface

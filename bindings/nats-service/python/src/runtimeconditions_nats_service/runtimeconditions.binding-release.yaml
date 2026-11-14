@@ -1,0 +1,39 @@
+apiVersion: runtimeconditions.io/binding-release/v1alpha1
+dependencyLock:
+    extensions:
+        - id: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          version: 0.2.0
+          sourceSha256: 59ef2d517207397d8a533d8b422932318ec4055047755140bceba58231ee82d0
+          semanticSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
+          sourceBackend: catalog
+          sourceLocator: catalog:nats/service/releases/0.2.0/runtimeconditions.extension.yaml
+kind: RuntimeConditionsBindingRelease
+model:
+    apiVersion: runtimeconditions.io/binding-model/v1alpha1
+    semanticSha256: 1c28f480025bb1bdfd443688790354e3da60f615707da0b78000eeb129dd43ff
+package:
+    coordinate: runtimeconditions-nats-service
+    language: python
+    minimumPythonVersion: "3.12"
+    name: runtimeconditions_nats_service
+    packageKey: nats-service
+    publicationMode: registry
+    registryId: pypi
+    version: 0.2.0
+packageDependencies: []
+provenance:
+    mode: production
+    orchestrator:
+        name: rc
+        version: 0.1.0
+        sha256: 08044437569c5b03586552b73b93657ca6aded8fc7a9f58fb961a094f3753ad2
+    profiler:
+        name: python-rc-profiler
+        version: 0.4.0
+        sha256: 6382d2f2a48b79c1b9e90c4084062a30259e74942ec72264264f1a594826ced9
+    sourceDirectory: bindings/nats-service/python
+    targetReleaseTag: bindings/nats-service/python/v0.2.0
+rootExtension:
+    id: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+    version: 0.2.0
+    semanticSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd

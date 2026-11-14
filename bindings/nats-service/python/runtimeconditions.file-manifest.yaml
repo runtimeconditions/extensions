@@ -1,0 +1,12 @@
+apiVersion: runtimeconditions.io/file-manifest/v1alpha1
+kind: RuntimeConditionsFileManifest
+files:
+    MANIFEST.in: d51e89c4c7c5e16c06d543c7aac32df945dd4f536e578b6ad089b68a6f489fca
+    pyproject.toml: aaf60cd1c89e83e265ab4d13bfdafa247a44adcc319def93d7d177a78394e01e
+    src/runtimeconditions_nats_service/__init__.py: 283a5fb5873aacc23b8d440e79ff3e9e233d950bd051cd8cf761ff41aa70c33f
+    src/runtimeconditions_nats_service/bindings.py: 236cff2b93e0f76bacf03c73496670648cbf3b7ce8a533eddd80905a21b78359
+    src/runtimeconditions_nats_service/py.typed: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    src/runtimeconditions_nats_service/runtimeconditions.binding-model.yaml: 961e90a26efe9deb880ceb35c7e625e48f9db8dda2f1c1126eb921ab7265cdec
+    src/runtimeconditions_nats_service/runtimeconditions.binding-release.yaml: 8230e50728e18800a65953727eb156d6e27f31dc967238111e6b7ec9bea465a7
+    src/runtimeconditions_nats_service/runtimeconditions.bindings.yaml: 61eea9daaa5fb4fb4f300fe6aae370b7df6982bc9f4f3efab62115bcabc11e0a
+    src/runtimeconditions_nats_service/runtimeconditions.extension.yaml: 59ef2d517207397d8a533d8b422932318ec4055047755140bceba58231ee82d0

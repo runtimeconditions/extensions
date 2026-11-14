@@ -1,16 +1,16 @@
 apiVersion: runtimeconditions.io/binding-release/v1alpha1
 dependencyLock:
     extensions:
-        - id: https://runtimeconditions.io/extensions/nats/service/0.1.0/runtimeconditions.extension.yaml
-          version: 0.1.0
-          sourceSha256: b43d9342f801f64522d4fa30cd6f71a0aa308a57a65674b12a0af37a9f320513
-          semanticSha256: 356206e5ba5a5ab80aac2a4716abd2403f0d24581d55d900e8099105cf3f1f1c
+        - id: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+          version: 0.2.0
+          sourceSha256: 59ef2d517207397d8a533d8b422932318ec4055047755140bceba58231ee82d0
+          semanticSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
           sourceBackend: catalog
-          sourceLocator: catalog:nats/service/releases/0.1.0/runtimeconditions.extension.yaml
+          sourceLocator: catalog:nats/service/releases/0.2.0/runtimeconditions.extension.yaml
 kind: RuntimeConditionsBindingRelease
 model:
     apiVersion: runtimeconditions.io/binding-model/v1alpha1
-    semanticSha256: 323109b32c98a1f353985e8d90e18094fd27f7e7805cae57b9ab6b18de5abdd7
+    semanticSha256: 1c28f480025bb1bdfd443688790354e3da60f615707da0b78000eeb129dd43ff
 package:
     coordinate: runtimeconditions.io/x/nats/service
     language: go
@@ -18,7 +18,7 @@ package:
     name: service
     packageKey: nats-service
     publicationMode: github-tag
-    version: v0.1.0
+    version: v0.2.0
 packageDependencies: []
 provenance:
     mode: production
@@ -31,8 +31,8 @@ provenance:
         version: v0.4.0
         sha256: bd5a4ea6c28bfea5f6d91742533866b4e13c223edf73a8a71a4edf1de1b6d98e
     sourceDirectory: bindings/nats-service/go
-    targetReleaseTag: bindings/nats-service/go/v0.1.0
+    targetReleaseTag: bindings/nats-service/go/v0.2.0
 rootExtension:
-    id: https://runtimeconditions.io/extensions/nats/service/0.1.0/runtimeconditions.extension.yaml
-    version: 0.1.0
-    semanticSha256: 356206e5ba5a5ab80aac2a4716abd2403f0d24581d55d900e8099105cf3f1f1c
+    id: https://runtimeconditions.io/extensions/nats/service/0.2.0/runtimeconditions.extension.yaml
+    version: 0.2.0
+    semanticSha256: 45c8985ffda1918a407e51dd1ca3f922f96a1d4c03ed9e74331a06a85303e7dd
