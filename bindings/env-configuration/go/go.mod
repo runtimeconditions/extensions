@@ -6,5 +6,5 @@ module runtimeconditions.io/x/rc/env
 go 1.25
 
 require (
-	runtimeconditions.io/x/rc/common v0.2.0
+	runtimeconditions.io/x/rc/common v0.3.0
 )

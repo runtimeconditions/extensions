@@ -18,7 +18,7 @@ package:
     name: common
     packageKey: common-integrations
     publicationMode: github-tag
-    version: v0.2.0
+    version: v0.3.0
 packageDependencies: []
 provenance:
     mode: production
@@ -31,7 +31,7 @@ provenance:
         version: v0.4.0
         sha256: bd5a4ea6c28bfea5f6d91742533866b4e13c223edf73a8a71a4edf1de1b6d98e
     sourceDirectory: bindings/common-integrations/go
-    targetReleaseTag: bindings/common-integrations/go/v0.2.0
+    targetReleaseTag: bindings/common-integrations/go/v0.3.0
 rootExtension:
     id: https://runtimeconditions.io/extensions/rc/common-integrations/v1alpha2/runtimeconditions.extension.yaml
     version: v1alpha2

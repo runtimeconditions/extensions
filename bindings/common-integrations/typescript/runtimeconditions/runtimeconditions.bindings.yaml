@@ -15,7 +15,7 @@ package:
   language: typescript
   coordinate: "@runtimeconditions/common-integrations"
   name: "@runtimeconditions/common-integrations"
-  version: 0.2.0
+  version: 0.3.0
   minimumNodeVersion: "20.19"
 declarations:
   - modelRef:
