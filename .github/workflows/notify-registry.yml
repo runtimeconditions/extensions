@@ -1,0 +1,32 @@
+name: Notify extension registry of catalog changes
+
+# Rebuilds https://extensions.runtimeconditions.io when anything it shows changes:
+# extension definitions and READMEs, generated packages and their READMEs, or the
+# package catalog. The registry's Pages workflow listens for extensions-updated.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "catalog/**"
+      - "bindings/**"
+      - "tooling/extension-bindings/packages.yaml"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      # REGISTRY_DISPATCH_TOKEN: a fine-grained token with Contents: read and write
+      # on runtimeconditions/extension-registry only.
+      - name: Trigger registry rebuild
+        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
+        with:
+          token: ${{ secrets.REGISTRY_DISPATCH_TOKEN }}
+          repository: runtimeconditions/extension-registry
+          event-type: extensions-updated
